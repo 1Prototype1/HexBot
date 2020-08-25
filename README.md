@@ -12,7 +12,7 @@ Features
 
 Deploying to Heroku
 ---
-- Add the followin buidpacks to your app:
+- Add the following buidpacks to your app:
   - heroku/python
   - https<span>://</span>github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
   - https<span>://</span>github.com/xrisk/heroku-opus.git
