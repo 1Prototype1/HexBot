@@ -16,7 +16,7 @@ Deploying to Heroku
   - heroku/python
   - https<span>://</span>github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
   - https<span>://</span>github.com/xrisk/heroku-opus.git
-- Push to project files heroku
+- Push to project files to Heroku
 
 References
 ---
