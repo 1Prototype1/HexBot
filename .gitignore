@@ -2,3 +2,4 @@ spam/
 __pycache__
 *.webm
 a.py
+keys.py
