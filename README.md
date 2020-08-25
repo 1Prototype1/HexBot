@@ -1,8 +1,7 @@
 # HexBot
----
 Discord bot with music and other cool features. This bot can be deployed on Heroku using the free dyno.
 
-## Features
+Features
 ---
 ```diff
 + Play Music [play/pause/resume/stop/volume]
@@ -11,7 +10,7 @@ Discord bot with music and other cool features. This bot can be deployed on Hero
 + Toss a coin
 ```
 
-## Deploying to Heroku
+Deploying to Heroku
 ---
 - Add the followin buidpacks to your app:
   - heroku/python
