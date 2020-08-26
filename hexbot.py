@@ -166,10 +166,14 @@ class Music(commands.Cog):
     	coin = ['+ heads', '- tails']
     	await ctx.send(f"```diff\n{random.choice(coin)}\n```")
 
-    @commands.command(name='fortune', aliases=['cookie', 'quote'])
-    async def fortune(self, ctx):
-    	"""Fortune Cookie!"""
-    	await ctx.send(f"```fix\n{fortune.get_random_fortune('fortunes')}\n```")
+    @commands.command(name='fortune', aliases=['cookie', 'quote', 'fact', 'factoids'])
+    async def fortune(self, ctx, category='random'):
+    	"""Fortune Cookie! (You can also specify category[factoid,fortune,people])"""
+    	categories = ['fortune', 'factoid', 'people']
+    	if category in categories:
+    		await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{category}')}\n```")
+    	else:
+    		await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{random.choice(categories)}')}\n```")
 # Development Area
 
 # END
@@ -198,9 +202,9 @@ class QuickPoll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='quickpoll')
+    @commands.command(name='poll')
     async def quickpoll(self, ctx, question, *options: str):
-        """Create a quick poll[quickpoll "question" options]"""
+        """Create a quick poll[~poll "question" choices]"""
         if len(options) <= 1:
             await ctx.send('You need more than one option to make a poll!')
             return

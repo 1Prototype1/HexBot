@@ -1,1 +1,1 @@
-worker: python music.py
+worker: python hexbot.py

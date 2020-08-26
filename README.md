@@ -8,6 +8,8 @@ Features
 + List members in your channel
 + Make random teams from members in voice channel
 + Toss a coin
++ Fortune (Factoids, quotes, etc.)
++ Quick Poll
 ```
 
 Deploying to Heroku
