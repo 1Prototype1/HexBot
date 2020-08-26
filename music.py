@@ -2,8 +2,9 @@ import asyncio
 
 import discord
 import youtube_dl
-import keys
+import os
 import random
+import fortune
 
 from discord.ext import commands
 
@@ -40,6 +41,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         self.title = data.get('title')
         self.url = data.get('url')
+        self.thumbnail = data.get('thumbnail')
+        self.duration = data.get('duration')
 
     @classmethod
     async def from_url(cls, url, *, loop=None, stream=False):
@@ -76,8 +79,11 @@ class Music(commands.Cog):
             ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send(f'```json\n\"Now playing: {player.title}\"\n```')
+        await ctx.send(player.thumbnail)
+        # print(player.data)
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.title))
-
+        await asyncio.sleep(player.duration)
+        await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
     
     @commands.command()
     async def stream(self, ctx, *, url):
@@ -154,12 +160,19 @@ class Music(commands.Cog):
     	if len(remaining)> 0:
     		await ctx.send("Remaining\n```diff\n- " + '\n- '.join(remaining) + "\n```")
 
-    @commands.command(name='toss')
+    @commands.command(name='toss', aliases=['flip'])
     async def toss(self, ctx):
     	"""Flips a Coin"""
     	coin = ['+ heads', '- tails']
     	await ctx.send(f"```diff\n{random.choice(coin)}\n```")
 
+    @commands.command(name='fortune', aliases=['cookie', 'quote'])
+    async def fortune(self, ctx):
+    	"""Fortune Cookie!"""
+    	await ctx.send(f"```fix\n{fortune.get_random_fortune('fortunes')}\n```")
+# Development Area
+
+# END
     @listusers.before_invoke
     @teams.before_invoke
     @stop.before_invoke
@@ -186,7 +199,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user))
     print('Bot.....Activated')
-    await bot.change_presence(activity=discord.Game(name="Nothing"))
+    await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
 bot.add_cog(Music(bot))
-bot.run(keys.token)
+bot.run(os.environ['BOT_Token'])
