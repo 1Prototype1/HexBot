@@ -134,51 +134,6 @@ class Music(commands.Cog):
         elif ctx.voice_client.is_playing():
         	await ctx.send("```diff\n+ Already Playing Music!\n```")
 
-    @commands.command(name='list')
-    async def listusers(self, ctx):
-    	"""Displays the list of connected users"""
-    	members = ctx.author.voice.channel.members
-    	memnames = []
-    	for member in members:
-    		memnames.append(member.name)
-    	await ctx.send(f"Members in {ctx.author.voice.channel.name}:\n```\n" + "\n".join(memnames) +"\n```")
-	
-    @commands.command(name='teams', aliases=['team'])
-    async def teams(self, ctx, num=2):
-    	"""Makes random teams with specified number(def. 2)"""
-    	members = ctx.author.voice.channel.members
-    	memnames = []
-    	for member in members:
-    		memnames.append(member.name)
-    	
-    	remaining = memnames
-    	if len(memnames)>=num:
-	    	for i in range(num):
-	    		team = random.sample(remaining,len(memnames)//num)
-	    		remaining = [x for x in remaining if x not in team]
-	    		await ctx.send(f"Team {chr(65+i)}\n" + "```CSS\n" + '\n'.join(team) + "\n```")
-    	if len(remaining)> 0:
-    		await ctx.send("Remaining\n```diff\n- " + '\n- '.join(remaining) + "\n```")
-
-    @commands.command(name='toss', aliases=['flip'])
-    async def toss(self, ctx):
-    	"""Flips a Coin"""
-    	coin = ['+ heads', '- tails']
-    	await ctx.send(f"```diff\n{random.choice(coin)}\n```")
-
-    @commands.command(name='fortune', aliases=['cookie', 'quote', 'fact', 'factoids'])
-    async def fortune(self, ctx, category='random'):
-    	"""Fortune Cookie! (You can also specify category[factoid,fortune,people])"""
-    	categories = ['fortune', 'factoid', 'people']
-    	if category in categories:
-    		await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{category}')}\n```")
-    	else:
-    		await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{random.choice(categories)}')}\n```")
-# Development Area
-
-# END
-    @listusers.before_invoke
-    @teams.before_invoke
     @stop.before_invoke
     async def ensure_author_voice(self, ctx):
     	if not ctx.author.voice:
@@ -195,6 +150,57 @@ class Music(commands.Cog):
                 raise commands.CommandError("Author not connected to a voice channel.")
         elif ctx.voice_client.is_playing():
             ctx.voice_client.stop()
+
+class Misc(commands.Cog):
+	def __init__(self, bot):
+		self.bot = bot
+
+	@commands.command(name='list')
+	async def listusers(self, ctx):
+		"""Displays the list of connected users"""
+		members = ctx.author.voice.channel.members
+		memnames = []
+		for member in members:
+			memnames.append(member.name)
+		await ctx.send(f"Members in {ctx.author.voice.channel.name}:\n```\n" + "\n".join(memnames) +"\n```")
+	
+	@commands.command(name='teams', aliases=['team'])
+	async def teams(self, ctx, num=2):
+		"""Makes random teams with specified number(def. 2)"""
+		members = ctx.author.voice.channel.members
+		memnames = []
+		for member in members:
+			memnames.append(member.name)
+		
+		remaining = memnames
+		if len(memnames)>=num:
+			for i in range(num):
+				team = random.sample(remaining,len(memnames)//num)
+				remaining = [x for x in remaining if x not in team]
+				await ctx.send(f"Team {chr(65+i)}\n" + "```CSS\n" + '\n'.join(team) + "\n```")
+		if len(remaining)> 0:
+			await ctx.send("Remaining\n```diff\n- " + '\n- '.join(remaining) + "\n```")
+
+	@commands.command(name='toss', aliases=['flip'])
+	async def toss(self, ctx):
+		"""Flips a Coin"""
+		coin = ['+ heads', '- tails']
+		await ctx.send(f"```diff\n{random.choice(coin)}\n```")
+
+	@commands.command(name='fortune', aliases=['cookie', 'quote', 'fact', 'factoid'])
+	async def fortune(self, ctx, category='random'):
+		"""Fortune Cookie! (You can also specify category[factoid,fortune,people])"""
+		categories = ['fortune', 'factoid', 'people']
+		if category in categories:
+			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{category}')}\n```")
+		else:
+			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{random.choice(categories)}')}\n```")
+
+	@listusers.before_invoke
+	@teams.before_invoke
+	async def ensure_author_voice(self, ctx):
+		if not ctx.author.voice:
+			await ctx.send("You are not connected to a voice channel.")
 
 class QuickPoll(commands.Cog):
     """QuickPoll"""
@@ -257,6 +263,40 @@ class QuickPoll(commands.Cog):
                  '\n'.join(['{}: {}'.format(opt_dict[key], tally[key]) for key in tally.keys()])
         await ctx.send(output)
 
+# Development Area
+    @commands.command(name='quiz', aliases=['trivia'])
+    async def quiz(self, ctx):
+        answer = 'three'
+        reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣']
+        question = "This is a Question?"
+        options = ['one', 'two', 'three', 'four']
+        options = random.sample(options, len(options)) # Shuffle
+        answer = options.index(answer) # Find answer index in shuffled list
+
+        description = []
+        for x, option in enumerate(options):
+            description += '\n {} {}'.format(reactions[x], option)
+
+        embed = discord.Embed(title=question, description=''.join(description), color=5898184)
+        quiz_message = await ctx.send(embed=embed)
+        for reaction in reactions:
+	        await quiz_message.add_reaction(reaction)
+
+        def check(reaction, user):
+            return user != bot.user and user == ctx.author and (str(reaction.emoji) == '1️⃣' or '2️⃣' or '3️⃣' or '4️⃣')
+
+        try:
+            reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send("⏱Time's Up!")
+        else:
+            if str(reaction.emoji) == reactions[answer]:
+                await ctx.send("Correct answer✨")
+            else:
+                await ctx.send("Wrong Answer🚫")
+
+# END
+
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
                    description='Relatively simple music bot.')
 
@@ -268,4 +308,5 @@ async def on_ready():
 
 bot.add_cog(Music(bot))
 bot.add_cog(QuickPoll(bot))
+bot.add_cog(Misc(bot))
 bot.run(os.environ['BOT_Token'])
