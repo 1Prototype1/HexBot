@@ -5,6 +5,7 @@ import youtube_dl
 import os
 import random
 import fortune
+import aiopentdb
 
 from discord.ext import commands
 
@@ -84,16 +85,6 @@ class Music(commands.Cog):
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.title))
         await asyncio.sleep(player.duration)
         await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
-    
-    @commands.command()
-    async def stream(self, ctx, *, url):
-        """Streams from a url (same as play, but doesn't predownload)"""
-
-        async with ctx.typing():
-            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
-
-        await ctx.send('Now playing: {}'.format(player.title))
 
     @commands.command()
     async def volume(self, ctx, volume: int):
@@ -114,7 +105,7 @@ class Music(commands.Cog):
         	if ctx.voice_client.is_playing():
         		ctx.voice_client.stop()
         	await ctx.voice_client.disconnect()
-        	await bot.change_presence(activity=discord.Game(name="Nothing"))
+        	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
     @commands.command(name='pause')
     async def pause(self, ctx):
@@ -133,6 +124,8 @@ class Music(commands.Cog):
             await ctx.message.add_reaction('▶')
         elif ctx.voice_client.is_playing():
         	await ctx.send("```diff\n+ Already Playing Music!\n```")
+        else:
+        	await ctx.send("```diff\n+ Not Playing Music!\n```")
 
     @stop.before_invoke
     async def ensure_author_voice(self, ctx):
@@ -140,7 +133,8 @@ class Music(commands.Cog):
     		await ctx.send("You are not connected to a voice channel.")
 
     @play.before_invoke
-    @stream.before_invoke
+    @pause.before_invoke
+    @resume.before_invoke
     async def ensure_voice(self, ctx):
         if ctx.voice_client is None:
             if ctx.author.voice:
@@ -263,39 +257,54 @@ class QuickPoll(commands.Cog):
                  '\n'.join(['{}: {}'.format(opt_dict[key], tally[key]) for key in tally.keys()])
         await ctx.send(output)
 
-# Development Area
     @commands.command(name='quiz', aliases=['trivia'])
     async def quiz(self, ctx):
-        answer = 'three'
-        reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣']
-        question = "This is a Question?"
-        options = ['one', 'two', 'three', 'four']
-        options = random.sample(options, len(options)) # Shuffle
-        answer = options.index(answer) # Find answer index in shuffled list
-
-        description = []
-        for x, option in enumerate(options):
-            description += '\n {} {}'.format(reactions[x], option)
-
-        embed = discord.Embed(title=question, description=''.join(description), color=5898184)
-        quiz_message = await ctx.send(embed=embed)
-        for reaction in reactions:
-	        await quiz_message.add_reaction(reaction)
-
-        def check(reaction, user):
-            return user != bot.user and user == ctx.author and (str(reaction.emoji) == '1️⃣' or '2️⃣' or '3️⃣' or '4️⃣')
-
+        """Start an interactive quiz game"""
+        client = aiopentdb.Client()
         try:
-            reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
-        except asyncio.TimeoutError:
-            await ctx.send("⏱Time's Up!")
-        else:
-            if str(reaction.emoji) == reactions[answer]:
-                await ctx.send("Correct answer✨")
-            else:
-                await ctx.send("Wrong Answer🚫")
+            async with ctx.typing():
+                questions = await client.fetch_questions(
+                    amount=1
+                    # difficulty=aiopentdb.Difficulty.easy
+                )
+                question = questions[0]
+                if question.type.value == 'boolean':
+                    options = ['True', 'False']
+                else:
+                    options = [question.correct_answer]
+                    options.extend(question.incorrect_answers)
+                    options = random.sample(options, len(options)) # Shuffle
+                answer = options.index(question.correct_answer)
 
-# END
+                if len(options) == 2 and options[0] == 'True' and options[1] == 'False':
+                    reactions = ['✅', '❌']
+                else:
+                    reactions = ['1⃣', '2⃣', '3⃣', '4⃣']
+
+                description = []
+                for x, option in enumerate(options):
+                    description += '\n {} {}'.format(reactions[x], option)
+
+                embed = discord.Embed(title=question.content, description=''.join(description), color=16750899)
+                embed.set_footer(text='Answer using the reactions below⬇')
+                quiz_message = await ctx.send(embed=embed)
+                for reaction in reactions:
+                    await quiz_message.add_reaction(reaction)
+
+                def check(reaction, user):
+                    return user != bot.user and user == ctx.author and (str(reaction.emoji) == '1️⃣' or '2️⃣' or '3️⃣' or '4️⃣' or '✅' or '❌')
+
+                try:
+                    reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
+                except asyncio.TimeoutError:
+                    await ctx.send(f"⏱Time's Up! \nAnswer is **{options[answer]}**")
+                else:
+                    if str(reaction.emoji) == reactions[answer]:
+                        await ctx.send("Correct answer✨")
+                    else:
+                        await ctx.send(f"Wrong Answer🚫\nAnswer is **{options[answer]}**")
+        finally:
+            await client.close()
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
                    description='Relatively simple music bot.')
