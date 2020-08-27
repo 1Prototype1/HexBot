@@ -1,6 +1,8 @@
 # HexBot
 Discord bot with music and other cool features. This bot can be deployed on Heroku using the free dyno.
 
+**[Add HexBot](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot) - Add the bot to your Discord server and use the awesome features! :sparkles:**
+
 Features
 ---
 ```diff
