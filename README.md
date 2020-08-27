@@ -13,6 +13,7 @@ Features
 + Fortune (Factoids, quotes, etc.)
 + Quick Poll
 + Quiz
++ Clear chat (*Requires Manage Messages permission)
 ```
 
 Deploying to Heroku
