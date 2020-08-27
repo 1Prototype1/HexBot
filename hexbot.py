@@ -190,6 +190,16 @@ class Misc(commands.Cog):
 		else:
 			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{random.choice(categories)}')}\n```")
 
+	@commands.command(name='clear', aliases=['cls'])
+	async def clear(self, ctx, limit=20):
+		"""Delete the messages sent in current text-channel"""
+		if limit<1 and limit>100: limit = 20
+		messages = []
+		try:
+			await ctx.message.channel.purge(limit=limit)
+		except discord.Forbidden:
+			await ctx.send("I don't have permission :disappointed_relieved:")
+
 	@listusers.before_invoke
 	@teams.before_invoke
 	async def ensure_author_voice(self, ctx):
@@ -297,17 +307,17 @@ class QuickPoll(commands.Cog):
                 try:
                     reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
                 except asyncio.TimeoutError:
-                    await ctx.send(f"⏱Time's Up! \nAnswer is **{options[answer]}**")
+                    await ctx.send(f"Time's Up! :stopwatch:\nAnswer is **{options[answer]}**")
                 else:
                     if str(reaction.emoji) == reactions[answer]:
-                        await ctx.send("Correct answer✨")
+                        await ctx.send("Correct answer:sparkles:")
                     else:
-                        await ctx.send(f"Wrong Answer🚫\nAnswer is **{options[answer]}**")
+                        await ctx.send(f"Wrong Answer :no_entry_sign:\nAnswer is **{options[answer]}**")
         finally:
             await client.close()
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
-                   description='Relatively simple music bot.')
+                   description='Relatively simply awesome bot.')
 
 @bot.event
 async def on_ready():
