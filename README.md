@@ -10,6 +10,7 @@ Features
 + Toss a coin
 + Fortune (Factoids, quotes, etc.)
 + Quick Poll
++ Quiz
 ```
 
 Deploying to Heroku
