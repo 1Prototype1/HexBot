@@ -70,7 +70,10 @@ class Music(commands.Cog):
         if ctx.voice_client is not None:
             return await ctx.voice_client.move_to(channel)
 
-        await channel.connect()
+        try:
+            await channel.connect(timeout=5.0)
+        except asyncio.TimeoutError:
+            await ctx.send(f"I can't join `{channel.name}`:disappointed_relieved:")
 
     @commands.command(name='play', aliases=['p'])
     async def play(self, ctx, *, url):
@@ -140,7 +143,10 @@ class Music(commands.Cog):
     async def ensure_voice(self, ctx):
         if ctx.voice_client is None:
             if ctx.author.voice:
-                await ctx.author.voice.channel.connect()
+                try:
+                    await ctx.author.voice.channel.connect(timeout=5.0)
+                except asyncio.TimeoutError:
+                    await ctx.send(f"I can't join `{ctx.author.voice.channel.name}`:disappointed_relieved:")
             else:
                 await ctx.send("You are not connected to a voice channel.")
                 raise commands.CommandError("Author not connected to a voice channel.")
@@ -200,7 +206,7 @@ class Misc(commands.Cog):
 		try:
 			await ctx.message.channel.purge(limit=limit)
 		except discord.Forbidden:
-			await ctx.send("I don't have permission :disappointed_relieved:")
+			await ctx.send("I don't have permission to `Manage Messages`:disappointed_relieved:")
 
 	@listusers.before_invoke
 	@teams.before_invoke
