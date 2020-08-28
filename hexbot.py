@@ -209,7 +209,7 @@ class Misc(commands.Cog):
 		except discord.Forbidden:
 			await ctx.send("I don't have permission to `Manage Messages`:disappointed_relieved:")
 
-	@commands.command(name='ping')
+	@commands.command(name='ping', aliases=['latency'])
 	async def ping(self, ctx):
 		""" Pong! """
 		before = time.monotonic()
