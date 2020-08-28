@@ -44,6 +44,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         self.url = data.get('url')
         self.thumbnail = data.get('thumbnail')
         self.duration = data.get('duration')
+        self.yt_link = data.get('webpage_url')
 
     @classmethod
     async def from_url(cls, url, *, loop=None, stream=False):
@@ -79,8 +80,13 @@ class Music(commands.Cog):
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
             ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
-        await ctx.send(f'```json\n\"Now playing: {player.title}\"\n```')
-        await ctx.send(player.thumbnail)
+        # await ctx.send(f'```json\n\"Now playing: {player.title}\"\n```')
+        embed = discord.Embed(colour=discord.Colour(0x59FFC8), description=f"[{player.title}]({player.yt_link})")
+
+        embed.set_thumbnail(url=player.thumbnail)
+        embed.set_author(name="Now Playing 🎵", url=f"{player.url}", icon_url="https://im7.ezgif.com/tmp/ezgif-7-7181d4067412.gif")
+        await ctx.send(embed=embed)
+        # await ctx.send(player.thumbnail)
         # print(player.data)
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.title))
         await asyncio.sleep(player.duration)
@@ -125,7 +131,7 @@ class Music(commands.Cog):
         elif ctx.voice_client.is_playing():
         	await ctx.send("```diff\n+ Already Playing Music!\n```")
         else:
-        	await ctx.send("```diff\n+ Not Playing Music!\n```")
+        	await ctx.send("```diff\n+ Not Playing any Music!\n```")
 
     @stop.before_invoke
     async def ensure_author_voice(self, ctx):
@@ -133,8 +139,6 @@ class Music(commands.Cog):
     		await ctx.send("You are not connected to a voice channel.")
 
     @play.before_invoke
-    @pause.before_invoke
-    @resume.before_invoke
     async def ensure_voice(self, ctx):
         if ctx.voice_client is None:
             if ctx.author.voice:
@@ -230,7 +234,7 @@ class QuickPoll(commands.Cog):
         description = []
         for x, option in enumerate(options):
             description += '\n {} {}'.format(reactions[x], option)
-        embed = discord.Embed(title=question, description=''.join(description), color=5898184)
+        embed = discord.Embed(title=question, description=''.join(description), color=discord.Colour(0xFF355E))
         react_message = await ctx.send(embed=embed)
         for reaction in reactions[:len(options)]:
             await react_message.add_reaction(reaction)
@@ -295,7 +299,7 @@ class QuickPoll(commands.Cog):
                 for x, option in enumerate(options):
                     description += '\n {} {}'.format(reactions[x], option)
 
-                embed = discord.Embed(title=question.content, description=''.join(description), color=16750899)
+                embed = discord.Embed(title=question.content, description=''.join(description), color=discord.Colour(0xFF9933))
                 embed.set_footer(text='Answer using the reactions below⬇')
                 quiz_message = await ctx.send(embed=embed)
                 for reaction in reactions:
