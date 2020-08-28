@@ -15,4 +15,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_KEY}}
           heroku_app_name: "hexbot16"
           heroku_email: "astonlpz1@protonmail.com"
-          buildpack: "https://github.com/1Prototype1/HexBot.git"
+          branch: "master"
