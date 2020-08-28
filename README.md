@@ -6,7 +6,7 @@ Discord bot with music and other cool features. This bot can be deployed on Hero
 Features
 ---
 ```diff
-+ Play Music [play/pause/resume/stop/volume]
++ Play Music [play/pause/resume/stop/volume/download]
 + List members in your channel
 + Make random teams from members in voice channel
 + Toss a coin
