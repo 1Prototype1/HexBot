@@ -80,13 +80,11 @@ class Music(commands.Cog):
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
             ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
-        # await ctx.send(f'```json\n\"Now playing: {player.title}\"\n```')
         embed = discord.Embed(colour=discord.Colour(0x59FFC8), description=f"[{player.title}]({player.yt_link})")
-
         embed.set_thumbnail(url=player.thumbnail)
         embed.set_author(name="Now Playing 🎵", url=f"{player.url}", icon_url="https://im7.ezgif.com/tmp/ezgif-7-7181d4067412.gif")
+
         await ctx.send(embed=embed)
-        # await ctx.send(player.thumbnail)
         # print(player.data)
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.title))
         await asyncio.sleep(player.duration)
