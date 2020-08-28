@@ -86,7 +86,7 @@ class Music(commands.Cog):
 
         embed = discord.Embed(colour=discord.Colour(0x59FFC8), description=f"[{player.title}]({player.yt_link})")
         embed.set_thumbnail(url=player.thumbnail)
-        embed.set_author(name="Now Playing 🎵", url=f"{player.url}", icon_url="https://im7.ezgif.com/tmp/ezgif-7-7181d4067412.gif")
+        embed.set_author(name="Now Playing 🎵", url=f"{player.url}", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
 
         await ctx.send(embed=embed)
         # print(player.data)
@@ -337,11 +337,29 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
                    description='Relatively simply awesome bot.',
                    case_insensitive=True)
 
+bot.remove_command('help')
+
 @bot.event
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user))
     print('Bot.....Activated')
     await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
+
+@bot.command()
+async def help(ctx):
+	"""Display help"""
+	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0), description="For more info you can visit [GitHub repo](https://github.com/1Prototype1/HexBot)")
+
+	embed.set_thumbnail(url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
+	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
+	embed.set_footer(text="HexBot by [Prototype]#7731✨")
+
+	embed.add_field(name=":musical_note: Music Commands:", value="```join          - Joins a voice channel\npause         - Pauses the current song\nplay|p        - Plays specified song\nresume        - Resumes the paused song\nstop|dis      - Stops and disconnects the bot\nvolume        - Changes the player's volume```", inline=False)
+	embed.add_field(name=":joystick: Game Commands:", value="```poll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll```", inline=False)
+	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong! \nteams         - Makes random teams (def. 2)\ntoss|flip     - Flips a Coin```", inline=False)
+
+	await ctx.send(embed=embed)
+
 
 bot.add_cog(Music(bot))
 bot.add_cog(QuickPoll(bot))
