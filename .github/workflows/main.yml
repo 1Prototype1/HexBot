@@ -13,4 +13,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_KEY}}
           heroku_app_name: "hexbot16"
           heroku_email: "astonlpz1@protonmail.com"
-          usedocker: true
+          procfile: true
