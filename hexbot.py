@@ -334,7 +334,8 @@ class QuickPoll(commands.Cog):
             await client.close()
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
-                   description='Relatively simply awesome bot.')
+                   description='Relatively simply awesome bot.',
+                   case_insensitive=True)
 
 @bot.event
 async def on_ready():
