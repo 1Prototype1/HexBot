@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.4.6 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.4.6
         with:
           heroku_api_key: ${{secrets.HEROKU_KEY}}
-          heroku_app_name: "hexbot16" #Must be unique in Heroku
+          heroku_app_name: "hexbot16"
           heroku_email: "astonlpz1@protonmail.com"
           buildpack: "https://github.com/1Prototype1/HexBot.git"
