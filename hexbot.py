@@ -6,6 +6,7 @@ import os
 import random
 import fortune
 import aiopentdb
+import time
 
 from discord.ext import commands
 
@@ -207,6 +208,14 @@ class Misc(commands.Cog):
 			await ctx.message.channel.purge(limit=limit)
 		except discord.Forbidden:
 			await ctx.send("I don't have permission to `Manage Messages`:disappointed_relieved:")
+
+	@commands.command(name='ping')
+	async def ping(self, ctx):
+		""" Pong! """
+		before = time.monotonic()
+		message = await ctx.send("Pong!")
+		ping = (time.monotonic() - before) * 1000
+		await message.edit(content=f"Pong!  \nPing: `{int(ping)}ms`\nLatency: `{int(bot.latency*1000)}ms`")
 
 	@listusers.before_invoke
 	@teams.before_invoke
