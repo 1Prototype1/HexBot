@@ -13,6 +13,7 @@ import random
 import fortune
 import aiopentdb
 import time
+import json
 
 
 ytdlopts = {
@@ -580,7 +581,13 @@ class QuickPoll(commands.Cog):
         finally:
             await client.close()
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
+def get_prefix(bot, message):
+	with open('prefixes.json', 'r') as f:
+		prefixes = json.load(f)
+	return prefixes[str(message.guild.id)]
+
+
+bot = commands.Bot(command_prefix=get_prefix,
                    description='Relatively simply awesome bot.',
                    case_insensitive=True)
 
@@ -591,6 +598,36 @@ async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user))
     print('Bot.....Activated')
     await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
+
+@bot.event
+async def on_guild_join(guild):
+	with open('prefixes.json', 'r') as f:
+		prefixes = json.load(f)
+	prefixes[str(guild.id)] = '~'
+	with open('prefixes.json', 'w') as f:
+		json.dump(prefixes, f, indent=4)
+
+@bot.event
+async def on_guild_remove(guild):
+	with open('prefixes.json', 'r') as f:
+		prefixes = json.load(f)
+	prefixes.pop(str(guild.id))
+
+	with open('prefixes.json', 'w') as f:
+		json.dump(prefixes, f, indent=4)
+
+@bot.command(name='prefix')
+async def change_prefix(ctx, prefix=None):
+	if prefix==None:
+		await ctx.send(f'Please specify the new prefix\nCurrent prefix is `{ctx.prefix}`')
+		return
+	with open('prefixes.json', 'r') as f:
+		prefixes = json.load(f)
+	prefixes[str(ctx.guild.id)] = prefix
+
+	with open('prefixes.json', 'w') as f:
+		json.dump(prefixes, f, indent=4)
+	await ctx.send(f'Prefix changed to: `{prefix}`')
 
 @bot.command()
 async def help(ctx):
