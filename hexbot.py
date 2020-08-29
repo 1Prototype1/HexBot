@@ -640,9 +640,13 @@ async def help(ctx):
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p        - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```poll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll```", inline=False)
-	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong! \nteams         - Makes random teams (def. 2)\ntoss|flip     - Flips a Coin```", inline=False)
+	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong! \nprefix        - Changes the prefix(def. ~)\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin```", inline=False)
 
-	await ctx.send(embed=embed)
+	try:
+		await ctx.send(embed=embed)
+	except Exception as e:
+		await ctx.send("I don't have permission to send embeds here")
+
 
 
 bot.add_cog(Music(bot))
