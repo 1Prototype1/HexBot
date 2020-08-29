@@ -8,11 +8,14 @@ Features
 ---
 :musical_note: Music Commands:
 ```
-join          - Joins a voice channel
+join|connect  - Joins a voice channel
+np            - Displays now playing song
 pause         - Pauses the current song
 play|p        - Plays specified song
+queue|q       - Displays current queue
 resume        - Resumes the paused song
-stop|dis      - Stops and disconnect the bot
+skip          - Skips current song
+stop|dis      - Stops and disconnects bot
 volume        - Changes the player's volume
 ```
 :joystick: Game Commands:
