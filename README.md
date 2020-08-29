@@ -27,12 +27,14 @@ tally         - Tally the created poll
 :jigsaw: Misc Commands:
 ```
 clear|cls     - Delete the messages
-fortune|quote - Fortune Cookie! <category>[factoid|fortune|people]
+fortune|quote - Fortune Cookie!
+    <category>[factoid|fortune|people]
 help          - Display this message
 list          - Displays the list of
                 voice connected users
 ping|latency  - Pong! 
-teams         - Makes random teams (def. 2)
+prefix        - Changes the prefix(def. ~)
+teams         - Makes random teams(def. 2)
 toss|flip     - Flips a Coin
 ```
 Deploying to Heroku
