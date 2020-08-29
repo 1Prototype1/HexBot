@@ -304,7 +304,7 @@ class Music(commands.Cog):
         vc.resume()
         await ctx.message.add_reaction('▶')
 
-    @commands.command(name='skip')
+    @commands.command(name='skip', aliases=['next'])
     async def skip_(self, ctx):
         """Skip the song."""
         vc = ctx.voice_client
