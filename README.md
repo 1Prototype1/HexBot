@@ -43,7 +43,8 @@ Deploying to Heroku
   - heroku/python
   - https<span>://</span>github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
   - https<span>://</span>github.com/xrisk/heroku-opus.git
-- Push to project files to Heroku
+- Add your bot's access token in Config vars as BOT_Token
+- Push the project files to Heroku
 
 References
 ---
