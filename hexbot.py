@@ -285,7 +285,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_playing():
-            return await ctx.send('I\'m not currently playing anything!', delete_after=20)
+            return await ctx.send('I\'m not currently playing anything :warning:', delete_after=20)
         elif vc.is_paused():
             return
 
@@ -298,7 +298,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I\'m not currently playing anything!', delete_after=20)
+            return await ctx.send('I\'m not currently playing anything :warning:', delete_after=20)
         elif not vc.is_paused():
             return
 
@@ -311,7 +311,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I\'m not currently playing anything!', delete_after=20)
+            return await ctx.send('I\'m not currently playing anything :warning:', delete_after=20)
 
         if vc.is_paused():
             pass
@@ -319,7 +319,7 @@ class Music(commands.Cog):
             return
 
         vc.stop()
-        await ctx.send(f'**`{ctx.author}`**: Skipped the song!')
+        await ctx.send(f'**`{ctx.author}`**: Skipped the song :fast_forward:')
 
     @commands.command(name='queue', aliases=['q', 'playlist'])
     async def queue_info(self, ctx):
@@ -327,11 +327,11 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I\'m not currently connected to voice!', delete_after=20)
+            return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
 
         player = self.get_player(ctx)
         if player.queue.empty():
-            return await ctx.send('There are currently no more queued songs.')
+            return await ctx.send('There are currently no more queued songs :warning:')
 
         # Grab up to 5 entries from the queue...
         upcoming = list(itertools.islice(player.queue._queue, 0, 5))
@@ -347,11 +347,11 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I\'m not currently connected to voice!', delete_after=20)
+            return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
 
         player = self.get_player(ctx)
         if not player.current:
-            return await ctx.send('I\'m not currently playing anything!')
+            return await ctx.send('I\'m not currently playing anything :warning:')
 
         try:
             # Remove our previous now_playing message.
@@ -377,7 +377,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I\'m not currently connected to voice!', delete_after=20)
+            return await ctx.send('I\'m not currently connected to voice :mute:', delete_after=20)
 
         if not 0 < vol < 101:
             return await ctx.send('Please enter a value between 1 and 100.')
@@ -479,13 +479,13 @@ class Misc(commands.Cog):
 				
 				await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)} Mbits/s`\nUpload: `{round(s['upload']/10**6, 3)} Mbits/s`\nServer: `{s['server']['sponsor']}, {s['server']['name']}, {s['server']['country']}`\nBot: `{s['client']['isp']}({s['client']['ip']}) {s['client']['country']} {s['client']['isprating']}`")
 			else:
-				await ctx.send("Only bot owner is permitted to use this command")
+				await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
 
 	@listusers.before_invoke
 	@teams.before_invoke
 	async def ensure_author_voice(self, ctx):
 		if not ctx.author.voice:
-			await ctx.send("You are not connected to a voice channel.")
+			await ctx.send("You are not connected to a voice channel :mute:")
 
 class QuickPoll(commands.Cog):
     """QuickPoll"""
@@ -609,7 +609,7 @@ async def on_ready():
     print('Bot.....Activated')
     await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
-@bot.command()
+@bot.command(name='help', aliases='info')
 async def help(ctx):
 	"""Display help"""
 	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0), description="For more info you can visit [GitHub repo](https://github.com/1Prototype1/HexBot)")
@@ -625,7 +625,7 @@ async def help(ctx):
 	try:
 		await ctx.send(embed=embed)
 	except Exception as e:
-		await ctx.send("I don't have permission to send embeds here")
+		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
 
 
