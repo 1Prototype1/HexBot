@@ -62,7 +62,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return self.__getattribute__(item)
 
     @classmethod
-    async def create_source(cls, ctx, search: str, *, loop, download=False):
+    async def create_source(cls, ctx, search: str, *, loop, download=True):
         loop = loop or asyncio.get_event_loop()
 
         to_run = partial(ytdl.extract_info, url=search, download=download)
@@ -88,7 +88,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         loop = loop or asyncio.get_event_loop()
         requester = data['requester']
 
-        to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
+        to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=True)
         data = await loop.run_in_executor(None, to_run)
 
         return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
@@ -361,7 +361,8 @@ class Music(commands.Cog):
         embed = discord.Embed(colour=discord.Colour(0x59FFC8), description=f"[{vc.source.title}]({vc.source.web_url})")
         embed.set_thumbnail(url=vc.source.thumbnail)
         embed.set_author(name="Now Playing 🎵", url=f"{vc.source.url}", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
-        embed.set_footer(text=f"Requested by: {vc.source.requester}")
+        embed.set_footer(text=f"Requested by: {vc.source.requester}", icon_url=vc.source.requester.avatar_url)
+
         player.np = await ctx.send(embed=embed)
 
     @commands.command(name='volume', aliases=['vol'])
