@@ -233,7 +233,7 @@ class Music(commands.Cog):
                 channel = ctx.author.voice.channel
             except AttributeError:
                 await ctx.send("Please join a channel or specify a valid channel :warning:")
-                # raise InvalidVoiceChannel('No channel to join. Please either specify a valid channel or join one.')
+                raise InvalidVoiceChannel('No channel to join. Please either specify a valid channel or join one.')
 
         vc = ctx.voice_client
 
@@ -243,13 +243,13 @@ class Music(commands.Cog):
             try:
                 await vc.move_to(channel)
             except asyncio.TimeoutError:
-                await ctx.send(f"I can't join `{ctx.author.voice.channel.name}`:disappointed_relieved:")
+                await ctx.send(f"I can't join `{channel}`:disappointed_relieved:")
                 raise VoiceConnectionError(f'Moving to channel: <{channel}> timed out.')
         else:
             try:
-                await channel.connect(timeout=10.0)
+                await channel.connect(timeout=5.0)
             except asyncio.TimeoutError:
-                await ctx.send(f"I can't join `{ctx.author.voice.channel.name}`:disappointed_relieved:")
+                await ctx.send(f"I can't join `{channel}`:disappointed_relieved:")
                 raise VoiceConnectionError(f'Connecting to channel: <{channel}> timed out.')
 
         await ctx.send(f'Connected to: **{channel}**', delete_after=20)
