@@ -13,6 +13,7 @@ import random
 import fortune
 import aiopentdb
 import time
+from speedtest import Speedtest
 
 
 ytdlopts = {
@@ -464,6 +465,20 @@ class Misc(commands.Cog):
 		message = await ctx.send("Pong!")
 		ping = (time.monotonic() - before) * 1000
 		await message.edit(content=f"Pong!  \nPing: `{int(ping)}ms`\nLatency: `{int(bot.latency*1000)}ms`")
+
+	@commands.command(name='speedtest')
+	async def speed_test(self, ctx):		
+		"""Speedtest"""
+		async with ctx.typing():
+			if await bot.is_owner(ctx.author):
+				s = Speedtest()
+				s.download()
+				s.upload()
+				s = s.results.dict()
+				
+				await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)}Mbits/s`\nUpload: `{round(s['download']/10**6, 3)}Mbits/s`\nServer: `{s['server']['sponsor']} {s['server']['name']} {s['server']['country']}`\nBot info:\n `{s['client']['isp']}({s['client']['ip']})[{s['client']['country']}] {s['client']['isprating']}`")
+			else:
+				await ctx.send("Only bot owner is permitted to use this command")
 
 	@listusers.before_invoke
 	@teams.before_invoke
