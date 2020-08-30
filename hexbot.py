@@ -476,7 +476,7 @@ class Misc(commands.Cog):
 				s.upload()
 				s = s.results.dict()
 				
-				await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)}Mbits/s`\nUpload: `{round(s['upload']/10**6, 3)}Mbits/s`\nServer: `{s['server']['sponsor']} {s['server']['name']} {s['server']['country']}`\nBot info:\n `{s['client']['isp']}({s['client']['ip']})[{s['client']['country']}] {s['client']['isprating']}`")
+				await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)}Mbps`\nUpload: `{round(s['upload']/10**6, 3)}Mbps`\nServer: `{s['server']['sponsor']}, {s['server']['name']}, {s['server']['country']}`\nBot info:\n `{s['client']['isp']}({s['client']['ip']})[{s['client']['country']}] {s['client']['isprating']}`")
 			else:
 				await ctx.send("Only bot owner is permitted to use this command")
 
