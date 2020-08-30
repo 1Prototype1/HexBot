@@ -232,7 +232,7 @@ class Music(commands.Cog):
             try:
                 channel = ctx.author.voice.channel
             except AttributeError:
-                await ctx.send("You are not connected to a voice channel.")
+                await ctx.send("Please join a channel or specify a valid channel :warning:")
                 # raise InvalidVoiceChannel('No channel to join. Please either specify a valid channel or join one.')
 
         vc = ctx.voice_client
@@ -247,7 +247,7 @@ class Music(commands.Cog):
                 raise VoiceConnectionError(f'Moving to channel: <{channel}> timed out.')
         else:
             try:
-                await channel.connect(timeout=5.0)
+                await channel.connect(timeout=10.0)
             except asyncio.TimeoutError:
                 await ctx.send(f"I can't join `{ctx.author.voice.channel.name}`:disappointed_relieved:")
                 raise VoiceConnectionError(f'Connecting to channel: <{channel}> timed out.')
@@ -609,7 +609,7 @@ async def on_ready():
     print('Bot.....Activated')
     await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
-@bot.command(name='help', aliases='info')
+@bot.command(name='help', aliases=['info'])
 async def help(ctx):
 	"""Display help"""
 	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0), description="For more info you can visit [GitHub repo](https://github.com/1Prototype1/HexBot)")
