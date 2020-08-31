@@ -20,22 +20,23 @@ volume        - Changes the player's volume
 ```
 :joystick: Game Commands:
 ```
-poll          - Create a quick poll <question> <choices>
+fortune|quote - Fortune Cookie!
+    <category>[factoid|fortune|people]
+poll          - Create a quick poll
+    <question> <choices>
 quiz|trivia   - Start a quiz game
 tally         - Tally the created poll
+teams         - Makes random teams(def. 2)
+toss|flip     - Flips a Coin
+xkcd|comic    - Get random xkcd comics
 ```
 :jigsaw: Misc Commands:
 ```
 clear|cls     - Delete the messages
-fortune|quote - Fortune Cookie!
-    <category>[factoid|fortune|people]
 help          - Display this message
 list          - Displays the list of
                 voice connected users
-ping|latency  - Pong! 
-prefix        - Changes the prefix(def. ~)
-teams         - Makes random teams(def. 2)
-toss|flip     - Flips a Coin
+ping|latency  - Pong!
 ```
 Deploying to Heroku
 ---
