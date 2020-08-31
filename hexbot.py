@@ -14,6 +14,7 @@ import fortune
 import aiopentdb
 import time
 from speedtest import Speedtest
+import xkcd
 
 
 ytdlopts = {
@@ -483,6 +484,16 @@ class Misc(commands.Cog):
 			else:
 				await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
 
+	@commands.command(name='xkcd', aliases=['comic', 'comics'])
+	async def comic(self, ctx):
+		"""xkcd Comics"""
+		async with ctx.typing():
+			c = xkcd.getRandomComic()
+		embed = discord.Embed(title=c.getTitle())
+		embed.set_image(url=c.getImageLink())
+		embed.set_footer(text ='xkcd.com')
+		await ctx.send(embed=embed)
+
 	@listusers.before_invoke
 	@teams.before_invoke
 	async def ensure_author_voice(self, ctx):
@@ -621,8 +632,8 @@ async def help(ctx):
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p        - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":joystick: Game Commands:", value="```poll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll```", inline=False)
-	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong! \nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin```", inline=False)
+	embed.add_field(name=":joystick: Game Commands:", value="```fortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nxkcd|comic    - Get random xkcd comics```", inline=False)
+	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!```", inline=False)
 
 	try:
 		await ctx.send(embed=embed)

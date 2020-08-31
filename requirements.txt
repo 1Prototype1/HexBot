@@ -6,3 +6,4 @@ youtube_dl
 fortune
 aiopentdb
 speedtest-cli
+xkcd
