@@ -11,7 +11,7 @@ Features
 join|connect  - Joins a voice channel
 np            - Displays now playing song
 pause         - Pauses the current song
-play|p        - Plays specified song
+play|p <song> - Plays specified song
 queue|q       - Displays current queue
 resume        - Resumes the paused song
 skip          - Skips current song
@@ -20,6 +20,8 @@ volume        - Changes the player's volume
 ```
 :joystick: Game Commands:
 ```
+8ball         - Magic 8Ball!
+    <question>
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 poll          - Create a quick poll

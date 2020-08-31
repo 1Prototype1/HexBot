@@ -494,6 +494,14 @@ class Misc(commands.Cog):
 		embed.set_footer(text ='xkcd.com')
 		await ctx.send(embed=embed)
 
+	@commands.command(name="8ball")
+	async def eight_ball(self, ctx, ques=""):
+		if ques=="":
+			await ctx.send("Ask me a question first")
+		else:
+			choices = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes – definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful."]
+			await ctx.send(f":8ball: says: ||{random.choice(choices)}||")
+
 	@listusers.before_invoke
 	@teams.before_invoke
 	async def ensure_author_voice(self, ctx):
@@ -631,8 +639,8 @@ async def help(ctx):
 	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
-	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p        - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":joystick: Game Commands:", value="```fortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nxkcd|comic    - Get random xkcd comics```", inline=False)
+	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
+	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nxkcd|comic    - Get random xkcd comics```", inline=False)
 	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!```", inline=False)
 
 	try:
