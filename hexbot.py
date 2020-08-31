@@ -160,6 +160,7 @@ class MusicPlayer:
             try:
                 # We are no longer playing this song...
                 await self.np.delete()
+                await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
             except discord.HTTPException:
                 pass
 
@@ -356,6 +357,7 @@ class Music(commands.Cog):
         try:
             # Remove our previous now_playing message.
             await player.np.delete()
+            await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
         except discord.HTTPException:
             pass
 
