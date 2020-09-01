@@ -1,3 +1,6 @@
+import os
+os.system('pip install git+https://github.com/1Prototype1/ksoftapi.py.git')
+
 import discord
 from discord.ext import commands
 import asyncio
