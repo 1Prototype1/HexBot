@@ -212,4 +212,4 @@ async def play_game(bot, ctx, chance_for_error=0.0):
     elif winner == ':o:':
         await ctx.send('**I am the winner!**')
     else:
-        await ctx.send('**You are the winner!:trophy:**')
+        await ctx.send('**You are the winner! :trophy:**')

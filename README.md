@@ -9,6 +9,7 @@ Features
 :musical_note: Music Commands:
 ```
 join|connect  - Joins a voice channel
+lyrics        - Get lyrics of current song
 np            - Displays now playing song
 pause         - Pauses the current song
 play|p <song> - Plays specified song

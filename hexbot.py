@@ -16,6 +16,7 @@ import time
 from speedtest import Speedtest
 import xkcd
 import tictactoe
+import ksoftapi
 
 
 ytdlopts = {
@@ -359,7 +360,7 @@ class Music(commands.Cog):
         try:
             # Remove our previous now_playing message.
             await player.np.delete()
-            await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
+            # await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
         except discord.HTTPException:
             pass
 
@@ -406,6 +407,45 @@ class Music(commands.Cog):
             return await ctx.send('I\'m not currently playing anything!', delete_after=20)
 
         await self.cleanup(ctx.guild)
+
+    @commands.command(name='lyrics')
+    async def get_lyrics(self, ctx):
+        """Get lyrics of current song"""
+        vc = ctx.voice_client
+
+        if not vc or not vc.is_connected():
+            return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
+
+        player = self.get_player(ctx)
+        if not player.current:
+            return await ctx.send('I\'m not currently playing anything :warning:')
+
+        query = vc.source.title
+        
+        kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+        try:
+        	async with ctx.typing():
+		        results = await kclient.music.lyrics(query)
+        except ksoftapi.NoResults:
+            await ctx.send('No lyrics found for ' + query)
+        else:
+            lyrics = results[0].lyrics
+
+            embed = discord.Embed(title=vc.source.title, color=discord.Color(0xCCFF00), url=vc.source.web_url, description=lyrics[:2048])
+            embed.set_thumbnail(url=vc.source.thumbnail)
+            embed.set_author(name="Lyrics:")
+            lyrics = lyrics[2048:]
+            embeds = [embed] # create embeds' list for long lyrics
+            while len(lyrics) > 0 and len(embeds) < 10:
+                embed = discord.Embed(color=discord.Color(0xCCFF00), description=lyrics[:2048])
+                lyrics = lyrics[len(embeds)*2048:]
+                embeds.append(embed)
+            embeds[-1].set_footer(text="Source: KSoft.Si") # set footer for last embed
+            for embed in embeds:
+                await ctx.send(embed=embed)
+        finally:
+            await kclient.close()
+
 
 class Misc(commands.Cog):
 	def __init__(self, bot):
@@ -454,7 +494,7 @@ class Misc(commands.Cog):
 		before = time.monotonic()
 		message = await ctx.send("Pong!")
 		ping = (time.monotonic() - before) * 1000
-		await message.edit(content=f"Pong!  \nPing: `{int(ping)}ms`\nLatency: `{int(bot.latency*1000)}ms`")
+		await message.edit(content=f"Pong!  \nTook `{int(ping)}ms`\nLatency: `{int(bot.latency*1000)}ms`")
 
 	@commands.command(name='speedtest')
 	async def speed_test(self, ctx):		
@@ -645,7 +685,7 @@ async def help(ctx):
 	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
-	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
+	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nxkcd|comic    - Get random xkcd comics```", inline=False)
 	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!```", inline=False)
 
