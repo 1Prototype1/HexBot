@@ -30,6 +30,7 @@ quiz|trivia   - Start a quiz game
 tally         - Tally the created poll
 teams         - Makes random teams(def. 2)
 toss|flip     - Flips a Coin
+ttt           - Play Tic-Tac-Toe!
 xkcd|comic    - Get random xkcd comics
 ```
 :jigsaw: Misc Commands:

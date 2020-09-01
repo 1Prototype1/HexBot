@@ -15,6 +15,7 @@ import aiopentdb
 import time
 from speedtest import Speedtest
 import xkcd
+import tictactoe
 
 
 ytdlopts = {
@@ -436,20 +437,6 @@ class Misc(commands.Cog):
 		if len(remaining)> 0:
 			await ctx.send("Remaining\n```diff\n- " + '\n- '.join(remaining) + "\n```")
 
-	@commands.command(name='toss', aliases=['flip'])
-	async def toss(self, ctx):
-		"""Flips a Coin"""
-		coin = ['+ heads', '- tails']
-		await ctx.send(f"```diff\n{random.choice(coin)}\n```")
-
-	@commands.command(name='fortune', aliases=['cookie', 'quote', 'fact', 'factoid'])
-	async def fortune(self, ctx, category='random'):
-		"""Fortune Cookie! (You can also specify category[factoid,fortune,people])"""
-		categories = ['fortune', 'factoid', 'people']
-		if category in categories:
-			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{category}')}\n```")
-		else:
-			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{random.choice(categories)}')}\n```")
 
 	@commands.command(name='clear', aliases=['cls'])
 	async def clear(self, ctx, limit=20):
@@ -484,6 +471,137 @@ class Misc(commands.Cog):
 			else:
 				await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
 
+	@listusers.before_invoke
+	@teams.before_invoke
+	async def ensure_author_voice(self, ctx):
+		if not ctx.author.voice:
+			await ctx.send("You are not connected to a voice channel :mute:")
+
+class Games(commands.Cog):
+	"""Play various Games"""
+
+	def __init__(self, bot):
+		self.bot = bot
+
+	@commands.command(name='poll')
+	async def quickpoll(self, ctx, question, *options: str):
+		"""Create a quick poll[~poll "question" choices]"""
+		if len(options) <= 1:
+			await ctx.send('You need more than one option to make a poll!')
+			return
+		if len(options) > 10:
+			await ctx.send('You cannot make a poll for more than 10 things!')
+			return
+
+		if len(options) == 2 and options[0] == 'yes' and options[1] == 'no':
+			reactions = ['✅', '❌']
+		else:
+			reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟']
+
+		description = []
+		for x, option in enumerate(options):
+			description += '\n {} {}'.format(reactions[x], option)
+		embed = discord.Embed(title=question, description=''.join(description), color=discord.Colour(0xFF355E))
+		react_message = await ctx.send(embed=embed)
+		for reaction in reactions[:len(options)]:
+			await react_message.add_reaction(reaction)
+		embed.set_footer(text='Poll ID: {}'.format(react_message.id))
+		await react_message.edit(embed=embed)
+
+	@commands.command(name='tally')
+	async def tally(self, ctx, id):
+		"""Tally the created poll"""
+		poll_message = await ctx.message.channel.fetch_message(id)
+		if not poll_message.embeds:
+			return
+		embed = poll_message.embeds[0]
+		if poll_message.author != bot.user:
+			return
+		if not embed.footer.text.startswith('Poll ID:'):
+			return
+		unformatted_options = [x.strip() for x in embed.description.split('\n')]
+		opt_dict = {x[:2]: x[3:] for x in unformatted_options} if unformatted_options[0][0] == '1' \
+			else {x[:1]: x[2:] for x in unformatted_options}
+		# check if we're using numbers for the poll, or x/checkmark, parse accordingly
+		voters = [bot.user.id]  # add the bot's ID to the list of voters to exclude it's votes
+
+		tally = {x: 0 for x in opt_dict.keys()}
+		for reaction in poll_message.reactions:
+			if reaction.emoji in opt_dict.keys():
+				reactors = await reaction.users().flatten()
+				for reactor in reactors:
+					if reactor.id not in voters:
+						tally[reaction.emoji] += 1
+						voters.append(reactor.id)
+
+		output = 'Results of the poll for "{}":\n'.format(embed.title) + \
+				'\n'.join(['{}: {}'.format(opt_dict[key], tally[key]) for key in tally.keys()])
+		await ctx.send(output)
+
+	@commands.command(name='quiz', aliases=['trivia'])
+	async def quiz(self, ctx):
+		"""Start an interactive quiz game"""
+		client = aiopentdb.Client()
+		try:
+			async with ctx.typing():
+				questions = await client.fetch_questions(
+					amount=1
+					# difficulty=aiopentdb.Difficulty.easy
+				)
+				question = questions[0]
+				if question.type.value == 'boolean':
+					options = ['True', 'False']
+				else:
+					options = [question.correct_answer]
+					options.extend(question.incorrect_answers)
+					options = random.sample(options, len(options)) # Shuffle
+				answer = options.index(question.correct_answer)
+
+				if len(options) == 2 and options[0] == 'True' and options[1] == 'False':
+					reactions = ['✅', '❌']
+				else:
+					reactions = ['1⃣', '2⃣', '3⃣', '4⃣']
+
+				description = []
+				for x, option in enumerate(options):
+					description += '\n {} {}'.format(reactions[x], option)
+
+				embed = discord.Embed(title=question.content, description=''.join(description), color=discord.Colour(0xFF9933))
+				embed.set_footer(text='Answer using the reactions below⬇')
+				quiz_message = await ctx.send(embed=embed)
+				for reaction in reactions:
+					await quiz_message.add_reaction(reaction)
+
+				def check(reaction, user):
+					return user != bot.user and user == ctx.author and (str(reaction.emoji) == '1️⃣' or '2️⃣' or '3️⃣' or '4️⃣' or '✅' or '❌')
+
+				try:
+					reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
+				except asyncio.TimeoutError:
+					await ctx.send(f"Time's Up! :stopwatch:\nAnswer is **{options[answer]}**")
+				else:
+					if str(reaction.emoji) == reactions[answer]:
+						await ctx.send("Correct answer:sparkles:")
+					else:
+						await ctx.send(f"Wrong Answer :no_entry_sign:\nAnswer is **{options[answer]}**")
+		finally:
+			await client.close()
+
+	@commands.command(name='toss', aliases=['flip'])
+	async def toss(self, ctx):
+		"""Flips a Coin"""
+		coin = ['+ heads', '- tails']
+		await ctx.send(f"```diff\n{random.choice(coin)}\n```")
+
+	@commands.command(name='fortune', aliases=['cookie', 'quote', 'fact', 'factoid'])
+	async def fortune(self, ctx, category='random'):
+		"""Fortune Cookie! (You can also specify category[factoid,fortune,people])"""
+		categories = ['fortune', 'factoid', 'people']
+		if category in categories:
+			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{category}')}\n```")
+		else:
+			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{random.choice(categories)}')}\n```")
+	
 	@commands.command(name='xkcd', aliases=['comic', 'comics'])
 	async def comic(self, ctx):
 		"""xkcd Comics"""
@@ -491,7 +609,7 @@ class Misc(commands.Cog):
 			c = xkcd.getRandomComic()
 		embed = discord.Embed(title=c.getTitle())
 		embed.set_image(url=c.getImageLink())
-		embed.set_footer(text ='xkcd.com')
+		embed.set_footer(text =c.getAltText())
 		await ctx.send(embed=embed)
 
 	@commands.command(name="8ball")
@@ -502,133 +620,21 @@ class Misc(commands.Cog):
 			choices = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes – definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful."]
 			await ctx.send(f":8ball: says: ||{random.choice(choices)}||")
 
-	@listusers.before_invoke
-	@teams.before_invoke
-	async def ensure_author_voice(self, ctx):
-		if not ctx.author.voice:
-			await ctx.send("You are not connected to a voice channel :mute:")
-
-class QuickPoll(commands.Cog):
-    """QuickPoll"""
-
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name='poll')
-    async def quickpoll(self, ctx, question, *options: str):
-        """Create a quick poll[~poll "question" choices]"""
-        if len(options) <= 1:
-            await ctx.send('You need more than one option to make a poll!')
-            return
-        if len(options) > 10:
-            await ctx.send('You cannot make a poll for more than 10 things!')
-            return
-
-        if len(options) == 2 and options[0] == 'yes' and options[1] == 'no':
-            reactions = ['✅', '❌']
-        else:
-            reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟']
-
-        description = []
-        for x, option in enumerate(options):
-            description += '\n {} {}'.format(reactions[x], option)
-        embed = discord.Embed(title=question, description=''.join(description), color=discord.Colour(0xFF355E))
-        react_message = await ctx.send(embed=embed)
-        for reaction in reactions[:len(options)]:
-            await react_message.add_reaction(reaction)
-        embed.set_footer(text='Poll ID: {}'.format(react_message.id))
-        await react_message.edit(embed=embed)
-
-    @commands.command(name='tally')
-    async def tally(self, ctx, id):
-        """Tally the created poll"""
-        poll_message = await ctx.message.channel.fetch_message(id)
-        if not poll_message.embeds:
-            return
-        embed = poll_message.embeds[0]
-        if poll_message.author != bot.user:
-            return
-        if not embed.footer.text.startswith('Poll ID:'):
-            return
-        unformatted_options = [x.strip() for x in embed.description.split('\n')]
-        opt_dict = {x[:2]: x[3:] for x in unformatted_options} if unformatted_options[0][0] == '1' \
-            else {x[:1]: x[2:] for x in unformatted_options}
-        # check if we're using numbers for the poll, or x/checkmark, parse accordingly
-        voters = [bot.user.id]  # add the bot's ID to the list of voters to exclude it's votes
-
-        tally = {x: 0 for x in opt_dict.keys()}
-        for reaction in poll_message.reactions:
-            if reaction.emoji in opt_dict.keys():
-                reactors = await reaction.users().flatten()
-                for reactor in reactors:
-                    if reactor.id not in voters:
-                        tally[reaction.emoji] += 1
-                        voters.append(reactor.id)
-
-        output = 'Results of the poll for "{}":\n'.format(embed.title) + \
-                 '\n'.join(['{}: {}'.format(opt_dict[key], tally[key]) for key in tally.keys()])
-        await ctx.send(output)
-
-    @commands.command(name='quiz', aliases=['trivia'])
-    async def quiz(self, ctx):
-        """Start an interactive quiz game"""
-        client = aiopentdb.Client()
-        try:
-            async with ctx.typing():
-                questions = await client.fetch_questions(
-                    amount=1
-                    # difficulty=aiopentdb.Difficulty.easy
-                )
-                question = questions[0]
-                if question.type.value == 'boolean':
-                    options = ['True', 'False']
-                else:
-                    options = [question.correct_answer]
-                    options.extend(question.incorrect_answers)
-                    options = random.sample(options, len(options)) # Shuffle
-                answer = options.index(question.correct_answer)
-
-                if len(options) == 2 and options[0] == 'True' and options[1] == 'False':
-                    reactions = ['✅', '❌']
-                else:
-                    reactions = ['1⃣', '2⃣', '3⃣', '4⃣']
-
-                description = []
-                for x, option in enumerate(options):
-                    description += '\n {} {}'.format(reactions[x], option)
-
-                embed = discord.Embed(title=question.content, description=''.join(description), color=discord.Colour(0xFF9933))
-                embed.set_footer(text='Answer using the reactions below⬇')
-                quiz_message = await ctx.send(embed=embed)
-                for reaction in reactions:
-                    await quiz_message.add_reaction(reaction)
-
-                def check(reaction, user):
-                    return user != bot.user and user == ctx.author and (str(reaction.emoji) == '1️⃣' or '2️⃣' or '3️⃣' or '4️⃣' or '✅' or '❌')
-
-                try:
-                    reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
-                except asyncio.TimeoutError:
-                    await ctx.send(f"Time's Up! :stopwatch:\nAnswer is **{options[answer]}**")
-                else:
-                    if str(reaction.emoji) == reactions[answer]:
-                        await ctx.send("Correct answer:sparkles:")
-                    else:
-                        await ctx.send(f"Wrong Answer :no_entry_sign:\nAnswer is **{options[answer]}**")
-        finally:
-            await client.close()
+	@commands.command(name='tictactoe', aliases=['ttt'])
+	async def ttt(self, ctx):
+		await tictactoe.play_game(bot, ctx, chance_for_error=0.2) # Win Plausible
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
-                   description='Relatively simply awesome bot.',
-                   case_insensitive=True)
+					description='Relatively simply awesome bot.',
+					case_insensitive=True)
 
 bot.remove_command('help')
 
 @bot.event
 async def on_ready():
-    print('Logged in as {0} ({0.id})'.format(bot.user))
-    print('Bot.....Activated')
-    await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
+	print('Logged in as {0} ({0.id})'.format(bot.user))
+	print('Bot.....Activated')
+	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
 @bot.command(name='help', aliases=['info'])
 async def help(ctx):
@@ -640,8 +646,9 @@ async def help(ctx):
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nxkcd|comic    - Get random xkcd comics```", inline=False)
+	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nxkcd|comic    - Get random xkcd comics```", inline=False)
 	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!```", inline=False)
+
 
 	try:
 		await ctx.send(embed=embed)
@@ -649,8 +656,7 @@ async def help(ctx):
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
 
-
 bot.add_cog(Music(bot))
-bot.add_cog(QuickPoll(bot))
+bot.add_cog(Games(bot))
 bot.add_cog(Misc(bot))
 bot.run(os.environ['BOT_Token'])

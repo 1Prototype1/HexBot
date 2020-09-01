@@ -2,3 +2,5 @@ spam/
 __pycache__
 *.webm
 *.py
+!hexbot.py
+!tictactoe.py
