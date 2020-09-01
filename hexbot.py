@@ -649,6 +649,7 @@ class Games(commands.Cog):
 
 	@commands.command(name="8ball")
 	async def eight_ball(self, ctx, ques=""):
+		"""Magic 8Ball"""
 		if ques=="":
 			await ctx.send("Ask me a question first")
 		else:
@@ -657,7 +658,26 @@ class Games(commands.Cog):
 
 	@commands.command(name='tictactoe', aliases=['ttt'])
 	async def ttt(self, ctx):
+		"""Play Tic-Tac-Toe"""
 		await tictactoe.play_game(bot, ctx, chance_for_error=0.2) # Win Plausible
+
+	@commands.command(name='meme', aliases=['maymay'])
+	async def meme(self, ctx):
+		"""Get MayMay"""
+		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		try:
+			async with ctx.typing():
+				maymay = await kclient.images.random_meme()
+		except ksoftapi.NoResults:
+			await ctx.send('Error getting maymay :cry:')
+		else:
+			embed = discord.Embed(title=maymay.title)
+			embed.set_image(url=maymay.image_url)
+			await ctx.send(embed=embed)
+
+		finally:
+			await kclient.close()
+
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
@@ -681,7 +701,7 @@ async def help(ctx):
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nxkcd|comic    - Get random xkcd comics```", inline=False)
+	embed.add_field(name=":joystick: Game Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nmeme          - Get MayMays\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!```", inline=False)
 
 

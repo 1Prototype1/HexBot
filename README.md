@@ -10,6 +10,7 @@ Features
 ```
 join|connect  - Joins a voice channel
 lyrics        - Get lyrics of current song
+meme          - Get MayMays
 np            - Displays now playing song
 pause         - Pauses the current song
 play|p <song> - Plays specified song
