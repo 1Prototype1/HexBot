@@ -412,31 +412,27 @@ class Music(commands.Cog):
     async def get_lyrics(self, ctx):
         """Get lyrics of current song"""
         vc = ctx.voice_client
-
         if not vc or not vc.is_connected():
             return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
-
         player = self.get_player(ctx)
         if not player.current:
             return await ctx.send('I\'m not currently playing anything :warning:')
-
         query = vc.source.title
         
         kclient = ksoftapi.Client(os.environ['KSoft_Token'])
         try:
-        	async with ctx.typing():
-		        results = await kclient.music.lyrics(query)
+            async with ctx.typing():
+                results = await kclient.music.lyrics(query)
         except ksoftapi.NoResults:
-            await ctx.send('No lyrics found for ' + query)
+            await ctx.send(f'No lyrics found for `{query}`')
         else:
             lyrics = results[0].lyrics
-
             embed = discord.Embed(title=vc.source.title, color=discord.Color(0xCCFF00), url=vc.source.web_url, description=lyrics[:2048])
             embed.set_thumbnail(url=vc.source.thumbnail)
             embed.set_author(name="Lyrics:")
             lyrics = lyrics[2048:]
             embeds = [embed] # create embeds' list for long lyrics
-            while len(lyrics) > 0 and len(embeds) < 10:
+            while len(lyrics) > 0 and len(embeds) < 10: # limiting embeds to 10
                 embed = discord.Embed(color=discord.Color(0xCCFF00), description=lyrics[:2048])
                 lyrics = lyrics[len(embeds)*2048:]
                 embeds.append(embed)
@@ -445,7 +441,6 @@ class Music(commands.Cog):
                 await ctx.send(embed=embed)
         finally:
             await kclient.close()
-
 
 class Misc(commands.Cog):
 	def __init__(self, bot):
