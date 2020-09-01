@@ -678,6 +678,38 @@ class Games(commands.Cog):
 		finally:
 			await kclient.close()
 
+	@commands.command(name='weather')
+	async def weather(self, ctx, *location):
+		"""Get weather"""
+		print(location)
+		if location == ():
+			return await ctx.send('Please provide location :map:')
+		else:
+			location = ' '.join(location)
+
+		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		try:
+			async with ctx.typing():
+				w = await kclient.kumo.basic_weather(location, icon_pack='color')
+		except ksoftapi.NoResults:
+			await ctx.send('Unable to locate :mag_right:')
+		else:
+			infos = [['Precip Intensity', 'precip_intensity', ' mm/hr'], ['Precip Probability', 'precip_probability', ''], ['Apparent Temperature', 'apparent_temperature', ' °C'], ['Dew Point', 'dew_point', ' °C'], ['Humidity', 'humidity', ''], ['Pressure', 'pressure', ' Pa'], ['Wind Speed', 'wind_speed', ' km/hr'], ['Cloud Cover', 'cloud_cover', ''], ['UV Index', 'uv_index', ''], ['Visibility', 'visibility', ''], ['Ozone', 'ozone', '']]
+			gmap = f"[:map:](https://www.google.com/maps/search/?api=1&query='{w.location.address}')"
+			gmap = gmap.replace("'", "%22");gmap = gmap.replace(" ", "%20")
+
+			info = [f'{gmap} **{w.location.address}**\n']
+			for i in infos:
+				info.append(f'{i[0]}: `{getattr(w, i[1])}{i[2]}`')
+
+			embed = discord.Embed(title=f"{w.summary} {w.temperature}°C", colour=discord.Colour(0xffff66), description='\n'.join(info))
+			embed.set_thumbnail(url=w.icon_url)
+			embed.set_author(name='Weather:', icon_url=w.icon_url)
+			await ctx.send(embed=embed)
+
+		finally:
+			await kclient.close()
+
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
@@ -702,7 +734,7 @@ async def help(ctx):
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nmeme          - Get MayMays\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":jigsaw: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!```", inline=False)
+	embed.add_field(name=":tools: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nweather <loc> - Get weather of location```", inline=False)
 
 
 	try:

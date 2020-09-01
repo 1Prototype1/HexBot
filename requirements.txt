@@ -7,4 +7,4 @@ fortune
 aiopentdb
 speedtest-cli
 xkcd
-ksoftapi
+git+https://github.com/1Prototype1/ksoftapi.py.git

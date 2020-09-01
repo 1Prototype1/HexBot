@@ -35,13 +35,14 @@ toss|flip     - Flips a Coin
 ttt           - Play Tic-Tac-Toe!
 xkcd|comic    - Get random xkcd comics
 ```
-:jigsaw: Misc Commands:
+🛠 Misc Commands:
 ```
 clear|cls     - Delete the messages
 help          - Display this message
 list          - Displays the list of
                 voice connected users
 ping|latency  - Pong!
+weather <loc> - Get weather of location
 ```
 Deploying to Heroku
 ---
