@@ -352,15 +352,12 @@ class Music(commands.Cog):
 
         if not vc or not vc.is_connected():
             return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
-
         player = self.get_player(ctx)
         if not player.current:
             return await ctx.send('I\'m not currently playing anything :warning:')
-
         try:
             # Remove our previous now_playing message.
             await player.np.delete()
-            # await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
         except discord.HTTPException:
             pass
 
@@ -370,6 +367,26 @@ class Music(commands.Cog):
         embed.set_footer(text=f"Requested by: {vc.source.requester}", icon_url=vc.source.requester.avatar_url)
 
         player.np = await ctx.send(embed=embed)
+
+    @commands.command(name='save', aliases=['star'])
+    async def savetodm(self, ctx):
+        """Send DM of currently playing song"""
+        vc = ctx.voice_client
+
+        if not vc or not vc.is_connected():
+            return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
+        player = self.get_player(ctx)
+        if not player.current:
+            return await ctx.send('I\'m not currently playing anything :warning:')
+
+        embed = discord.Embed(colour=discord.Colour(0x59FFC8), description=f"[{vc.source.title}]({vc.source.web_url})")
+        embed.set_thumbnail(url=vc.source.thumbnail)
+        embed.set_author(name="Now Playing 🎵", url=f"{vc.source.url}", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
+        embed.set_footer(text=f"Requested by: {vc.source.requester}", icon_url=vc.source.requester.avatar_url)
+
+        user = ctx.author
+        await user.send(embed=embed)
+        await ctx.send(f"Current song has been sent to you {ctx.author.mention} :floppy_disk:")
 
     @commands.command(name='volume', aliases=['vol'])
     async def change_volume(self, ctx, *, vol: float):
@@ -732,7 +749,7 @@ async def help(ctx):
 	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
-	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
+	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nmeme          - Get MayMays\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":tools: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nweather <loc> - Get weather of location```", inline=False)
 
