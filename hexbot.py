@@ -1,22 +1,22 @@
-import discord
-from discord.ext import commands
+import os
 import asyncio
-import itertools
+from functools import partial
 import sys
 import traceback
+import itertools
+import time
+import random
+import discord
+from discord.ext import commands
 from async_timeout import timeout
-from functools import partial
 from youtube_dl import YoutubeDL
 
-import os
-import random
 import fortune
 import aiopentdb
-import time
 from speedtest import Speedtest
 import xkcd
-import tictactoe
 import ksoftapi
+import tictactoe
 
 
 ytdlopts = {
@@ -293,7 +293,7 @@ class Music(commands.Cog):
 
         if not vc or not vc.is_playing():
             return await ctx.send('I\'m not currently playing anything :warning:', delete_after=20)
-        elif vc.is_paused():
+        if vc.is_paused():
             return
 
         vc.pause()
@@ -306,7 +306,7 @@ class Music(commands.Cog):
 
         if not vc or not vc.is_connected():
             return await ctx.send('I\'m not currently playing anything :warning:', delete_after=20)
-        elif not vc.is_paused():
+        if not vc.is_paused():
             return
 
         vc.resume()
@@ -496,7 +496,8 @@ class Misc(commands.Cog):
 	@commands.command(name='clear', aliases=['cls'])
 	async def clear(self, ctx, limit=20):
 		"""Delete the messages sent in current text-channel"""
-		if limit<1 and limit>100: limit = 20
+		if 1>limit>100:
+			limit = 20
 		messages = []
 		try:
 			await ctx.message.channel.purge(limit=limit)
@@ -628,11 +629,11 @@ class Games(commands.Cog):
 		client = aiopentdb.Client()
 		try:
 			async with ctx.typing():
-				questions = await client.fetch_questions(
+				question = await client.fetch_questions(
 					amount=1
 					# difficulty=aiopentdb.Difficulty.easy
 				)
-				question = questions[0]
+				question = question[0]
 				if question.type.value == 'boolean':
 					options = ['True', 'False']
 				else:
@@ -757,7 +758,7 @@ async def help(ctx):
 
 	try:
 		await ctx.send(embed=embed)
-	except Exception as e:
+	except Exception:
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
 
