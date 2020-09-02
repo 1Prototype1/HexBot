@@ -572,6 +572,31 @@ class Misc(commands.Cog):
 		finally:
 			await kclient.close()
 
+	@commands.command(name='trace', aliases=['ip'])
+	async def trace(self, ctx, ip: str=""):
+		if ip=="":
+			return await ctx.send("Please enter an `IP` address :satellite:")
+
+		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		try:
+			async with ctx.typing():
+				info = await kclient.kumo.trace_ip(ip)
+		except (ksoftapi.NoResults, ksoftapi.errors.APIError):
+			await ctx.send('Unable to locate :x:\nEnter valid IP')
+		else:
+			details = [['City', 'city'], ['Continent code', 'continent_code'], ['Continent name', 'continent_name'], ['Country code', 'country_code'], ['Country_name', 'country_name'], ['DMA code', 'dma_code'], ['Latitude', 'latitude'], ['Longitude', 'longitude'], ['Postal code', 'postal_code'], ['Region', 'region'], ['Timezone', 'time_zone']]
+			description = []
+			for i in details:
+				description.append(f'{i[0]}: `{getattr(info, i[1])}`')
+			description.append(f':map:Map: [GoogleMaps]({info.gmap})')
+
+			embed = discord.Embed(title=":satellite_orbital: IP information:", colour=discord.Colour(0xff00cc), description="\n".join(description))
+			embed.set_footer(text=ip, icon_url=ctx.author.avatar_url)
+			await ctx.send(embed=embed)
+		finally:
+			await kclient.close()
+
+
 	@listusers.before_invoke
 	@teams.before_invoke
 	async def ensure_author_voice(self, ctx):
@@ -769,7 +794,7 @@ async def help(ctx):
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nmeme          - Get MayMays\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Converts currency\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nweather <loc> - Get weather of location```", inline=False)
+	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Converts currency\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\ntrace <ip>    - Locate IP address\nweather <loc> - Get weather of location```", inline=False)
 
 
 	try:

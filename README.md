@@ -44,6 +44,7 @@ help          - Display this message
 list          - Displays the list of
                 voice connected users
 ping|latency  - Pong!
+trace <ip>    - Locate IP address
 weather <loc> - Get weather of location
 ```
 Deploying to Heroku
