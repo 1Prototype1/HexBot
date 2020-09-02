@@ -540,7 +540,7 @@ class Misc(commands.Cog):
 		except ksoftapi.NoResults:
 			await ctx.send('Unable to locate :mag_right:')
 		else:
-			infos = [['Apparent Temperature', 'apparent_temperature', 1, ' °C'], ['Precip Intensity', 'precip_intensity', 1, ' mm/h'], ['Precip Probability', 'precip_probability', 100, ' %'], ['Dew Point', 'dew_point', 1, ' °C'], ['Humidity', 'humidity', 100, ' %'], ['Pressure', 'pressure', 1, ' mbar'], ['Wind Speed', 'wind_speed', 1, ' km/h'], ['Cloud Cover', 'cloud_cover', 100, ' %'], ['Visibility', 'visibility', 1, ' km'], ['UV Index', 'uv_index', 1, ''], ['Ozone', 'ozone', 1, '']]
+			infos = [['Apparent Temperature', 'apparent_temperature', 1, ' °C'], ['Precipitation Intensity', 'precip_intensity', 1, ' mm/h'], ['Precipitation Probability', 'precip_probability', 100, ' %'], ['Dew Point', 'dew_point', 1, ' °C'], ['Humidity', 'humidity', 100, ' %'], ['Pressure', 'pressure', 1, ' mbar'], ['Wind Speed', 'wind_speed', 1, ' km/h'], ['Cloud Cover', 'cloud_cover', 100, ' %'], ['Visibility', 'visibility', 1, ' km'], ['UV Index', 'uv_index', 1, ''], ['Ozone', 'ozone', 1, '']]
 			gmap = f"[🗺](https://www.google.com/maps/search/?api=1&query='{w.location.address}')"
 			gmap = gmap.replace("'", "%22");gmap = gmap.replace(" ", "%20")
 
