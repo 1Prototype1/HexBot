@@ -527,12 +527,10 @@ class Misc(commands.Cog):
 				await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
 
 	@commands.command(name='weather')
-	async def weather(self, ctx, *location):
+	async def weather(self, ctx, *, location: str = ""):
 		"""Get weather"""
-		if location == ():
+		if location == "":
 			return await ctx.send('Please provide location :map:')
-		else:
-			location = ' '.join(location)
 
 		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 		try:
@@ -541,13 +539,13 @@ class Misc(commands.Cog):
 		except ksoftapi.NoResults:
 			await ctx.send('Unable to locate :mag_right:')
 		else:
-			infos = [['Precip Intensity', 'precip_intensity', ' mm/hr'], ['Precip Probability', 'precip_probability', ''], ['Apparent Temperature', 'apparent_temperature', ' °C'], ['Dew Point', 'dew_point', ' °C'], ['Humidity', 'humidity', ''], ['Pressure', 'pressure', ' Pa'], ['Wind Speed', 'wind_speed', ' km/hr'], ['Cloud Cover', 'cloud_cover', ''], ['UV Index', 'uv_index', ''], ['Visibility', 'visibility', ''], ['Ozone', 'ozone', '']]
-			gmap = f"[:map:](https://www.google.com/maps/search/?api=1&query='{w.location.address}')"
+			infos = [['Apparent Temperature', 'apparent_temperature', 1, ' °C'], ['Precip Intensity', 'precip_intensity', 1, ' mm/h'], ['Precip Probability', 'precip_probability', 100, ' %'], ['Dew Point', 'dew_point', 1, ' °C'], ['Humidity', 'humidity', 100, ' %'], ['Pressure', 'pressure', 1, ' mbar'], ['Wind Speed', 'wind_speed', 1, ' km/h'], ['Cloud Cover', 'cloud_cover', 100, ' %'], ['Visibility', 'visibility', 1, ' km'], ['UV Index', 'uv_index', 1, ''], ['Ozone', 'ozone', 1, '']]
+			gmap = f"[🗺](https://www.google.com/maps/search/?api=1&query='{w.location.address}')"
 			gmap = gmap.replace("'", "%22");gmap = gmap.replace(" ", "%20")
 
 			info = [f'{gmap} **{w.location.address}**\n']
 			for i in infos:
-				info.append(f'{i[0]}: `{getattr(w, i[1])}{i[2]}`')
+				info.append(f'{i[0]}: `{getattr(w, i[1])*i[2]}{i[3]}`')
 
 			embed = discord.Embed(title=f"{w.summary} {w.temperature}°C", colour=discord.Colour(0xffff66), description='\n'.join(info))
 			embed.set_thumbnail(url=w.icon_url)
