@@ -1,4 +1,4 @@
-![Deploy](https://github.com/1Prototype1/HexBot/workflows/Deploy/badge.svg) ![Run](https://github.com/1Prototype1/HexBot/workflows/Run/badge.svg) ![Python](https://img.shields.io/badge/python-v3.7-blue?logo=python) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) ![Servers](https://img.shields.io/badge/servers-4-FF355E?style=social&logo=discord)
+![Deploy Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Deploy&logo=heroku) ![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=heroku) ![Python](https://img.shields.io/badge/python-v3.7.9-blue?logo=python) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) ![Servers](https://img.shields.io/badge/servers-4-FF355E?style=social&logo=discord)
 # HexBot
 Discord bot with music and other cool features. This bot can be deployed on Heroku using the free dyno.
 
