@@ -37,6 +37,8 @@ xkcd|comic    - Get random xkcd comics
 ```
 🛠 Misc Commands:
 ```
+convert       - Converts currency
+    <val><from><to>
 clear|cls     - Delete the messages
 help          - Display this message
 list          - Displays the list of
