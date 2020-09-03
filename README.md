@@ -33,6 +33,7 @@ meme|maymay   - Get MayMays
 poll          - Create a quick poll
     <question> <choices>
 quiz|trivia   - Start a quiz game
+rps           - Play Rock, Paper, Scissors
 tally         - Tally the created poll
 teams         - Makes random teams(def. 2)
 toss|flip     - Flips a Coin

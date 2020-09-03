@@ -769,6 +769,40 @@ class Games(commands.Cog):
 		finally:
 			await kclient.close()
 
+	@commands.command(name='rps', aliases=['rockpaperscissors'])
+	async def rps(self, ctx):
+		"""Play Rock, Paper, Scissors game"""
+		def check_win(p, b):
+			if p=='🌑':
+				return False if b=='📄' else True
+			elif p=='📄':
+				return False if b=='✂' else True
+			else: # p=='✂'
+				return False if b=='🌑' else True
+
+		async with ctx.typing():
+			reactions = ['🌑', '📄', '✂']
+			game_message = await ctx.send("**Rock Paper Scissors**\nChoose your shape:", delete_after=15.0)
+			for reaction in reactions:
+				await game_message.add_reaction(reaction)
+			bot_emoji = random.choice(reactions)
+				
+		def check(reaction, user):
+			return user != bot.user and user == ctx.author and (str(reaction.emoji) == '🌑' or '📄' or '✂')
+		try:
+			reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
+		except asyncio.TimeoutError:
+			await ctx.send(f"Time's Up! :stopwatch:")
+		else:
+			await ctx.send(f"**:man_in_tuxedo_tone1:\t{reaction.emoji}\n:robot:\t{bot_emoji}**")
+			# if conds
+			if str(reaction.emoji) == bot_emoji:
+				await ctx.send("**It's a Tie :ribbon:**")
+			elif check_win(str(reaction.emoji), bot_emoji):
+				await ctx.send("**You win :sparkles:**")
+			else:
+				await ctx.send("**I win :robot:**")			
+
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
@@ -792,7 +826,7 @@ async def help(ctx):
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nxkcd|comic    - Get random xkcd comics```", inline=False)
+	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nxkcd|comic    - Get random xkcd comics```", inline=False)
 	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Converts currency\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\ntrace <ip>    - Locate IP address\nweather <loc> - Get weather of location```", inline=False)
 
 
