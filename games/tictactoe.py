@@ -180,8 +180,9 @@ async def play_game(bot, ctx, chance_for_error=0.0):
     board, winner = EMPTY_BOARD, None
     await ctx.send("Input the row and col number separated by a comma`,`")
     await ctx.send("e.g.: To tick the middle cell in the top row: `1,2`\n`exit` to end game")
+    smsg = await ctx.send(get_printable_board(board))
     while winner is None:
-        await ctx.send(get_printable_board(board))
+        await smsg.edit(content=get_printable_board(board))
         while True:
             try:
                 msg  = await bot.wait_for('message', check=check, timeout=20.0)
@@ -193,11 +194,13 @@ async def play_game(bot, ctx, chance_for_error=0.0):
                 board, winner = play(board, ':x:', col, row)
                 break
             except (IllegalMove, ValueError):
-                await ctx.send("This is an illegal move!")
+                await ctx.send("This is an illegal move!", delete_after=1.0)
+                await msg.delete()
             except KeyboardInterrupt:
                 return
             except asyncio.TimeoutError:
                 await ctx.send("You took too long :hourglass:")
+                await smsg.delete()
                 return
 
         if winner is None:
@@ -205,11 +208,15 @@ async def play_game(bot, ctx, chance_for_error=0.0):
                 board, winner = play_random_move(board, ':o:')
             else:
                 board, winner = play_best_move(board, ':o:')
-
+        try:
+            await msg.delete()
+        except Exception:
+            continue
+    await smsg.delete()
     await ctx.send(get_printable_board(board))
     if winner == 'T':
-        await ctx.send("**It's a Tie!**")
+        await ctx.send("**It's a Tie! :ribbon:**")
     elif winner == ':o:':
-        await ctx.send('**I am the winner!**')
+        await ctx.send('**I am the winner! :robot:**')
     else:
         await ctx.send('**You are the winner! :trophy:**')
