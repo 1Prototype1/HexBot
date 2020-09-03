@@ -16,7 +16,7 @@ import aiopentdb
 from speedtest import Speedtest
 import xkcd
 import ksoftapi
-import tictactoe
+from games import tictactoe
 
 
 ytdlopts = {
