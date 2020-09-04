@@ -29,6 +29,7 @@ volume        - Changes the player's volume
     <question>
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
+hangman       - Play Hangman
 meme|maymay   - Get MayMays
 poll          - Create a quick poll
     <question> <choices>
