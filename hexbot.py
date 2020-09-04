@@ -595,6 +595,19 @@ class Misc(commands.Cog):
 			await ctx.send(embed=embed)
 		finally:
 			await kclient.close()
+	
+	@commands.command(name='owner', aliases=['support', 'contact'])
+	async def support(self, ctx, *, msg: str = ""):
+		if msg == "":
+			return await ctx.send("Please enter a message to send towards Bot Owner", delete_after=5.0)
+
+		embed = discord.Embed(colour=discord.Colour(0x5dadec), description=msg)
+		embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+		embed.set_footer(text=f"{ctx.guild} : {ctx.guild.id}")
+
+		info = await bot.application_info()
+		await info.owner.send(embed=embed)
+		await ctx.send("Bot owner notified!")
 
 
 	@listusers.before_invoke
@@ -827,7 +840,7 @@ async def help(ctx):
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nxkcd|comic    - Get random xkcd comics```", inline=False)
-	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Converts currency\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\ntrace <ip>    - Locate IP address\nweather <loc> - Get weather of location```", inline=False)
+	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Converts currency\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nweather <loc> - Get weather of location```", inline=False)
 
 
 	try:
