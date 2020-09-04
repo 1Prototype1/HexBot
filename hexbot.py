@@ -16,7 +16,7 @@ import aiopentdb
 from speedtest import Speedtest
 import xkcd
 import ksoftapi
-from games import tictactoe
+from games import tictactoe, wumpus
 
 
 ytdlopts = {
@@ -824,8 +824,12 @@ class Games(commands.Cog):
 			elif check_win(str(reaction.emoji), bot_emoji):
 				await ctx.send("**You win :sparkles:**")
 			else:
-				await ctx.send("**I win :robot:**")			
+				await ctx.send("**I win :robot:**")	
 
+	@commands.command(name='wumpus')		
+	async def _wumpus(self, ctx):
+		"""Play Wumpus game"""
+		await wumpus.play(bot, ctx)
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
@@ -849,9 +853,8 @@ async def help(ctx):
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nxkcd|comic    - Get random xkcd comics```", inline=False)
-	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Converts currency\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nweather <loc> - Get weather of location```", inline=False)
-
+	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nwumpus        - Play Wumpus game\nxkcd|comic    - Get random xkcd comics```", inline=False)
+	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nweather <loc> - Get weather of location```", inline=False)
 
 	try:
 		await ctx.send(embed=embed)

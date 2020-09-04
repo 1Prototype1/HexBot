@@ -38,11 +38,12 @@ tally         - Tally the created poll
 teams         - Makes random teams(def. 2)
 toss|flip     - Flips a Coin
 ttt           - Play Tic-Tac-Toe!
+wumpus        - Play Wumpus game
 xkcd|comic    - Get random xkcd comics
 ```
 🛠 Misc Commands:
 ```
-convert       - Converts currency
+convert       - Currency convertor
     <val><from><to>
 clear|cls     - Delete the messages
 help          - Display this message
