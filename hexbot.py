@@ -299,6 +299,16 @@ class Music(commands.Cog):
 		vc.pause()
 		await ctx.message.add_reaction('⏸')
 
+		def check(reaction, user):
+			return user != bot.user and (str(reaction.emoji) == '⏸')
+		try:
+			reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
+		except asyncio.TimeoutError:
+			await ctx.message.clear_reaction('⏸')
+		else:
+			vc.resume()
+			await ctx.message.clear_reaction('⏸')
+
 	@commands.command(name='resume')
 	async def resume_(self, ctx):
 		"""Resume the currently paused song."""
