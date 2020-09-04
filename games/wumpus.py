@@ -72,7 +72,7 @@ async def play(bot, ctx):
 		world[r][c] = '💂🏻‍♂️'
 		for i in world:
 			out.append('|'.join(i[1:-1]))
-		await sys_msg.edit(content='```\n' + '\n--+--+--+--+--+--+--+--\n'.join(out[1:-1]).replace('w', '👹').replace('p', '🦇').replace('b', '⚫') + '\n```')
+		await sys_msg.edit(content='```\n' + '\n--+--+--+--+--+--+--+--\n'.join(out[1:-1]).replace('w', '👹').replace('b', '🦇').replace('p', '⚫') + '\n```')
 		return await p_msg.delete()
 
 	# brd_msg 
