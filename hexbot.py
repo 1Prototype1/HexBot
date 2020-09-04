@@ -428,7 +428,7 @@ class Music(commands.Cog):
 
 		await self.cleanup(ctx.guild)
 
-	@commands.command(name='lyrics')
+	@commands.command(name='lyrics', aliases=['ly'])
 	async def get_lyrics(self, ctx):
 		"""Get lyrics of current song"""
 		vc = ctx.voice_client
