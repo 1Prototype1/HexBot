@@ -49,6 +49,7 @@ help          - Display this message
 list          - Displays the list of
                 voice connected users
 ping|latency  - Pong!
+support       - Contact Bot owner
 trace <ip>    - Locate IP address
 weather <loc> - Get weather of location
 ```
