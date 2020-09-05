@@ -36,7 +36,7 @@ class Userinfo(commands.Cog):
 				role = "N/A"
 			voice_state = None if not user.voice else user.voice.channel
 
-		em = discord.Embed(colour=0x708DD0)
+		em = discord.Embed(colour=0x00CC99)
 		em.add_field(name='User ID', value=f'`{user.id}`')
 		if isinstance(user, discord.Member):
 			if isinstance(user.activity, discord.Spotify):
