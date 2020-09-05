@@ -8,3 +8,4 @@ aiopentdb
 speedtest-cli
 xkcd
 git+https://github.com/1Prototype1/ksoftapi.py.git
+psutil

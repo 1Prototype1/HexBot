@@ -1,4 +1,5 @@
 import os
+import datetime
 import asyncio
 from functools import partial
 import sys
@@ -16,6 +17,7 @@ import aiopentdb
 from speedtest import Speedtest
 import xkcd
 import ksoftapi
+from psutil import Process, cpu_percent
 from games import tictactoe, wumpus, hangman
 
 # Cog Modules
@@ -622,6 +624,41 @@ class Misc(commands.Cog):
 		await info.owner.send(embed=embed)
 		await ctx.send("Bot owner notified!")
 
+	@commands.command(name='botinfo' , aliases=['botstats', 'status'])
+	async def stats(self, ctx):
+		"""Bot stats."""
+		# Uptime
+		uptime = (datetime.datetime.now() - self.bot.uptime)
+		hours, rem = divmod(int(uptime.total_seconds()), 3600)
+		minutes, seconds = divmod(rem, 60)
+		days, hours = divmod(hours, 24)
+		if days:
+			time = '%s days, %s hours, %s minutes, and %s seconds' % (days, hours, minutes, seconds)
+		else:
+			time = '%s hours, %s minutes, and %s seconds' % (hours, minutes, seconds)
+		
+		# Embed
+		em = discord.Embed(color=0x4FFCFA)
+		em.set_author(name=f'{self.bot.user} Stats:', icon_url=self.bot.user.avatar_url, url='https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576')
+		em.add_field(name=':clock3: Uptime', value=f'`{time}`', inline=False)
+		em.add_field(name=':outbox_tray: Msgs sent', value=f'`{self.bot.messages_out}`')
+		em.add_field(name=':inbox_tray: Msgs received', value=f'`{self.bot.messages_in}`')
+		em.add_field(name=':crossed_swords: Servers', value=f'`{len(self.bot.guilds)}`')
+		em.add_field(name=':satellite_orbital: Server Region', value=f'`{self.bot.region}`')
+
+		pcs = Process()
+		try:
+			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().uss / 1024 ** 2)
+		except AttributeError:
+			# OS doesn't support retrieval of USS (probably BSD or Solaris)
+			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().rss / 1024 ** 2)
+		em.add_field(name=u':floppy_disk: Memory usage', value=f'`{mem_usage}`')
+		em.add_field(name=':desktop: CPU usage', value=f'`{cpu_percent(1)} %`')
+		
+		try:
+			await ctx.send(embed=em)
+		except Exception:
+			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
 	@listusers.before_invoke
 	@teams.before_invoke
@@ -845,11 +882,29 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 
 bot.remove_command('help')
 
+bot.uptime = datetime.datetime.now()
+bot.messages_in = bot.messages_out = 0
+bot.region = 'USA'
+
 @bot.event
 async def on_ready():
 	print('Logged in as {0} ({0.id})'.format(bot.user))
 	print('Bot.....Activated')
 	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
+
+@bot.event
+async def on_message(message):
+	# Sent message
+	if message.author.id == bot.user.id:
+		if hasattr(bot, 'messages_out'):
+			bot.messages_out += 1
+	# Received message (Count only commands messages)
+	elif message.content.startswith('~'):
+		if hasattr(bot, 'messages_in'):
+			bot.messages_in += 1
+
+	await bot.process_commands(message)
+
 
 @bot.command(name='help', aliases=['h'])
 async def help(ctx):
@@ -874,4 +929,5 @@ bot.add_cog(Music(bot))
 bot.add_cog(Games(bot))
 bot.add_cog(Misc(bot))
 userinfo.setup(bot)
+
 bot.run(os.environ['BOT_Token'])
