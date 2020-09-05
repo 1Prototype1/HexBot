@@ -121,6 +121,7 @@ async def play(bot, ctx):
 		try:
 			action, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
 			action = str(action.emoji)
+			await p_msg.remove_reaction(action, user)
 		except asyncio.TimeoutError:
 			await ctx.send(f"Time's Up! :stopwatch:\nGame over :coffin:")
 			await endBoard(userRow, userCol, sys_msg)
