@@ -18,6 +18,9 @@ import xkcd
 import ksoftapi
 from games import tictactoe, wumpus, hangman
 
+# Cog Modules
+import userinfo
+
 
 ytdlopts = {
 	'format': 'bestaudio/best',
@@ -848,7 +851,7 @@ async def on_ready():
 	print('Bot.....Activated')
 	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
-@bot.command(name='help', aliases=['info'])
+@bot.command(name='help', aliases=['h'])
 async def help(ctx):
 	"""Display help"""
 	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0), description="For more info you can visit [GitHub repo](https://github.com/1Prototype1/HexBot)")
@@ -859,7 +862,7 @@ async def help(ctx):
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhangman       - Play Hangman\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nwumpus        - Play Wumpus game\nxkcd|comic    - Get random xkcd comics```", inline=False)
-	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nweather <loc> - Get weather of location```", inline=False)
+	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nuser @user    - Get user info\nweather <loc> - Get weather of location```", inline=False)
 
 	try:
 		await ctx.send(embed=embed)
@@ -870,4 +873,5 @@ async def help(ctx):
 bot.add_cog(Music(bot))
 bot.add_cog(Games(bot))
 bot.add_cog(Misc(bot))
+userinfo.setup(bot)
 bot.run(os.environ['BOT_Token'])

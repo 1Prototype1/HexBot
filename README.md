@@ -44,7 +44,7 @@ xkcd|comic    - Get random xkcd comics
 ```
 🛠 Misc Commands:
 ```
-convert       - Currency convertor
+convert       - Currency Converter
     <val><from><to>
 clear|cls     - Delete the messages
 help          - Display this message
@@ -53,6 +53,7 @@ list          - Displays the list of
 ping|latency  - Pong!
 support       - Contact Bot owner
 trace <ip>    - Locate IP address
+user @user    - Get user info
 weather <loc> - Get weather of location
 ```
 Deploying to Heroku
