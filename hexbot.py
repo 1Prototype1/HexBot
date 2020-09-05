@@ -17,7 +17,7 @@ import aiopentdb
 from speedtest import Speedtest
 import xkcd
 import ksoftapi
-from psutil import Process, cpu_percent
+from psutil import Process, cpu_percent, cpu_freq
 from games import tictactoe, wumpus, hangman
 
 # Cog Modules
@@ -653,7 +653,7 @@ class Misc(commands.Cog):
 			# OS doesn't support retrieval of USS (probably BSD or Solaris)
 			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().rss / 1024 ** 2)
 		em.add_field(name=u':floppy_disk: Memory usage', value=f'`{mem_usage}`')
-		em.add_field(name=':desktop: CPU usage', value=f'`{cpu_percent(1)} %`')
+		em.add_field(name=':desktop: CPU usage', value=f'`{cpu_percent()} % {cpu_freq().current / 1000:.2f} Ghz`')
 		
 		try:
 			await ctx.send(embed=em)
