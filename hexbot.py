@@ -613,7 +613,7 @@ class Misc(commands.Cog):
 
 		embed = discord.Embed(colour=discord.Colour(0x5dadec), description=msg)
 		embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-		embed.set_footer(text=f"{ctx.guild} : {ctx.guild.id}")
+		embed.set_footer(text=f"{ctx.guild} : {ctx.guild.id}", icon_url=ctx.guild.icon_url)
 
 		info = await bot.application_info()
 		await info.owner.send(embed=embed)
