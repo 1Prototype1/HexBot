@@ -445,9 +445,9 @@ class Music(commands.Cog):
 		else:
 			lyrics = results[0].lyrics
 			result = results[0]
-			embed = discord.Embed(title="Lyrics:", color=discord.Color(0xCCFF00), description=lyrics[:2048])
+			embed = discord.Embed(title=f'{result.name} - {result.artist}', color=discord.Color(0xCCFF00), description=lyrics[:2048])
 			embed.set_thumbnail(url=result.album_art)
-			embed.set_author(name=result.name)
+			embed.set_author(name="Lyrics:")
 			lyrics = lyrics[2048:]
 			embeds = [embed] # create embeds' list for long lyrics
 			while len(lyrics) > 0 and len(embeds) < 10: # limiting embeds to 10
