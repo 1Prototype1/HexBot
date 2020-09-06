@@ -21,9 +21,9 @@ async def play(bot, ctx):
 			if char in guesses:  
 				out += char
 			else:  
-				out += ' _'
+				out += '_'
 				rem_chars += 1
-		await word_msg.edit(content=f'`{out}`')
+		await word_msg.edit(content=f'`{' '.join(out)}`')
 		
 		if rem_chars == 0: 
 			await word_msg.edit(content=word)
