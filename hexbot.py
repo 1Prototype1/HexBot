@@ -38,11 +38,6 @@ ytdlopts = {
 	'source_address': '0.0.0.0'  # ipv6 addresses cause issues sometimes
 }
 
-ffmpegopts = {
-	'before_options': '-nostdin',
-	'options': '-vn'
-}
-
 ytdl = YoutubeDL(ytdlopts)
 
 
@@ -612,7 +607,7 @@ class Misc(commands.Cog):
 			await kclient.close()
 	
 	@commands.command(name='owner', aliases=['support', 'contact'])
-	async def support(self, ctx, *, msg: str = ""):
+	async def support(self, ctx, *, name: str = ""):
 		if msg == "":
 			return await ctx.send("Please enter a message to send towards Bot Owner", delete_after=5.0)
 
@@ -659,6 +654,58 @@ class Misc(commands.Cog):
 			await ctx.send(embed=em)
 		except Exception:
 			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
+
+	@commands.command(name='sinfo', aliases=['server'])
+	async def serverinfo(self, ctx, *, name:str = ""):
+		"""Get server info"""
+		if name:
+			server = None
+			try:
+				server = bot.get_guild(int(name))
+				if not server:
+					return await ctx.send('Server not found :satellite_orbital:')
+			except:
+				for i in bot.guilds:
+					if i.name.lower() == name.lower():
+						server = i
+						break
+				if not server:
+					return await ctx.send("Server not found :satellite_orbital: or maybe I'm not in it")
+		else:
+			server = ctx.guild
+		# Count online members
+		online = 0
+		for i in server.members:
+			if str(i.status) == 'online' or str(i.status) == 'idle' or str(i.status) == 'dnd':
+				online += 1
+		# Count channels
+		tchannel_count = len([x for x in server.channels if type(x) == discord.channel.TextChannel])
+		vchannel_count = len([x for x in server.channels if type(x) == discord.channel.VoiceChannel])
+		# Count roles
+		role_count = len(server.roles)
+
+		# Create embed
+		em = discord.Embed(color=0x00CC99)
+		em.set_author(name='Server Info:', icon_url=server.owner.avatar_url)
+		em.add_field(name='Name', value=f'`{server.name}`')
+		em.add_field(name='Owner', value=f'`{server.owner}`', inline=False)
+		em.add_field(name='Members', value=f'`{server.member_count}`')
+		em.add_field(name='Online', value=f'`{online}`')
+		em.add_field(name='Region', value=f'`{str(server.region).title()}`')
+		em.add_field(name='Text Channels', value=f'`{tchannel_count}`')
+		em.add_field(name='Voice Channels', value=f'`{vchannel_count}`')
+		em.add_field(name='Verification Level', value=f'`{str(server.verification_level).title()}`')
+		em.add_field(name='Number of roles', value=f'`{role_count}`')
+		em.add_field(name='Highest role', value=f'`{server.roles[-1]}`')
+		em.add_field(name='Created At', value=f"`{server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S')}`", inline=False)
+		em.set_thumbnail(url=server.icon_url)
+		em.set_footer(text='Server ID: %s' % server.id)
+		
+		try:
+			await ctx.send(embed=em)
+		except Exception:
+			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
+
 
 	@listusers.before_invoke
 	@teams.before_invoke
@@ -917,7 +964,7 @@ async def help(ctx):
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics        - Get lyrics of current song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhangman       - Play Hangman\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nwumpus        - Play Wumpus game\nxkcd|comic    - Get random xkcd comics```", inline=False)
-	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nuser @user    - Get user info\nweather <loc> - Get weather of location```", inline=False)
+	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nserver <serv> - Get server info\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nuser @user    - Get user info\nweather <loc> - Get weather of location```", inline=False)
 
 	try:
 		await ctx.send(embed=embed)

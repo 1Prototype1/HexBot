@@ -51,6 +51,7 @@ help          - Display this message
 list          - Displays the list of
                 voice connected users
 ping|latency  - Pong!
+server <serv> - Get server info
 support       - Contact Bot owner
 trace <ip>    - Locate IP address
 user @user    - Get user info

@@ -25,7 +25,7 @@ class Userinfo(commands.Cog):
 			except ValueError:
 				pass
 			if not user:
-				await ctx.send('Could not find user.')
+				await ctx.send('User not found :man_frowning_tone1:')
 				return
 		else:
 			user = ctx.message.author
