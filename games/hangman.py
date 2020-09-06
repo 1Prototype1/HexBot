@@ -13,7 +13,7 @@ async def play(bot, ctx):
 	word = random.choice(words) 
 	await ctx.send("Guess the characters:")
 	guess_msg = await ctx.send(f"Guesses left: `{turns}`")
-	word_msg = await ctx.send(f"`{' _'*len(word)}`")
+	word_msg = await ctx.send(f"`{' '.join('_'*len(word))}`")
 	while turns > 0: 
 		out = ''
 		rem_chars = 0
@@ -23,10 +23,10 @@ async def play(bot, ctx):
 			else:  
 				out += '_'
 				rem_chars += 1
-		await word_msg.edit(content=f'`{' '.join(out)}`')
+		await word_msg.edit(content=f"`{' '.join(out)}`")
 		
 		if rem_chars == 0: 
-			await word_msg.edit(content=word)
+			await word_msg.edit(content=f'**{word}**')
 			return await ctx.send("**You Win :trophy:**")
 
 		try:
