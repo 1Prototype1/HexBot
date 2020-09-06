@@ -12,7 +12,7 @@ from psutil import Process, cpu_percent, cpu_freq
 class Misc(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.kclient = self.ksoftapi.Client(os.environ['KSoft_Token'])
+		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 
 	@commands.command(name='list')
 	async def listusers(self, ctx):
