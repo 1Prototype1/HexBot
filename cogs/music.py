@@ -425,16 +425,17 @@ class Music(commands.Cog):
 		await self.cleanup(ctx.guild)
 
 	@commands.command(name='lyrics', aliases=['ly'])
-	async def get_lyrics(self, ctx):
+	async def get_lyrics(self, ctx, *, query: str=""):
 		"""Get lyrics of current song"""
-		vc = ctx.voice_client
-		if not vc or not vc.is_connected():
-			return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
-		player = self.get_player(ctx)
-		if not player.current:
-			return await ctx.send('I\'m not currently playing anything :warning:')
-		query = vc.source.title
-		
+		if not query:
+			vc = ctx.voice_client
+			if not vc or not vc.is_connected():
+				return await ctx.send('I\'m not currently connected to voice! :mute:', delete_after=20)
+			player = self.get_player(ctx)
+			if not player.current:
+				return await ctx.send('I\'m not currently playing anything :warning:')
+			query = vc.source.title
+
 		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 		try:
 			async with ctx.typing():
@@ -443,9 +444,10 @@ class Music(commands.Cog):
 			await ctx.send(f'No lyrics found for `{query}`')
 		else:
 			lyrics = results[0].lyrics
-			embed = discord.Embed(title=vc.source.title, color=discord.Color(0xCCFF00), url=vc.source.web_url, description=lyrics[:2048])
-			embed.set_thumbnail(url=vc.source.thumbnail)
-			embed.set_author(name="Lyrics:")
+			result = results[0]
+			embed = discord.Embed(title="Lyrics:", color=discord.Color(0xCCFF00), description=lyrics[:2048])
+			embed.set_thumbnail(url=result.album_art)
+			embed.set_author(name=result.name)
 			lyrics = lyrics[2048:]
 			embeds = [embed] # create embeds' list for long lyrics
 			while len(lyrics) > 0 and len(embeds) < 10: # limiting embeds to 10
