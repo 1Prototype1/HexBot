@@ -3,7 +3,5 @@ __pycache__
 *.webm
 *.py
 !cogs/*.py
+!cogs/games/*.py
 !hexbot.py
-!tictactoe.py
-!wumpus.py
-!hangman.py
