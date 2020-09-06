@@ -2,8 +2,8 @@ spam/
 __pycache__
 *.webm
 *.py
+!cogs/*.py
 !hexbot.py
 !tictactoe.py
 !wumpus.py
 !hangman.py
-!userinfo.py

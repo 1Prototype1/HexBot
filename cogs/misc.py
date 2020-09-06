@@ -1,0 +1,307 @@
+import os
+import time
+import datetime
+import random
+
+import discord
+from discord.ext import commands
+import ksoftapi
+from speedtest import Speedtest
+from psutil import Process, cpu_percent, cpu_freq
+
+class Misc(commands.Cog):
+	def __init__(self, bot):
+		self.bot = bot
+
+	@commands.command(name='list')
+	async def listusers(self, ctx):
+		"""Displays the list of connected users"""
+		members = ctx.author.voice.channel.members
+		memnames = []
+		for member in members:
+			memnames.append(member.name)
+		await ctx.send(f"Members in {ctx.author.voice.channel.name}:\n```\n" + "\n".join(memnames) +"\n```")
+	
+	@commands.command(name='teams', aliases=['team'])
+	async def teams(self, ctx, num=2):
+		"""Makes random teams with specified number(def. 2)"""
+		members = ctx.author.voice.channel.members
+		memnames = []
+		for member in members:
+			memnames.append(member.name)
+		
+		remaining = memnames
+		if len(memnames)>=num:
+			for i in range(num):
+				team = random.sample(remaining,len(memnames)//num)
+				remaining = [x for x in remaining if x not in team]
+				await ctx.send(f"Team {chr(65+i)}\n" + "```CSS\n" + '\n'.join(team) + "\n```")
+		if len(remaining)> 0:
+			await ctx.send("Remaining\n```diff\n- " + '\n- '.join(remaining) + "\n```")
+
+
+	@commands.command(name='clear', aliases=['cls'])
+	async def clear(self, ctx, limit=20):
+		"""Delete the messages sent in current text-channel"""
+		if 1>limit>100:
+			limit = 20
+		messages = []
+		try:
+			await ctx.message.channel.purge(limit=limit)
+		except discord.Forbidden:
+			await ctx.send("I don't have permission to `Manage Messages`:disappointed_relieved:")
+
+	@commands.command(name='ping', aliases=['latency'])
+	async def ping(self, ctx):
+		""" Pong! """
+		before = time.monotonic()
+		message = await ctx.send("Pong!")
+		ping = (time.monotonic() - before) * 1000
+		await message.edit(content=f"Pong!  \nTook `{int(ping)}ms`\nLatency: `{int(self.bot.latency*1000)}ms`")
+
+	@commands.command(name='speedtest')
+	async def speed_test(self, ctx):		
+		"""Speedtest"""
+		async with ctx.typing():
+			if await self.bot.is_owner(ctx.author):
+				s = Speedtest()
+				s.get_best_server()
+				s.download()
+				s.upload()
+				s = s.results.dict()
+				
+				await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)} Mbits/s`\nUpload: `{round(s['upload']/10**6, 3)} Mbits/s`\nServer: `{s['server']['sponsor']}, {s['server']['name']}, {s['server']['country']}`\nBot: `{s['client']['isp']}({s['client']['ip']}) {s['client']['country']} {s['client']['isprating']}`")
+			else:
+				await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
+
+	@commands.command(name='weather')
+	async def weather(self, ctx, *, location: str = ""):
+		"""Get weather"""
+		if location == "":
+			return await ctx.send('Please provide location :map:')
+
+		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		try:
+			async with ctx.typing():
+				w = await kclient.kumo.basic_weather(location, icon_pack='color')
+		except ksoftapi.NoResults:
+			await ctx.send('Unable to locate :mag_right:')
+		else:
+			infos = [['Apparent Temperature', 'apparent_temperature', 1, ' °C'], ['Precipitation Intensity', 'precip_intensity', 1, ' mm/h'], ['Precipitation Probability', 'precip_probability', 100, ' %'], ['Dew Point', 'dew_point', 1, ' °C'], ['Humidity', 'humidity', 100, ' %'], ['Pressure', 'pressure', 1, ' mbar'], ['Wind Speed', 'wind_speed', 1, ' km/h'], ['Cloud Cover', 'cloud_cover', 100, ' %'], ['Visibility', 'visibility', 1, ' km'], ['UV Index', 'uv_index', 1, ''], ['Ozone', 'ozone', 1, '']]
+			gmap = f"[🗺](https://www.google.com/maps/search/?api=1&query='{w.location.address}')"
+			gmap = gmap.replace("'", "%22");gmap = gmap.replace(" ", "%20")
+
+			info = [f'{gmap} **{w.location.address}**\n']
+			for i in infos:
+				info.append(f'{i[0]}: `{getattr(w, i[1])*i[2]}{i[3]}`')
+
+			embed = discord.Embed(title=f"{w.summary} {w.temperature}°C", colour=discord.Colour(0xffff66), description='\n'.join(info))
+			embed.set_thumbnail(url=w.icon_url)
+			embed.set_author(name='Weather:', icon_url=w.icon_url)
+			await ctx.send(embed=embed)
+
+		finally:
+			await kclient.close()
+
+	@commands.command(name='convert', aliases=['currency'])
+	async def currency(self, ctx, value: str="", _from: str="", to: str=""):
+		"""Currency conversion"""
+		if value=="" or _from=="" or to=="":
+			return await ctx.send("Please enter values in proper format\n`~convert [value] [from] [to]`\neg: `~convert 16 usd inr`")
+
+		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		try:
+			async with ctx.typing():
+				c = await kclient.kumo.currency_conversion(_from, to, value)
+		except (ksoftapi.NoResults, ksoftapi.errors.APIError):
+			await ctx.send('Conversion Failed :x:')
+		else:
+			await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
+		finally:
+			await kclient.close()
+
+	@commands.command(name='trace', aliases=['ip'])
+	async def trace(self, ctx, ip: str=""):
+		"""Trace ip"""
+		if ip=="":
+			return await ctx.send("Please enter an `IP` address :satellite:")
+
+		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		try:
+			async with ctx.typing():
+				info = await kclient.kumo.trace_ip(ip)
+		except (ksoftapi.NoResults, ksoftapi.errors.APIError):
+			await ctx.send('Unable to locate :x:\nEnter valid IP')
+		else:
+			details = [['City', 'city'], ['Continent code', 'continent_code'], ['Continent name', 'continent_name'], ['Country code', 'country_code'], ['Country_name', 'country_name'], ['DMA code', 'dma_code'], ['Latitude', 'latitude'], ['Longitude', 'longitude'], ['Postal code', 'postal_code'], ['Region', 'region'], ['Timezone', 'time_zone']]
+			description = []
+			for i in details:
+				description.append(f'{i[0]}: `{getattr(info, i[1])}`')
+			description.append(f':map:Map: [GoogleMaps]({info.gmap})')
+
+			embed = discord.Embed(title=":satellite_orbital: IP information:", colour=discord.Colour(0xff00cc), description="\n".join(description))
+			embed.set_footer(text=ip, icon_url=ctx.author.avatar_url)
+			await ctx.send(embed=embed)
+		finally:
+			await kclient.close()
+	
+	@commands.command(name='owner', aliases=['support', 'contact'])
+	async def support(self, ctx, *, msg: str = ""):
+		"""Contact bot owner"""
+		if msg == "":
+			return await ctx.send("Please enter a message to send towards Bot Owner", delete_after=5.0)
+
+		embed = discord.Embed(colour=discord.Colour(0x5dadec), description=msg)
+		embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+		embed.set_footer(text=f"{ctx.guild} : {ctx.guild.id}", icon_url=ctx.guild.icon_url)
+
+		info = await self.bot.application_info()
+		await info.owner.send(embed=embed)
+		await ctx.send("Bot owner notified!")
+
+	@commands.command(name = 'userinfo', aliases=['user', 'uinfo', 'ui'])
+	async def userinfo(self, ctx, *, name=""):
+		"""Get user info. Ex: ~user @user"""
+		if name:
+			try:
+				user = ctx.message.mentions[0]
+			except IndexError:
+				user = ctx.guild.get_member_named(name)
+			try:
+				if not user:
+					user = ctx.guild.get_member(int(name))
+				if not user:
+					user = self.bot.get_user(int(name))
+			except ValueError:
+				pass
+			if not user:
+				await ctx.send('User not found :man_frowning_tone1:')
+				return
+		else:
+			user = ctx.message.author
+
+		if isinstance(user, discord.Member):
+			role = user.top_role.name
+			if role == "@everyone":
+				role = "N/A"
+			voice_state = None if not user.voice else user.voice.channel
+
+		em = discord.Embed(colour=0x00CC99)
+		em.add_field(name='User ID', value=f'`{user.id}`')
+		if isinstance(user, discord.Member):
+			if isinstance(user.activity, discord.Spotify):
+				activity = "Listening " + user.activity.title
+			elif user.activity is not None: 
+				activity = str(user.activity.type)[13:].title() + ' ' + user.activity.name
+			else:
+				activity = None
+
+			em.add_field(name='Nick', value=f'`{user.nick}`')
+			em.add_field(name='Status', value=f'`{user.status}`')
+			em.add_field(name='In Voice', value=f'`{voice_state}`')
+			em.add_field(name='Activity', value=f'`{activity}`')
+			em.add_field(name='Highest Role', value=f'`{role}`')
+		em.add_field(name='Account Created', value=f"`{user.created_at.__format__('%A, %d %B %Y @ %H:%M:%S')}`", inline=False)
+		if isinstance(user, discord.Member):
+			em.add_field(name='Join Date', value=f"`{user.joined_at.__format__('%A, %d %B %Y @ %H:%M:%S')}`", inline=False)
+		em.set_thumbnail(url=user.avatar_url)
+		em.set_author(name=user, icon_url=user.avatar_url)
+		
+		try:
+			await ctx.send(embed=em)
+		except Exception:
+			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
+
+	@commands.command(name='botinfo' , aliases=['botstats', 'status'])
+	async def stats(self, ctx):
+		"""Bot stats."""
+		# Uptime
+		uptime = (datetime.datetime.now() - self.bot.uptime)
+		hours, rem = divmod(int(uptime.total_seconds()), 3600)
+		minutes, seconds = divmod(rem, 60)
+		days, hours = divmod(hours, 24)
+		if days:
+			time = '%s days, %s hours, %s minutes, and %s seconds' % (days, hours, minutes, seconds)
+		else:
+			time = '%s hours, %s minutes, and %s seconds' % (hours, minutes, seconds)
+		
+		# Embed
+		em = discord.Embed(color=0x4FFCFA)
+		em.set_author(name=f'{self.bot.user} Stats:', icon_url=self.bot.user.avatar_url, url='https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576')
+		em.add_field(name=':clock3: Uptime', value=f'`{time}`', inline=False)
+		em.add_field(name=':outbox_tray: Msgs sent', value=f'`{self.bot.messages_out}`')
+		em.add_field(name=':inbox_tray: Msgs received', value=f'`{self.bot.messages_in}`')
+		em.add_field(name=':crossed_swords: Servers', value=f'`{len(self.bot.guilds)}`')
+		em.add_field(name=':satellite_orbital: Server Region', value=f'`{self.bot.region}`')
+
+		pcs = Process()
+		try:
+			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().uss / 1024 ** 2)
+		except AttributeError:
+			# OS doesn't support retrieval of USS (probably BSD or Solaris)
+			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().rss / 1024 ** 2)
+		em.add_field(name=u':floppy_disk: Memory usage', value=f'`{mem_usage}`')
+		em.add_field(name=':desktop: CPU usage', value=f'`{cpu_percent()} % {cpu_freq().current / 1000:.2f} Ghz`')
+		
+		try:
+			await ctx.send(embed=em)
+		except Exception:
+			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
+
+	@commands.command(name='sinfo', aliases=['server'])
+	async def serverinfo(self, ctx, *, name:str = ""):
+		"""Get server info"""
+		if name:
+			server = None
+			try:
+				server = self.bot.get_guild(int(name))
+				if not server:
+					return await ctx.send('Server not found :satellite_orbital:')
+			except:
+				for i in self.bot.guilds:
+					if i.name.lower() == name.lower():
+						server = i
+						break
+				if not server:
+					return await ctx.send("Server not found :satellite_orbital: or maybe I'm not in it")
+		else:
+			server = ctx.guild
+		# Count online members
+		online = 0
+		for i in server.members:
+			if str(i.status) == 'online' or str(i.status) == 'idle' or str(i.status) == 'dnd':
+				online += 1
+		# Count channels
+		tchannel_count = len([x for x in server.channels if type(x) == discord.channel.TextChannel])
+		vchannel_count = len([x for x in server.channels if type(x) == discord.channel.VoiceChannel])
+		# Count roles
+		role_count = len(server.roles)
+
+		# Create embed
+		em = discord.Embed(color=0x00CC99)
+		em.set_author(name='Server Info:', icon_url=server.owner.avatar_url)
+		em.add_field(name='Name', value=f'`{server.name}`')
+		em.add_field(name='Owner', value=f'`{server.owner}`', inline=False)
+		em.add_field(name='Members', value=f'`{server.member_count}`')
+		em.add_field(name='Online', value=f'`{online}`')
+		em.add_field(name='Region', value=f'`{str(server.region).title()}`')
+		em.add_field(name='Text Channels', value=f'`{tchannel_count}`')
+		em.add_field(name='Voice Channels', value=f'`{vchannel_count}`')
+		em.add_field(name='Verification Level', value=f'`{str(server.verification_level).title()}`')
+		em.add_field(name='Number of roles', value=f'`{role_count}`')
+		em.add_field(name='Highest role', value=f'`{server.roles[-1]}`')
+		em.add_field(name='Created At', value=f"`{server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S')}`", inline=False)
+		em.set_thumbnail(url=server.icon_url)
+		em.set_footer(text='Server ID: %s' % server.id)
+
+		try:
+			await ctx.send(embed=em)
+		except Exception:
+			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
+
+
+	@listusers.before_invoke
+	@teams.before_invoke
+	async def ensure_author_voice(self, ctx):
+		if not ctx.author.voice:
+			await ctx.send("You are not connected to a voice channel :mute:")
