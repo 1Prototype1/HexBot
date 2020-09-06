@@ -12,6 +12,7 @@ from psutil import Process, cpu_percent, cpu_freq
 class Misc(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+		self.kclient = self.ksoftapi.Client(os.environ['KSoft_Token'])
 
 	@commands.command(name='list')
 	async def listusers(self, ctx):
@@ -80,10 +81,9 @@ class Misc(commands.Cog):
 		if location == "":
 			return await ctx.send('Please provide location :map:')
 
-		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 		try:
 			async with ctx.typing():
-				w = await kclient.kumo.basic_weather(location, icon_pack='color')
+				w = await self.kclient.kumo.basic_weather(location, icon_pack='color')
 		except ksoftapi.NoResults:
 			await ctx.send('Unable to locate :mag_right:')
 		else:
@@ -100,25 +100,19 @@ class Misc(commands.Cog):
 			embed.set_author(name='Weather:', icon_url=w.icon_url)
 			await ctx.send(embed=embed)
 
-		finally:
-			await kclient.close()
-
 	@commands.command(name='convert', aliases=['currency'])
 	async def currency(self, ctx, value: str="", _from: str="", to: str=""):
 		"""Currency conversion"""
 		if value=="" or _from=="" or to=="":
 			return await ctx.send("Please enter values in proper format\n`~convert [value] [from] [to]`\neg: `~convert 16 usd inr`")
 
-		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 		try:
 			async with ctx.typing():
-				c = await kclient.kumo.currency_conversion(_from, to, value)
+				c = await self.kclient.kumo.currency_conversion(_from, to, value)
 		except (ksoftapi.NoResults, ksoftapi.errors.APIError):
 			await ctx.send('Conversion Failed :x:')
 		else:
 			await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
-		finally:
-			await kclient.close()
 
 	@commands.command(name='trace', aliases=['ip'])
 	async def trace(self, ctx, ip: str=""):
@@ -126,10 +120,9 @@ class Misc(commands.Cog):
 		if ip=="":
 			return await ctx.send("Please enter an `IP` address :satellite:")
 
-		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 		try:
 			async with ctx.typing():
-				info = await kclient.kumo.trace_ip(ip)
+				info = await self.kclient.kumo.trace_ip(ip)
 		except (ksoftapi.NoResults, ksoftapi.errors.APIError):
 			await ctx.send('Unable to locate :x:\nEnter valid IP')
 		else:
@@ -142,8 +135,6 @@ class Misc(commands.Cog):
 			embed = discord.Embed(title=":satellite_orbital: IP information:", colour=discord.Colour(0xff00cc), description="\n".join(description))
 			embed.set_footer(text=ip, icon_url=ctx.author.avatar_url)
 			await ctx.send(embed=embed)
-		finally:
-			await kclient.close()
 	
 	@commands.command(name='owner', aliases=['support', 'contact'])
 	async def support(self, ctx, *, msg: str = ""):

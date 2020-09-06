@@ -165,6 +165,7 @@ class Music(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.players = {}
+		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 
 	async def cleanup(self, guild):
 		try:
@@ -436,10 +437,9 @@ class Music(commands.Cog):
 				return await ctx.send('I\'m not currently playing anything :warning:')
 			query = vc.source.title
 
-		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 		try:
 			async with ctx.typing():
-				results = await kclient.music.lyrics(query)
+				results = await self.kclient.music.lyrics(query)
 		except ksoftapi.NoResults:
 			await ctx.send(f'No lyrics found for `{query}`')
 		else:
@@ -457,5 +457,3 @@ class Music(commands.Cog):
 			embeds[-1].set_footer(text="Source: KSoft.Si") # set footer for last embed
 			for embed in embeds:
 				await ctx.send(embed=embed)
-		finally:
-			await kclient.close()

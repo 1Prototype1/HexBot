@@ -16,6 +16,7 @@ class Games(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 
 	@commands.command(name='poll')
 	async def quickpoll(self, ctx, question, *options: str):
@@ -163,19 +164,15 @@ class Games(commands.Cog):
 	@commands.command(name='meme', aliases=['maymay'])
 	async def meme(self, ctx):
 		"""Get MayMay"""
-		kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 		try:
 			async with ctx.typing():
-				maymay = await kclient.images.random_meme()
+				maymay = await self.kclient.images.random_meme()
 		except ksoftapi.NoResults:
 			await ctx.send('Error getting maymay :cry:')
 		else:
 			embed = discord.Embed(title=maymay.title)
 			embed.set_image(url=maymay.image_url)
 			await ctx.send(embed=embed)
-
-		finally:
-			await kclient.close()
 
 	@commands.command(name='rps', aliases=['rockpaperscissors'])
 	async def rps(self, ctx):
