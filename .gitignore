@@ -3,5 +3,6 @@ __pycache__
 *.webm
 *.py
 !cogs/*.py
-!cogs/games/*.py
 !hexbot.py
+!games/*.py
+!fortunes/*
