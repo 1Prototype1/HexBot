@@ -439,7 +439,7 @@ class Music(commands.Cog):
 
 		try:
 			async with ctx.typing():
-				results = await self.kclient.music.lyrics(query)
+				results = await self.kclient.music.lyrics(query, limit=1)
 		except ksoftapi.NoResults:
 			await ctx.send(f'No lyrics found for `{query}`')
 		else:
