@@ -1,13 +1,10 @@
 import os
 import time
-import datetime
 import random
 
 import discord
 from discord.ext import commands
 import ksoftapi
-from speedtest import Speedtest
-from psutil import Process, cpu_percent, cpu_freq
 
 class Misc(commands.Cog):
 	def __init__(self, bot):
@@ -59,21 +56,6 @@ class Misc(commands.Cog):
 		message = await ctx.send("Pong!")
 		ping = (time.monotonic() - before) * 1000
 		await message.edit(content=f"Pong!  \nTook `{int(ping)}ms`\nLatency: `{int(self.bot.latency*1000)}ms`")
-
-	@commands.command(name='speedtest')
-	async def speed_test(self, ctx):		
-		"""Speedtest"""
-		async with ctx.typing():
-			if await self.bot.is_owner(ctx.author):
-				s = Speedtest()
-				s.get_best_server()
-				s.download()
-				s.upload()
-				s = s.results.dict()
-				
-				await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)} Mbits/s`\nUpload: `{round(s['upload']/10**6, 3)} Mbits/s`\nServer: `{s['server']['sponsor']}, {s['server']['name']}, {s['server']['country']}`\nBot: `{s['client']['isp']}({s['client']['ip']}) {s['client']['country']} {s['client']['isprating']}`")
-			else:
-				await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
 
 	@commands.command(name='weather')
 	async def weather(self, ctx, *, location: str = ""):
@@ -197,42 +179,6 @@ class Misc(commands.Cog):
 			em.add_field(name='Join Date', value=f"`{user.joined_at.__format__('%A, %d %B %Y @ %H:%M:%S')}`", inline=False)
 		em.set_thumbnail(url=user.avatar_url)
 		em.set_author(name=user, icon_url=user.avatar_url)
-		
-		try:
-			await ctx.send(embed=em)
-		except Exception:
-			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
-
-	@commands.command(name='botinfo' , aliases=['botstats', 'status'])
-	async def stats(self, ctx):
-		"""Bot stats."""
-		# Uptime
-		uptime = (datetime.datetime.now() - self.bot.uptime)
-		hours, rem = divmod(int(uptime.total_seconds()), 3600)
-		minutes, seconds = divmod(rem, 60)
-		days, hours = divmod(hours, 24)
-		if days:
-			time = '%s days, %s hours, %s minutes, and %s seconds' % (days, hours, minutes, seconds)
-		else:
-			time = '%s hours, %s minutes, and %s seconds' % (hours, minutes, seconds)
-		
-		# Embed
-		em = discord.Embed(color=0x4FFCFA)
-		em.set_author(name=f'{self.bot.user} Stats:', icon_url=self.bot.user.avatar_url, url='https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576')
-		em.add_field(name=':clock3: Uptime', value=f'`{time}`', inline=False)
-		em.add_field(name=':outbox_tray: Msgs sent', value=f'`{self.bot.messages_out}`')
-		em.add_field(name=':inbox_tray: Msgs received', value=f'`{self.bot.messages_in}`')
-		em.add_field(name=':crossed_swords: Servers', value=f'`{len(self.bot.guilds)}`')
-		em.add_field(name=':satellite_orbital: Server Region', value=f'`{self.bot.region}`')
-
-		pcs = Process()
-		try:
-			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().uss / 1024 ** 2)
-		except AttributeError:
-			# OS doesn't support retrieval of USS (probably BSD or Solaris)
-			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().rss / 1024 ** 2)
-		em.add_field(name=u':floppy_disk: Memory usage', value=f'`{mem_usage}`')
-		em.add_field(name=':desktop: CPU usage', value=f'`{cpu_percent()} % {cpu_freq().current / 1000:.2f} Ghz`')
 		
 		try:
 			await ctx.send(embed=em)

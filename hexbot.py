@@ -53,13 +53,13 @@ async def help(ctx):
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
 # Load Modules
-modules = ['misc', 'games', 'music']
+modules = ['misc', 'games', 'music', 'debug']
 try:
 	for module in modules:
 		bot.load_extension('cogs.' + module)
 		print('Loaded: ' + module)
-except Exception:
-	print(f'Error loading module:{module}')
+except Exception as e:
+	print(f'Error loading {module}: {e}')
 else:
 # All good ready to start!
 	print('Starting Bot...')
