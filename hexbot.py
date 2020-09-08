@@ -37,7 +37,7 @@ async def on_message(message):
 @bot.command(name='help', aliases=['h'])
 async def help(ctx):
 	"""Display help"""
-	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0), description="For more info you can visit [GitHub repo](https://github.com/1Prototype1/HexBot)")
+	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0))
 
 	embed.set_thumbnail(url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
 	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
