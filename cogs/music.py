@@ -134,7 +134,11 @@ class MusicPlayer:
 			source.volume = self.volume
 			self.current = source
 
-			self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+			try:
+				self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+			except discord.errors.ClientException:
+				return self.destroy(self._guild)
+
 			embed = discord.Embed(colour=discord.Colour(0x59FFC8), description=f"[{source.title}]({source.web_url})")
 			embed.set_thumbnail(url=source.thumbnail)
 			embed.set_author(name="Now Playing 🎵", url=f"{source.url}", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
