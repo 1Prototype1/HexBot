@@ -4,9 +4,6 @@ import datetime
 import discord
 from discord.ext import commands
 
-# Cog Modules
-from cogs import misc, music, games
-
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
 					case_insensitive=True)
@@ -55,8 +52,15 @@ async def help(ctx):
 	except Exception:
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
-bot.add_cog(games.Games(bot))
-bot.add_cog(misc.Misc(bot))
-bot.add_cog(music.Music(bot))
-
-bot.run(os.environ['BOT_Token'])
+# Load Modules
+modules = ['misc', 'games', 'music']
+try:
+	for module in modules:
+		bot.load_extension('cogs.' + module)
+		print('Loaded: ' + module)
+except Exception:
+	print(f'Error loading module:{module}')
+else:
+# All good ready to start!
+	print('Starting Bot...')
+	bot.run(os.environ['BOT_Token'])

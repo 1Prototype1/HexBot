@@ -296,3 +296,6 @@ class Misc(commands.Cog):
 	async def ensure_author_voice(self, ctx):
 		if not ctx.author.voice:
 			await ctx.send("You are not connected to a voice channel :mute:")
+
+def setup(bot):
+    bot.add_cog(Misc(bot))

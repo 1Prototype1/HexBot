@@ -457,3 +457,6 @@ class Music(commands.Cog):
 			embeds[-1].set_footer(text="Source: KSoft.Si") # set footer for last embed
 			for embed in embeds:
 				await ctx.send(embed=embed)
+
+def setup(bot):
+	bot.add_cog(Music(bot))

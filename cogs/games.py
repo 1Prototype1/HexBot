@@ -217,3 +217,6 @@ class Games(commands.Cog):
 	async def hangman(self, ctx):
 		"""Play Hangman"""
 		await hangman.play(self.bot, ctx)
+
+def setup(bot):
+	bot.add_cog(Games(bot))
