@@ -53,9 +53,9 @@ class Misc(commands.Cog):
 	async def ping(self, ctx):
 		""" Pong! """
 		before = time.monotonic()
-		message = await ctx.send("Pong!")
+		message = await ctx.send(":ping_pong: Pong!")
 		ping = (time.monotonic() - before) * 1000
-		await message.edit(content=f"Pong!  \nTook `{int(ping)}ms`\nLatency: `{int(self.bot.latency*1000)}ms`")
+		await message.edit(content=f":ping_pong: Pong!\nTook `{int(ping)}ms`\nLatency: `{int(self.bot.latency*1000)}ms`")
 
 	@commands.command(name='weather')
 	async def weather(self, ctx, *, location: str = ""):
