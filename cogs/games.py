@@ -6,6 +6,7 @@ import fortune
 import aiopentdb
 import xkcd
 import ksoftapi
+from jokeapi import Jokes
 
 import discord
 from discord.ext import commands
@@ -17,6 +18,7 @@ class Games(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		self.jclient = Jokes()
 
 	@commands.command(name='poll')
 	async def quickpoll(self, ctx, question, *options: str):
@@ -217,6 +219,30 @@ class Games(commands.Cog):
 	async def hangman(self, ctx):
 		"""Play Hangman"""
 		await hangman.play(self.bot, ctx)
+
+	@commands.command(name='joke', aliases=['pun', 'riddle', 'dark', 'geek'])
+	async def _joke(self, ctx):
+		"""Tell a joke"""
+		# blacklist = ['nsfw', 'religious', 'political', 'racist'] # Use if needed
+		try:
+			if ctx.message.content.strip()[1:5] in ['pun', 'dark', 'geek']:
+				if ctx.message.content.strip()[1:5].lower() == 'geek':
+					joke = self.jclient.get_joke(category=['programming'])
+				else:
+					joke = self.jclient.get_joke(category=[f'{ctx.message.content.strip()[1:5]}'])
+			elif 'riddle' in ctx.message.content:
+				joke = self.jclient.get_joke(type='twopart')
+				return await ctx.send(f"Q: {joke['setup']}\nA: {joke['delivery']}")
+			else:
+				joke = self.jclient.get_joke()
+
+			if joke["type"] == "single":
+				await ctx.send(joke['joke'])
+			else:
+				await ctx.send(f"{joke['setup']}\n{joke['delivery']}")
+		except Exception as e:
+			await ctx.send("Could not get joke for you :disappointed_relieved:")
+			print(e)
 
 def setup(bot):
 	bot.add_cog(Games(bot))

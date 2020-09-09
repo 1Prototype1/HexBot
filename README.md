@@ -23,13 +23,15 @@ skip          - Skips current song
 stop|dis      - Stops and disconnects bot
 volume        - Changes the player's volume
 ```
-:joystick: Game Commands:
+:joystick: Fun Commands:
 ```
 8ball         - Magic 8Ball!
     <question>
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 hangman       - Play Hangman
+joke          - Get a random joke[18+]
+                [pun|dark|riddle|geek]
 meme|maymay   - Get MayMays
 poll          - Create a quick poll
     <question> <choices>
