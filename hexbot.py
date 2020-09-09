@@ -45,7 +45,7 @@ async def help(ctx):
 
 	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics <song> - Get lyrics of the song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
 	embed.add_field(name=":joystick: Fun Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhangman       - Play Hangman\njoke          - Get a random joke[18+]\n\t\t\t\t[pun|dark|riddle|geek]\nmeme|maymay   - Get MayMays\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nwumpus        - Play Wumpus game\nxkcd|comic    - Get random xkcd comics```", inline=False)
-	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nserver <serv> - Get server info\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nuser @user    - Get user info\nweather <loc> - Get weather of location```", inline=False)
+	embed.add_field(name=":tools: Misc Commands:", value="```convert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\nping|latency  - Pong!\nserver <serv> - Get server info\nsupport       - Contact Bot owner\ntrace <ip>    - Locate IP address\nuser @user    - Get user info\nwallpaper     - Get wallpaper\nweather <loc> - Get weather of location```", inline=False)
 
 	try:
 		await ctx.send(embed=embed)
@@ -53,7 +53,7 @@ async def help(ctx):
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
 # Load Modules
-modules = ['misc', 'games', 'music', 'debug']
+modules = ['misc', 'games', 'music', 'debug', 'media']
 try:
 	for module in modules:
 		bot.load_extension('cogs.' + module)
