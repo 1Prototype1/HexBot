@@ -17,6 +17,8 @@ class Media(commands.Cog):
 		fields = {'count': 1}
 		if query:
 			fields['query'] = query
+		else:
+			fields['count'] = 3
 		results = self.http.request('GET', 'https://api.unsplash.com/photos/random', headers=self.header, fields=fields)
 		results = json.loads(results.data.decode('utf-8'))
 		try:
