@@ -71,5 +71,28 @@ class Media(commands.Cog):
 		em.set_thumbnail(url=image_link)
 		await ctx.send(file=file, embed=em)
 
+	@commands.command(name='encode', aliases=['encrypt', 'style'])
+	async def _encode(self, ctx, *, text: str):
+		"""Encode given text"""
+		if not text:
+			return await ctx.send('Please provide text :pager:')
+
+		try:
+			result = self.fetchJSON('https://useless-api--vierofernando.repl.co/encode', params={'text': text})
+		except:
+			return await ctx.send('Failed to encode :x:')
+
+		description = []
+		for r in result:
+			if r=='ciphers' or r=='styles':
+				for i in result[r]:
+					description.append(f"{i.title()}: `{result[r][i]}`")
+			else:
+				description.append(f"{r.title()}: `{result[r]}`")
+
+		em = discord.Embed(title=text, color=discord.Color(0xFF007C), description='\n'.join(description))
+		await ctx.send(embed=em)
+
+
 def setup(bot):
     bot.add_cog(Media(bot))
