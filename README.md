@@ -40,15 +40,18 @@ rps           - Play Rock, Paper, Scissors
 tally         - Tally the created poll
 teams         - Makes random teams(def. 2)
 toss|flip     - Flips a Coin
+trigger @user - Trigger an user
 ttt           - Play Tic-Tac-Toe!
 wumpus        - Play Wumpus game
 xkcd|comic    - Get random xkcd comics
 ```
 🛠 Misc Commands:
 ```
+ascii <link>  - Get ascii art of user/img
 convert       - Currency Converter
     <val><from><to>
 clear|cls     - Delete the messages
+encode <txt>  - Encode and style the text
 help          - Display this message
 list          - Displays the list of
                 voice connected users
