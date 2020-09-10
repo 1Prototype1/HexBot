@@ -77,7 +77,7 @@ class Media(commands.Cog):
 		if not text:
 			return await ctx.send('Please provide text :pager:')
 
-		await with ctx.typing():
+		async with ctx.typing():
 			try:
 				result = self.fetchJSON('https://useless-api--vierofernando.repl.co/encode', params={'text': text})
 			except:
