@@ -77,10 +77,11 @@ class Media(commands.Cog):
 		if not text:
 			return await ctx.send('Please provide text :pager:')
 
-		try:
-			result = self.fetchJSON('https://useless-api--vierofernando.repl.co/encode', params={'text': text})
-		except:
-			return await ctx.send('Failed to encode :x:')
+		await with ctx.typing():
+			try:
+				result = self.fetchJSON('https://useless-api--vierofernando.repl.co/encode', params={'text': text})
+			except:
+				return await ctx.send('Failed to encode :x:')
 
 		description = []
 		for r in result:
