@@ -87,7 +87,10 @@ class Media(commands.Cog):
 		for r in result:
 			if r=='ciphers' or r=='styles':
 				for i in result[r]:
-					description.append(f"{i.title()}: `{result[r][i]}`")
+					if i == 'upside-down':
+						description.append(f"{i.title()}: `{result[r][i][::-1]}`")
+					else:
+						description.append(f"{i.title()}: `{result[r][i]}`")
 			else:
 				description.append(f"{r.title()}: `{result[r]}`")
 
