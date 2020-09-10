@@ -34,5 +34,17 @@ class Media(commands.Cog):
 			print(e)
 			await ctx.send('Error getting wallpaper :disappointed_relieved:')
 
+	@commands.command(name='trigger')
+	async def trigger(self, ctx):
+		"""Trigger a user"""
+		try:
+			user = ctx.message.mentions[0]
+		except IndexError:
+			return await ctx.send("Mention the person you want to trigger")
+
+		em = discord.Embed(color=discord.Colour(0xFF355E))
+		em.set_image(url=f"https://useless-api--vierofernando.repl.co/triggered?image={user.avatar_url_as(size=1024)}")
+		await ctx.send(embed=em)
+
 def setup(bot):
     bot.add_cog(Media(bot))
