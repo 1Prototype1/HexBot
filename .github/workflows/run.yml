@@ -29,3 +29,4 @@ jobs:
     - name: Lint with PyLint
       run: |
         pylint -E --score=no hexbot.py
+        pylint -E --score=no cogs/
