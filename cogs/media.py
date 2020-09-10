@@ -46,5 +46,30 @@ class Media(commands.Cog):
 		em.set_image(url=f"https://useless-api--vierofernando.repl.co/triggered?image={user.avatar_url_as(size=1024)}")
 		await ctx.send(embed=em)
 
+	@commands.command(name='ascii')
+	async def ascii(self, ctx, image_link: str=""):
+		"""Ascii art of avatar"""
+		if not image_link:
+			user = ctx.message.author
+			image_link = user.avatar_url_as(size=1024)
+		try:
+			user = ctx.message.mentions[0]
+			image_link = user.avatar_url_as(size=1024)
+		except IndexError:
+			pass
+		try:
+			result = requests.get(f'https://useless-api--vierofernando.repl.co/imagetoascii?image={image_link}').text.replace('<br>','\n')
+		except:
+			return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
+
+		ascii_file = open("ascii.txt", "w")
+		n = ascii_file.write(result)
+		ascii_file.close()
+
+		file = discord.File('ascii.txt')
+		em = discord.Embed(color=discord.Colour(0xFFFF66))
+		em.set_thumbnail(url=image_link)
+		await ctx.send(file=file, embed=em)
+
 def setup(bot):
     bot.add_cog(Media(bot))
