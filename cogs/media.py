@@ -1,5 +1,5 @@
 import os
-import urllib3
+import requests
 import json
 
 import discord
@@ -9,19 +9,21 @@ class Media(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.header = {'Authorization': os.environ['Unsplash_Token']}
-		self.http = urllib3.PoolManager()
+
+	def fetchJSON(self, url, params={}, headers={}):
+		return requests.get(url, params=params, headers=headers).json()
 
 	@commands.command(name='wallpaper', aliases=['wall'])
 	async def _wallpaper(self, ctx, *query: str):
 		"""Get wallpaper from Unsplash"""
-		fields = {'count': 1}
+		params = {'count': 1}
 		if query:
-			fields['query'] = query
+			params['query'] = query
 		else:
-			fields['count'] = 3
-			fields['featured'] = 'yes'
-		results = self.http.request('GET', 'https://api.unsplash.com/photos/random', headers=self.header, fields=fields)
-		results = json.loads(results.data.decode('utf-8'))
+			params['count'] = 3
+			params['featured'] = 'yes'
+
+		results = self.fetchJSON('https://api.unsplash.com/photos/random', params=params, headers=self.header)
 		try:
 			for r in results:
 				em = discord.Embed(colour=discord.Colour(0xFF355E))
