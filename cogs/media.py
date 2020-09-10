@@ -11,7 +11,7 @@ class Media(commands.Cog):
 		self.header = {'Authorization': os.environ['Unsplash_Token']}
 		self.http = urllib3.PoolManager()
 
-	@commands.command(name='wallpaper', aliases=['walla'])
+	@commands.command(name='wallpaper', aliases=['wall'])
 	async def _wallpaper(self, ctx, *query: str):
 		"""Get wallpaper from Unsplash"""
 		fields = {'count': 1}
