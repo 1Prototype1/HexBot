@@ -38,6 +38,7 @@ poll          - Create a quick poll
 quiz|trivia   - Start a quiz game
 rps           - Play Rock, Paper, Scissors
 tally         - Tally the created poll
+tinder @u1@u2 - Get Tinder image
 teams         - Makes random teams(def. 2)
 toss|flip     - Flips a Coin
 trigger @user - Trigger an user
