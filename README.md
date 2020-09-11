@@ -27,6 +27,7 @@ volume        - Changes the player's volume
 ```
 8ball         - Magic 8Ball!
     <question>
+ai            - Start AI chat
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 hangman       - Play Hangman

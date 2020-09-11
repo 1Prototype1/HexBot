@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import asyncio
 
 import discord
 from discord.ext import commands
@@ -110,6 +111,25 @@ class Media(commands.Cog):
 		em.set_image(url=f'https://useless-api--vierofernando.repl.co/tinder?image1={user1}&image2={user2}')
 		await ctx.send(embed=em)
 
+	@commands.command(name='ai')
+	async def _aichat(self, ctx):
+		"""Start AI chat mode"""
+		def check(m):
+			return m.author == ctx.author and not m.content.startswith('~')
+
+		await ctx.send("Let's chat")
+		while True:
+			try:
+				params = {'message': 'message'}
+				msg = await self.bot.wait_for('message', check=check, timeout=10.0)
+			except asyncio.TimeoutError:
+				return await ctx.send("Bye :wave:")
+			else:
+				params['message'] = msg.content
+				async with ctx.typing():
+					response = self.fetchJSON('https://some-random-api.ml/chatbot', params=params)['response']
+					await ctx.send(response)
+
 
 def setup(bot):
-    bot.add_cog(Media(bot))
+	bot.add_cog(Media(bot))
