@@ -1,5 +1,6 @@
 spam/
 __pycache__
+.idea/
 *.webm
 *.py
 !cogs/*.py

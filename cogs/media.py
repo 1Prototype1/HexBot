@@ -97,6 +97,19 @@ class Media(commands.Cog):
 		em = discord.Embed(title=text, color=discord.Color(0xFF007C), description='\n'.join(description))
 		await ctx.send(embed=em)
 
+	@commands.command(name='tinder', aliases=['match'])
+	async def tinder(self, ctx):
+		"""Tinder: It's a Match!"""
+		try:
+			user1 = ctx.message.mentions[0].avatar_url_as(size=1024)
+			user2 = ctx.message.mentions[1].avatar_url_as(size=1024)
+		except IndexError:
+			return await ctx.send('Mention two users to match :heart:')
+
+		em = discord.Embed(color=discord.Color(0xFF355E))
+		em.set_image(url=f'https://useless-api--vierofernando.repl.co/tinder?image1={user1}&image2={user2}')
+		await ctx.send(embed=em)
+
 
 def setup(bot):
     bot.add_cog(Media(bot))
