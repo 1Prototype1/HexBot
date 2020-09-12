@@ -120,8 +120,8 @@ class Media(commands.Cog):
 		async with ctx.typing():
 			url = 'https://api.pokemontcg.io/v1/cards'
 			params = {
-						'setCode': 'xyp|smp|base1',
-						# 'text': 'x',
+						# 'setCode': 'xyp|smp|base1',
+						'text': 'x',
 						'name': name
 					}
 			try:
