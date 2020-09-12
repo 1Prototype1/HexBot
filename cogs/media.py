@@ -111,6 +111,30 @@ class Media(commands.Cog):
 		em.set_image(url=f'https://useless-api--vierofernando.repl.co/tinder?image1={user1}&image2={user2}')
 		await ctx.send(embed=em)
 
+	@commands.command(name='pokemon', aliases=['pokedex'])
+	async def _pokemon(self, ctx, *, name=''):
+		"""Get pokemon card"""
+		if not name:
+			emoji = self.bot.get_emoji(754086209399291945)
+			return await ctx.message.add_reaction(f'Please specify pokemon name {emoji}')
+			# return await ctx.send('Please specify pokemon name <:pokeball:416895188573618177>')
+		async with ctx.typing():
+			url = 'https://api.pokemontcg.io/v1/cards'
+			params = {
+						'setCode': 'xyp|smp|base1',
+						# 'text': 'x',
+						'name': name
+					}
+			try:
+				result = self.fetchJSON(url, params)
+				result = result['cards'][0]
+			except Exception as e:
+				return await ctx.send('No pokemon card found :x:')
+		em = discord.Embed(color=discord.Color(0xCCFF00), title=result['name'], url=result['imageUrlHiRes'])
+		em.set_image(url=result['imageUrlHiRes'])
+		await ctx.send(embed=em)
+
+
 	@commands.command(name='ai')
 	async def _aichat(self, ctx):
 		"""Start AI chat mode"""
@@ -125,9 +149,12 @@ class Media(commands.Cog):
 			except asyncio.TimeoutError:
 				return await ctx.send("Bye :wave:")
 			else:
-				params['message'] = msg.content
-				async with ctx.typing():
-					response = self.fetchJSON('https://some-random-api.ml/chatbot', params=params)['response']
+				if 'bye' in msg.content:
+					return await ctx.send("Bye :wave:")
+				else:
+					params['message'] = msg.content
+					async with ctx.typing():
+						response = self.fetchJSON('https://some-random-api.ml/chatbot', params=params)['response']
 					await ctx.send(response)
 
 
