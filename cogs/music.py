@@ -136,7 +136,7 @@ class MusicPlayer:
 
 			try:
 				self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-			except discord.errors.ClientException:
+			except (discord.errors.ClientException, AttributeError):
 				return self.destroy(self._guild)
 
 			embed = discord.Embed(colour=discord.Colour(0x59FFC8), description=f"[{source.title}]({source.web_url})")
