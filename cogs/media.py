@@ -156,7 +156,7 @@ class Media(commands.Cog):
 		while True:
 			try:
 				params = {'message': 'message'}
-				msg = await self.bot.wait_for('message', check=check, timeout=10.0)
+				msg = await self.bot.wait_for('message', check=check, timeout=120.0)
 			except asyncio.TimeoutError:
 				return await ctx.send("Bye :wave:")
 			else:
