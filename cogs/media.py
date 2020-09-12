@@ -117,18 +117,18 @@ class Media(commands.Cog):
 		if not name:
 			return await ctx.send(f'Please specify pokemon name <:pokeball:754218915613376542>')
 
-		async with ctx.typing():
-			url = 'https://api.pokemontcg.io/v1/cards'
-			params = {
-						# 'setCode': 'xyp|smp|base1',
-						'text': 'x',
-						'name': name
-					}
-			try:
+		url = 'https://api.pokemontcg.io/v1/cards'
+		params = {
+					# 'setCode': 'xyp|smp|base1',
+					'text': 'x',
+					'name': name
+				}
+		try:
+			async with ctx.typing():
 				result = self.fetchJSON(url, params)
-				result = result['cards'][0]
-			except Exception as e:
-				return await ctx.send('No pokemon card found :x:')
+			result = result['cards'][0]
+		except Exception as e:
+			return await ctx.send('No pokemon card found :x:')
 		em = discord.Embed(color=discord.Color(0xCCFF00), title=result['name'], url=result['imageUrlHiRes'])
 		em.set_image(url=result['imageUrlHiRes'])
 		await ctx.send(embed=em)
