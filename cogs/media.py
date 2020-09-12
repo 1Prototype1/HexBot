@@ -165,7 +165,10 @@ class Media(commands.Cog):
 				else:
 					params['message'] = msg.content
 					async with ctx.typing():
-						response = self.fetchJSON('https://some-random-api.ml/chatbot', params=params)['response']
+						try:
+							response = self.fetchJSON('https://some-random-api.ml/chatbot', params=params)['response']
+						except:
+							await ctx.send('Please repeat')
 					await ctx.send(response)
 
 
