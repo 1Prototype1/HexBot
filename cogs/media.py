@@ -113,25 +113,35 @@ class Media(commands.Cog):
 
 	@commands.command(name='pokemon', aliases=['pokedex'])
 	async def _pokemon(self, ctx, *, name=''):
-		"""Get pokemon card"""
+		"""Get pokemon """
 		if not name:
 			return await ctx.send(f'Please specify pokemon name <:pokeball:754218915613376542>')
-
-		url = 'https://api.pokemontcg.io/v1/cards'
-		params = {
-					# 'setCode': 'xyp|smp|base1',
-					'subtype': 'GX|EX',
-					'text': 'x',
-					'name': name
-				}
+		url = f'https://pokeapi.co/api/v2/pokemon/{name.lower()}'
 		try:
 			async with ctx.typing():
-				result = self.fetchJSON(url, params)
-			result = result['cards'][0]
-		except Exception as e:
-			return await ctx.send('No pokemon card found :x:')
-		em = discord.Embed(color=discord.Color(0xCCFF00), title=result['name'], url=result['imageUrlHiRes'])
-		em.set_image(url=result['imageUrlHiRes'])
+				data = self.fetchJSON(url)
+		except Exception:
+			return await ctx.send('Pokemon not found :x:')
+
+		desc = f"Height: `{(data['height'])*10}cm`\nWeight: `{(data['weight'])/10}kg`"
+		em = discord.Embed(color=discord.Color(0xFF355E), title=f"{data['name'].title()} #{data['id']}", description=desc)
+		em.set_author(name='Pokédex', icon_url='https://i.ibb.co/L9xKJWz/pokedex.png')
+		em.set_thumbnail(url=data['sprites']['front_default'])
+		fields = []
+		for stat in data['stats']:
+			fields.append(f"{stat['stat']['name'].title()}: `{stat['base_stat']}`")
+		em.add_field(name='Stats:', value='\n'.join(fields), inline=False)
+		fields = []
+		for ability in data['abilities']:
+			fields.append(ability['ability']['name'])
+		fields = '\n'.join(fields)
+		em.add_field(name='Abilities:', value=f"`{fields}`")
+		fields = []
+		for t in data['types']:
+			fields.append(t['type']['name'])
+		fields = '\n'.join(fields)
+		em.add_field(name='Type:', value=f"`{fields}`")
+
 		await ctx.send(embed=em)
 
 

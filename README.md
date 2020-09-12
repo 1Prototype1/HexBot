@@ -34,6 +34,7 @@ hangman       - Play Hangman
 joke          - Get a random joke[18+]
                 [pun|dark|riddle|geek]
 meme|maymay   - Get MayMays
+pokedex       - Get Pokémon info
 poll          - Create a quick poll
     <question> <choices>
 quiz|trivia   - Start a quiz game
