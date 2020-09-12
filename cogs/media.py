@@ -149,7 +149,7 @@ class Media(commands.Cog):
 			except asyncio.TimeoutError:
 				return await ctx.send("Bye :wave:")
 			else:
-				if 'bye' in msg.content:
+				if 'bye' in msg.content.lower():
 					return await ctx.send("Bye :wave:")
 				else:
 					params['message'] = msg.content
