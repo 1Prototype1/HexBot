@@ -33,6 +33,12 @@ async def on_message(message):
 
 	await bot.process_commands(message)
 
+@bot.event
+async def on_guild_join(guild):
+	for channel in guild.text_channels:
+		if channel.permissions_for(guild.me).send_messages:
+			await channel.send('Hey there! Thank you for adding me\nStart by typing `~help`')
+
 
 @bot.command(name='help', aliases=['h'])
 async def help(ctx):

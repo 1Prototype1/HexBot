@@ -115,9 +115,8 @@ class Media(commands.Cog):
 	async def _pokemon(self, ctx, *, name=''):
 		"""Get pokemon card"""
 		if not name:
-			emoji = self.bot.get_emoji(754086209399291945)
-			return await ctx.message.add_reaction(f'Please specify pokemon name {emoji}')
-			# return await ctx.send('Please specify pokemon name <:pokeball:416895188573618177>')
+			return await ctx.send(f'Please specify pokemon name <:pokeball:754218915613376542>')
+
 		async with ctx.typing():
 			url = 'https://api.pokemontcg.io/v1/cards'
 			params = {
