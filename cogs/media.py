@@ -125,7 +125,8 @@ class Media(commands.Cog):
 
 		desc = f"Height: `{(data['height'])*10}cm`\nWeight: `{(data['weight'])/10}kg`"
 		em = discord.Embed(color=discord.Color(0xFF355E), title=f"{data['name'].title()} #{data['id']}", description=desc)
-		em.set_author(name='Pokédex', icon_url='https://i.ibb.co/L9xKJWz/pokedex.png')
+		em.set_author(name='Pokédex', icon_url='https://i.ibb.co/L9xKJWz/pokedex.png',
+					  url=data['sprites']['other']['official-artwork']['front_default'])
 		em.set_thumbnail(url=data['sprites']['front_default'])
 		fields = []
 		for stat in data['stats']:
