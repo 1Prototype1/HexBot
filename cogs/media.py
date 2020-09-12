@@ -120,6 +120,7 @@ class Media(commands.Cog):
 		url = 'https://api.pokemontcg.io/v1/cards'
 		params = {
 					# 'setCode': 'xyp|smp|base1',
+					'subtype': 'GX|EX',
 					'text': 'x',
 					'name': name
 				}
