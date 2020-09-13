@@ -60,6 +60,7 @@ list          - Displays the list of
                 voice connected users
 ping|latency  - Pong!
 server <serv> - Get server info
+shorten|url   - Shorten an URL
 support       - Contact Bot owner
 trace <ip>    - Locate IP address
 user @user    - Get user info

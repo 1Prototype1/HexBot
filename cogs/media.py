@@ -146,6 +146,18 @@ class Media(commands.Cog):
 
 		await ctx.send(embed=em)
 
+	@commands.command(name='url', aliases=['shorten'])
+	async def url_shorten(self, ctx, *, url):
+		if not url:
+			return await ctx.send('Please specify the url :link:')
+		if not url.startswith('http'):
+			url = 'http://' + url
+		try:
+			data = requests.post('https://rel.ink/api/links/', data={'url': url}).json()
+			if data.get('hashid'):
+				return await ctx.send(f"Url: `{data['url']}`\nShort: https://rel.ink/{data['hashid']}")
+		except:
+			await ctx.send('Failed to shorten url :x:')
 
 	@commands.command(name='ai')
 	async def _aichat(self, ctx):
