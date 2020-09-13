@@ -134,14 +134,13 @@ class Media(commands.Cog):
 		em.add_field(name='Stats:', value='\n'.join(fields), inline=False)
 		fields = []
 		for ability in data['abilities']:
-			fields.append(ability['ability']['name'])
-		fields = '\n'.join(fields)
-		em.add_field(name='Abilities:', value=f"`{fields}`")
+			fields.append(f"`{ability['ability']['name']}`")
+		em.add_field(name='Abilities:', value='\n'.join(fields))
+
 		fields = []
 		for t in data['types']:
-			fields.append(t['type']['name'])
-		fields = '\n'.join(fields)
-		em.add_field(name='Type:', value=f"`{fields}`")
+			fields.append(f"`{t['type']['name']}`")
+		em.add_field(name='Type:', value='\n'.join(fields))
 
 		await ctx.send(embed=em)
 
