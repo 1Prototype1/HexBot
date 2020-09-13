@@ -127,6 +127,9 @@ class Media(commands.Cog):
 				data = self.fetchJSON(url, params=params)
 		except Exception:
 			return await ctx.send('Pokemon not found :x:')
+		else:
+			if 'error' in data:
+				return await ctx.send('Pokemon not found :x:')
 
 		desc = f"Height: `{data['height']}`\nWeight: `{data['weight']}`\nBase Experience: `{data['base_experience']}`"
 		em = discord.Embed(color=discord.Color(0xFF355E), title=f"{data['name'].title()} #{int(data['id'])}", description=desc)
