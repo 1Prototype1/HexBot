@@ -153,7 +153,8 @@ class Media(commands.Cog):
 		if not url.startswith('http'):
 			url = 'http://' + url
 		try:
-			data = requests.post('https://rel.ink/api/links/', data={'url': url}).json()
+			async with ctx.typing():
+				data = requests.post('https://rel.ink/api/links/', data={'url': url}).json()
 			if data.get('hashid'):
 				return await ctx.send(f"Url: `{data['url']}`\nShort: https://rel.ink/{data['hashid']}")
 		except:
