@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import asyncio
+from textwrap import TextWrapper
 
 import discord
 from discord.ext import commands
@@ -116,33 +117,33 @@ class Media(commands.Cog):
 		"""Get pokemon """
 		if not name:
 			return await ctx.send(f'Please specify pokemon name <:pokeball:754218915613376542>')
-		url = f'https://pokeapi.co/api/v2/pokemon/{name.lower()}'
+		url = 'https://some-random-api.ml/pokedex'
+		try:
+			params = {'id': int(name)}
+		except ValueError:
+			params = {'pokemon': name}
 		try:
 			async with ctx.typing():
-				data = self.fetchJSON(url)
+				data = self.fetchJSON(url, params=params)
 		except Exception:
 			return await ctx.send('Pokemon not found :x:')
 
-		desc = f"Height: `{(data['height'])*10}cm`\nWeight: `{(data['weight'])/10}kg`"
-		em = discord.Embed(color=discord.Color(0xFF355E), title=f"{data['name'].title()} #{data['id']}", description=desc)
-		em.set_author(name='Pokédex', icon_url='https://i.ibb.co/L9xKJWz/pokedex.png',
-					  url=data['sprites']['other']['official-artwork']['front_default'])
-		em.set_thumbnail(url=data['sprites']['front_default'])
+		desc = f"Height: `{data['height']}`\nWeight: `{data['weight']}`\nBase Experience: `{data['base_experience']}`"
+		em = discord.Embed(color=discord.Color(0xFF355E), title=f"{data['name'].title()} #{int(data['id'])}", description=desc)
+		em.set_author(name='Pokédex', icon_url='https://i.ibb.co/L9xKJWz/pokedex.png')
+		em.set_thumbnail(url=data['sprites']['animated'])
 		
 		fields = []
 		for stat in data['stats']:
-			fields.append(f"{stat['stat']['name'].title()}: `{stat['base_stat']}`")
+			fields.append(f"{stat.title()}: `{data['stats'][stat]}`")
 		em.add_field(name='Stats:', value='\n'.join(fields), inline=False)
 		
-		fields = []
-		for ability in data['abilities']:
-			fields.append(f"`{ability['ability']['name']}`")
-		em.add_field(name='Abilities:', value='\n'.join(fields))
+		em.add_field(name='Abilities:', value='\n'.join([f'`{x}`' for x in data['abilities']]))
 
-		fields = []
-		for t in data['types']:
-			fields.append(f"`{t['type']['name']}`")
-		em.add_field(name='Type:', value='\n'.join(fields))
+		em.add_field(name='Type:', value='\n'.join([f'`{x}`' for x in data['type']]))
+		em.add_field(name='Evolution:', value=f"`{' -> '.join(list(dict.fromkeys(data['family']['evolutionLine'])))}`", inline=False)
+		desc = '\n'.join(TextWrapper(width=60).wrap(data['description']))
+		em.set_footer(text=desc)
 
 		await ctx.send(embed=em)
 
