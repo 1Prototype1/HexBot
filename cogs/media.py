@@ -182,7 +182,8 @@ class Media(commands.Cog):
 						try:
 							response = self.fetchJSON('https://some-random-api.ml/chatbot', params=params)['response']
 						except:
-							await ctx.send('Please repeat')
+							# await ctx.send('Please repeat')
+							pass
 					await ctx.send(response)
 
 
