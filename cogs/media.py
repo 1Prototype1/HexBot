@@ -128,10 +128,12 @@ class Media(commands.Cog):
 		em.set_author(name='Pokédex', icon_url='https://i.ibb.co/L9xKJWz/pokedex.png',
 					  url=data['sprites']['other']['official-artwork']['front_default'])
 		em.set_thumbnail(url=data['sprites']['front_default'])
+		
 		fields = []
 		for stat in data['stats']:
 			fields.append(f"{stat['stat']['name'].title()}: `{stat['base_stat']}`")
 		em.add_field(name='Stats:', value='\n'.join(fields), inline=False)
+		
 		fields = []
 		for ability in data['abilities']:
 			fields.append(f"`{ability['ability']['name']}`")
