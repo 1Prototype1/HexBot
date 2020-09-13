@@ -223,18 +223,18 @@ class Games(commands.Cog):
 	@commands.command(name='joke', aliases=['pun', 'riddle', 'dark', 'geek'])
 	async def _joke(self, ctx):
 		"""Tell a joke"""
-		# blacklist = ['nsfw', 'religious', 'political', 'racist'] # Use if needed
+		blacklist = ['nsfw', 'religious', 'political', 'racist'] # Use if needed
 		try:
 			if ctx.message.content.strip()[1:5] in ['pun', 'dark', 'geek']:
 				if ctx.message.content.strip()[1:5].lower() == 'geek':
-					joke = self.jclient.get_joke(category=['programming'])
+					joke = self.jclient.get_joke(category=['programming'], blacklist=blacklist)
 				else:
-					joke = self.jclient.get_joke(category=[f'{ctx.message.content.strip()[1:5]}'])
+					joke = self.jclient.get_joke(category=[f'{ctx.message.content.strip()[1:5]}'], blacklist=blacklist)
 			elif 'riddle' in ctx.message.content:
-				joke = self.jclient.get_joke(type='twopart')
+				joke = self.jclient.get_joke(type='twopart', blacklist=blacklist)
 				return await ctx.send(f"Q: {joke['setup']}\nA: {joke['delivery']}")
 			else:
-				joke = self.jclient.get_joke()
+				joke = self.jclient.get_joke(blacklist=blacklist)
 
 			if joke["type"] == "single":
 				await ctx.send(joke['joke'])

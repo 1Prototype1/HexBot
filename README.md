@@ -31,7 +31,7 @@ ai            - Start AI chat
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 hangman       - Play Hangman
-joke          - Get a random joke[18+]
+joke          - Get a random joke
                 [pun|dark|riddle|geek]
 meme|maymay   - Get MayMays
 pokedex       - Get Pokémon info
