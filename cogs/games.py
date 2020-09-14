@@ -215,7 +215,7 @@ class Games(commands.Cog):
 		"""Play Wumpus game"""
 		await wumpus.play(self.bot, ctx)
 
-	@commands.command(name='hangman')
+	@commands.command(name='hangman', aliases=['hang'])
 	async def hangman(self, ctx):
 		"""Play Hangman"""
 		await hangman.play(self.bot, ctx)
