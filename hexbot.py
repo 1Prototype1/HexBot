@@ -1,5 +1,6 @@
 import os
 import datetime
+import requests
 
 import discord
 from discord.ext import commands
@@ -40,6 +41,47 @@ async def on_guild_join(guild):
 			await channel.send('Hey there! Thank you for adding me\nStart by typing `~help`')
 			break
 
+@bot.event
+async def on_member_join(member):
+	sys_channel = member.guild.system_channel
+	if sys_channel:
+		url = 'https://some-random-api.ml/welcome/img/4/stars'
+		params = 	{'type': 'join',
+					'username': str(member.name),
+					'discriminator': str(member.discriminator),
+					'guildName': 'HexBot',
+					'memberCount': '16',
+					'avatar': str(member.avatar_url_as(size=512)),
+					'textcolor': 'green'
+					}
+		data = requests.get(url, params=params)
+		with open('welcome.png', 'wb') as img:
+			img.write(data.content)
+		try:	
+			await sys_channel.send(content=member.mention, file=discord.File('welcome.png'))
+		except discord.Forbidden:
+			pass
+
+@bot.event
+async def on_member_remove(member):
+	sys_channel = member.guild.system_channel
+	if sys_channel:
+		url = 'https://some-random-api.ml/welcome/img/4/stars'
+		params = 	{'type': 'leave',
+					'username': str(member.name),
+					'discriminator': str(member.discriminator),
+					'guildName': 'HexBot',
+					'memberCount': '16',
+					'avatar': str(member.avatar_url_as(size=512)),
+					'textcolor': 'green'
+					}
+		data = requests.get(url, params=params)
+		with open('leave.png', 'wb') as img:
+			img.write(data.content)
+		try:	
+			await sys_channel.send(content=member.mention, file=discord.File('leave.png'))
+		except discord.Forbidden:
+			pass
 
 @bot.command(name='help', aliases=['h'])
 async def help(ctx):
