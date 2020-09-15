@@ -44,9 +44,12 @@ class Media(commands.Cog):
 		except IndexError:
 			return await ctx.send("Mention the person you want to trigger")
 
-		em = discord.Embed(color=discord.Colour(0xFF355E))
-		em.set_image(url=f"https://useless-api--vierofernando.repl.co/triggered?image={user.avatar_url_as(size=1024)}")
-		await ctx.send(embed=em)
+		async with ctx.typing():
+			data = requests.get(f"https://useless-api--vierofernando.repl.co/triggered?image={user.avatar_url_as(size=1024)}")
+			with open('trigger.gif', 'wb') as img:
+				img.write(data.content)
+				
+		await ctx.send(file=discord.File('trigger.gif'))
 
 	@commands.command(name='ascii')
 	async def ascii(self, ctx, image_link: str=""):
