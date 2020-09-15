@@ -1,10 +1,10 @@
-![Deploy Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Deploy&logo=heroku) ![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=heroku) ![Python](https://img.shields.io/badge/python-v3.7.9-blue?logo=python&logoColor=ffe873) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) [![Servers](https://img.shields.io/badge/servers-13-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576)
+![Deploy Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Deploy&logo=heroku) ![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=heroku) ![Python](https://img.shields.io/badge/python-v3.7.9-blue?logo=python&logoColor=ffe873) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) [![Servers](https://img.shields.io/badge/servers-13-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344)
 # HexBot
 A Relatively Simply Awesome Discord bot with Music, Games, Comics, Memes and other cool features. <br>
 This bot is made in Python 3.7 using [discord.py](https://github.com/Rapptz/discord.py).<br>
 This bot can be deployed on Heroku using the free dyno.
 
-[![Add HexBot](https://img.shields.io/badge/-Add%20Bot-141B2E?style=for-the-badge&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576) <br>
+[![Add HexBot](https://img.shields.io/badge/-Add%20Bot-141B2E?style=for-the-badge&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344) <br>
 **Add the bot to your Discord server and use these awesome features! :sparkles:**
 
 Features
