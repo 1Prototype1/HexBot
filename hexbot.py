@@ -79,7 +79,7 @@ async def on_member_remove(member):
 		with open('leave.png', 'wb') as img:
 			img.write(data.content)
 		try:	
-			await sys_channel.send(content=member.mention, file=discord.File('leave.png'))
+			await sys_channel.send(file=discord.File('leave.png'))
 		except discord.Forbidden:
 			pass
 
