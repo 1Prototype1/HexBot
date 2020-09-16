@@ -1,8 +1,8 @@
 import os
 import requests
-import json
 import asyncio
 from textwrap import TextWrapper
+from googletrans import Translator, LANGUAGES
 
 import discord
 from discord.ext import commands
@@ -11,6 +11,7 @@ class Media(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.header = {'Authorization': os.environ['Unsplash_Token']}
+		self.trans = Translator()
 
 	def fetchJSON(self, url, params={}, headers={}):
 		return requests.get(url, params=params, headers=headers).json()
@@ -192,6 +193,34 @@ class Media(commands.Cog):
 							await ctx.send('Please repeat')
 							continue
 					await ctx.send(response)
+
+	@commands.command(name='translate')
+	async def translate(self, ctx, *args):
+		if len(args)>0:
+			if args[0]=='--list':
+				lang = ''
+				for l in LANGUAGES:
+					lang = lang+str(l)+' ('+str(LANGUAGES[l]).title()+')\n'
+				embed = discord.Embed(title='List of supported languages', description=str(lang), colour=discord.Colour(0x5DADEC))
+				await ctx.send(embed=embed)
+			elif len(args)>1:
+				destination = args[0]
+				try:
+					toTrans = ' '.join(args[1:len(args)])
+				except IndexError:
+					await ctx.send('No text to translate :x:')
+				try:
+					async with ctx.typing():
+						translation = self.trans.translate(toTrans, dest=destination)
+					embed = discord.Embed(description=translation.text, colour=discord.Colour(0x5DADEC))
+					embed.set_footer(text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')
+					await ctx.send(embed=embed)
+				except Exception as e:
+					return await ctx.send('Unable to translate :x:\nMaybe language id was wrong')
+			else:
+				await ctx.send(content='Please add a language id\nType `~translate --list` for the list')
+		else:
+			await ctx.send(content='Please add translations\neg.`~translate en Hola`\nType `~translate --list` for supported languages.')
 
 
 def setup(bot):
