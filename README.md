@@ -1,4 +1,4 @@
-![Deploy Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Deploy&logo=heroku) ![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=heroku) ![Python](https://img.shields.io/badge/python-v3.7.9-blue?logo=python&logoColor=ffe873) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) [![Servers](https://img.shields.io/badge/servers-14-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344)
+![Deploy Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Deploy&logo=heroku) ![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=heroku) ![Python](https://img.shields.io/badge/python-v3.7.9-blue?logo=python&logoColor=ffe873) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) [![Servers](https://img.shields.io/badge/servers-16-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344)
 # HexBot
 A Relatively Simply Awesome Discord bot with Music, Games, Comics, Memes and other cool features. <br>
 This bot is made in Python 3.7 using [discord.py](https://github.com/Rapptz/discord.py).<br>
@@ -63,6 +63,8 @@ server <serv> - Get server info
 shorten|url   - Shorten an URL
 support       - Contact Bot owner
 trace <ip>    - Locate IP address
+translate     - Translate the text
+    <id><txt>
 user @user    - Get user info
 wallpaper     - Get wallpaper
 weather <loc> - Get weather of location
