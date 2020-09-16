@@ -1,6 +1,8 @@
 import os
 import requests
 import asyncio
+import io
+from aiohttp import ClientSession
 from textwrap import TextWrapper
 from googletrans import Translator, LANGUAGES
 
@@ -12,6 +14,7 @@ class Media(commands.Cog):
 		self.bot = bot
 		self.header = {'Authorization': os.environ['Unsplash_Token']}
 		self.trans = Translator()
+		self.client = ClientSession()
 
 	def fetchJSON(self, url, params={}, headers={}):
 		return requests.get(url, params=params, headers=headers).json()
@@ -45,12 +48,13 @@ class Media(commands.Cog):
 		except IndexError:
 			return await ctx.send("Mention the person you want to trigger")
 
+		url = f"https://useless-api--vierofernando.repl.co/triggered?image={user.avatar_url_as(size=1024)}"
 		async with ctx.typing():
-			data = requests.get(f"https://useless-api--vierofernando.repl.co/triggered?image={user.avatar_url_as(size=1024)}")
-			with open('trigger.gif', 'wb') as img:
-				img.write(data.content)
-				
-		await ctx.send(file=discord.File('trigger.gif'))
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return await ctx.send('Failed to trigger :x:')
+				data = io.BytesIO(await r.read())
+		await ctx.send(file=discord.File(data, 'trigger.gif'))				
 
 	@commands.command(name='ascii')
 	async def ascii(self, ctx, image_link: str=""):
