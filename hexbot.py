@@ -1,6 +1,6 @@
 import os
 import datetime
-import requests
+from aiohttp import ClientSession
 
 import discord
 from discord.ext import commands
@@ -14,6 +14,7 @@ bot.remove_command('help')
 bot.uptime = datetime.datetime.now()
 bot.messages_in = bot.messages_out = 0
 bot.region = 'USA'
+bot.client = ClientSession()
 
 @bot.event
 async def on_ready():
@@ -54,11 +55,12 @@ async def on_member_join(member):
 					'avatar': str(member.avatar_url_as(size=512)),
 					'textcolor': 'green'
 					}
-		data = requests.get(url, params=params)
-		with open('welcome.png', 'wb') as img:
-			img.write(data.content)
+		async with bot.client.get(url, params=params) as r:
+			if r.status != 200:
+				return
+			data = io.BytesIO(await r.read())
 		try:	
-			await sys_channel.send(content=member.mention, file=discord.File('welcome.png'))
+			await sys_channel.send(content=member.mention, file=discord.File(data, 'welcome.png'))
 		except discord.Forbidden:
 			pass
 
@@ -75,11 +77,12 @@ async def on_member_remove(member):
 					'avatar': str(member.avatar_url_as(size=512)),
 					'textcolor': 'green'
 					}
-		data = requests.get(url, params=params)
-		with open('leave.png', 'wb') as img:
-			img.write(data.content)
+		async with bot.client.get(url, params=params) as r:
+			if r.status != 200:
+				return
+			data = io.BytesIO(await r.read())
 		try:	
-			await sys_channel.send(file=discord.File('leave.png'))
+			await sys_channel.send(file=discord.File(data, 'leave.png'))
 		except discord.Forbidden:
 			pass
 
