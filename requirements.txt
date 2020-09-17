@@ -10,5 +10,4 @@ aiopentdb
 speedtest-cli
 xkcd
 psutil
-requests
 googletrans
