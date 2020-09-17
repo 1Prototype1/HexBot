@@ -1,5 +1,4 @@
 import os
-import requests
 import asyncio
 import io
 from aiohttp import ClientSession
@@ -16,9 +15,6 @@ class Media(commands.Cog):
 		self.trans = Translator()
 		self.client = ClientSession()
 
-	def fetchJSON(self, url, params={}, headers={}):
-		return requests.get(url, params=params, headers=headers).json()
-
 	@commands.command(name='wallpaper', aliases=['wall'])
 	async def _wallpaper(self, ctx, *query: str):
 		"""Get wallpaper from Unsplash"""
@@ -28,17 +24,17 @@ class Media(commands.Cog):
 		else:
 			params['count'] = 3
 			params['featured'] = 'yes'
-
-		results = self.fetchJSON('https://api.unsplash.com/photos/random', params=params, headers=self.header)
-		try:
-			for r in results:
-				em = discord.Embed(colour=discord.Colour(0xFF355E))
-				em.set_image(url=r['urls']['raw'])
-				em.set_footer(text=f"{r['user']['name']} on Unsplash", icon_url='https://i.ibb.co/f4Xbgkv/lens.png')
-				await ctx.send(embed=em)
-		except Exception as e:
-			print(e)
-			await ctx.send('Error getting wallpaper :disappointed_relieved:')
+		url = 'https://api.unsplash.com/photos/random'
+		async with self.client.get(url, params=params, headers=self.header) as r:
+			if r.status != 200:
+				return await ctx.send('Error getting wallpaper :disappointed_relieved:')
+			else:
+				results = await r.json()
+		for r in results:
+			em = discord.Embed(color=discord.Color(0xFF355E))
+			em.set_image(url=r['urls']['raw'])
+			em.set_footer(text=f"{r['user']['name']} on Unsplash", icon_url='https://i.ibb.co/f4Xbgkv/lens.png')
+			await ctx.send(embed=em)
 
 	@commands.command(name='trigger')
 	async def trigger(self, ctx):
@@ -67,29 +63,30 @@ class Media(commands.Cog):
 			image_link = user.avatar_url_as(size=1024)
 		except IndexError:
 			pass
-		try:
-			result = requests.get(f'https://useless-api--vierofernando.repl.co/imagetoascii?image={image_link}').text.replace('<br>','\n')
-		except:
-			return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
 
-		ascii_file = open("ascii.txt", "w")
-		n = ascii_file.write(result)
-		ascii_file.close()
+		url = 'https://useless-api--vierofernando.repl.co/imagetoascii'
+		async with self.client.get(url, params={'image': str(image_link)}) as r:
+			if r.status != 200:
+				return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
+			else:
+				result = await r.text()
+				ascii_file = io.StringIO(result.replace('<br>', '\n'))
 
-		file = discord.File('ascii.txt')
-		em = discord.Embed(color=discord.Colour(0xFFFF66))
+		em = discord.Embed(color=discord.Color(0xFFFF66))
 		em.set_thumbnail(url=image_link)
-		await ctx.send(file=file, embed=em)
+		await ctx.send(file=discord.File(ascii_file, 'ascii.txt'), embed=em)
 
 	@commands.command(name='encode', aliases=['encrypt', 'style'])
-	async def _encode(self, ctx, *, text: str):
+	async def _encode(self, ctx, *, text: str=""):
 		"""Encode given text"""
 		if not text:
 			return await ctx.send('Please provide text :pager:')
 
 		async with ctx.typing():
 			try:
-				result = self.fetchJSON('https://useless-api--vierofernando.repl.co/encode', params={'text': text})
+				url = 'https://useless-api--vierofernando.repl.co/encode'
+				async with self.client.get(url, params={'text': text}) as r:
+					result = await r.json()
 			except:
 				return await ctx.send('Failed to encode :x:')
 
@@ -132,7 +129,8 @@ class Media(commands.Cog):
 			params = {'pokemon': name}
 		try:
 			async with ctx.typing():
-				data = self.fetchJSON(url, params=params)
+				async with self.client.get(url, params=params) as r:
+					data = await r.json()
 		except Exception:
 			return await ctx.send('Pokemon not found :x:')
 		else:
@@ -166,7 +164,8 @@ class Media(commands.Cog):
 			url = 'http://' + url
 		try:
 			async with ctx.typing():
-				data = requests.post('https://rel.ink/api/links/', data={'url': url}).json()
+				async with self.client.post('https://rel.ink/api/links/', data={'url': url}) as r:
+					data = await r.json()
 			if data.get('hashid'):
 				return await ctx.send(f"Url: `{data['url']}`\nShort: https://rel.ink/{data['hashid']}")
 		except:
@@ -179,6 +178,7 @@ class Media(commands.Cog):
 			return m.author == ctx.author and not m.content.startswith('~')
 
 		await ctx.send("Let's chat")
+		url = 'https://some-random-api.ml/chatbot'
 		while True:
 			try:
 				params = {'message': 'message'}
@@ -190,12 +190,14 @@ class Media(commands.Cog):
 					return await ctx.send("Bye :wave:")
 				else:
 					params['message'] = msg.content
-					async with ctx.typing():
-						try:
-							response = self.fetchJSON('https://some-random-api.ml/chatbot', params=params)['response']
-						except:
-							await ctx.send('Please repeat')
-							continue
+					try:
+						async with ctx.typing():
+							async with self.client.get(url, params=params) as r:
+								response = await r.json()
+								response = response['response']
+					except:
+						await ctx.send('Please repeat')
+						continue
 					await ctx.send(response)
 
 	@commands.command(name='translate')
@@ -205,7 +207,7 @@ class Media(commands.Cog):
 				lang = ''
 				for l in LANGUAGES:
 					lang = lang+str(l)+' ('+str(LANGUAGES[l]).title()+')\n'
-				embed = discord.Embed(title='List of supported languages', description=str(lang), colour=discord.Colour(0x5DADEC))
+				embed = discord.Embed(title='List of supported languages', description=str(lang), color=discord.Color(0x5DADEC))
 				await ctx.send(embed=embed)
 			elif len(args)>1:
 				destination = args[0]
@@ -216,7 +218,7 @@ class Media(commands.Cog):
 				try:
 					async with ctx.typing():
 						translation = self.trans.translate(toTrans, dest=destination)
-					embed = discord.Embed(description=translation.text, colour=discord.Colour(0x5DADEC))
+					embed = discord.Embed(description=translation.text, color=discord.Color(0x5DADEC))
 					embed.set_footer(text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')
 					await ctx.send(embed=embed)
 				except Exception as e:
