@@ -1,4 +1,5 @@
 import os
+import io
 import datetime
 from aiohttp import ClientSession
 
