@@ -15,10 +15,10 @@ bot.remove_command('help')
 bot.uptime = datetime.datetime.now()
 bot.messages_in = bot.messages_out = 0
 bot.region = 'USA'
-bot.client = ClientSession()
 
 @bot.event
 async def on_ready():
+	bot.client = ClientSession()
 	print('Logged in as {0} ({0.id})'.format(bot.user))
 	print('Bot.....Activated')
 	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
