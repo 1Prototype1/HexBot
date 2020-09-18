@@ -256,5 +256,21 @@ class Media(commands.Cog):
 			data = io.BytesIO(await r.read())
 		await ctx.send(file=discord.File(data, 'drake.png'))
 
+	@commands.command(name='color', aliases=['palette'])
+	async def palette(self, ctx, hexcode: str=''):
+		"""Get palette from HEX"""
+		if not hexcode:
+			return await ctx.send('Enter hexcode of color :paintbrush:')
+
+		if hexcode.startswith('#'):
+			hexcode = hexcode[1:]
+		url = 'https://api.alexflipnote.dev/color/image/gradient/' + hexcode
+		async with self.client.get(url) as r:
+			if r.status != 200:
+				return await ctx.send('Wrong color hexcode :x:')
+			data = io.BytesIO(await r.read())
+		await ctx.send(file=discord.File(data, 'palette.png'))
+
+
 def setup(bot):
 	bot.add_cog(Media(bot))
