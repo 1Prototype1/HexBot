@@ -28,6 +28,7 @@ volume        - Changes the player's volume
 8ball         - Magic 8Ball!
     <question>
 ai            - Start AI chat
+drake <a, b>  - Generate Drake meme
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 hangman       - Play Hangman
@@ -58,10 +59,12 @@ encode <txt>  - Encode and style the text
 help          - Display this message
 list          - Displays the list of
                 voice connected users
+palette <hex> - Get color palette
 ping|latency  - Pong!
 server <serv> - Get server info
 shorten|url   - Shorten an URL
 support       - Contact Bot owner
+textart       - Generate text art
 trace <ip>    - Locate IP address
 translate     - Translate the text
     <id><txt>
