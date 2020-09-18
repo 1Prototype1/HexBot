@@ -202,6 +202,7 @@ class Media(commands.Cog):
 
 	@commands.command(name='translate')
 	async def translate(self, ctx, *args):
+		"""Translator"""
 		if len(args)>0:
 			if args[0]=='--list':
 				lang = ''
@@ -228,6 +229,15 @@ class Media(commands.Cog):
 		else:
 			await ctx.send(content='Please add translations\neg.`~translate en Hola`\nType `~translate --list` for supported languages.')
 
+	@commands.command(name='au')
+	async def font_generator(self, ctx, text:str=""):
+		"""Generate cool font"""
+		if not text:
+			return await ctx.send('Please enter text')
+		
+		em = discord.Embed(color=discord.Color(0xFF355E))
+		em.set_image(url=f'https://gdcolon.com/tools/gdfont/img/{text}?font=2&color=00ffff')
+		await ctx.send(embed=em)
 
 def setup(bot):
 	bot.add_cog(Media(bot))
