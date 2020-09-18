@@ -236,7 +236,7 @@ class Media(commands.Cog):
 			return await ctx.send('Please enter text')
 		
 		em = discord.Embed(color=discord.Color(0xFF355E))
-		em.set_image(url=f'https://gdcolon.com/tools/gdfont/img/{text}?font=2&color=00ffff')
+		em.set_image(url=f'https://gdcolon.com/tools/gdfont/img/{text}?font=3&color=00ffff')
 		await ctx.send(embed=em)
 
 def setup(bot):
