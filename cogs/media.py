@@ -242,5 +242,19 @@ class Media(commands.Cog):
 			data = io.BytesIO(await r.read())
 		await ctx.send(file=discord.File(data, 'textart.png'))
 
+	@commands.command(name='drake')
+	async def drake(self, ctx, *, text: str=''):
+		"""Drake meme generator"""
+		text = text.split(',')
+		if len(text) != 2:
+			return await ctx.send('Please specify `,` separated two sentences :page_facing_up:')
+		url = 'https://api.alexflipnote.dev/drake'
+		params = {'top': text[0], 'bottom': text[1]}
+		async with self.client.get(url, params=params) as r:
+			if r.status != 200:
+				return await ctx.send('Failed to generate meme :disappointed_relieved:')
+			data = io.BytesIO(await r.read())
+		await ctx.send(file=discord.File(data, 'drake.png'))
+
 def setup(bot):
 	bot.add_cog(Media(bot))
