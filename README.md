@@ -29,6 +29,7 @@ volume        - Changes the player's volume
     <question>
 ai            - Start AI chat
 drake <a, b>  - Generate Drake meme
+filter        - Apply filters to image
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 hangman       - Play Hangman
