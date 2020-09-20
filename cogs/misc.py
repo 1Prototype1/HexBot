@@ -132,6 +132,13 @@ class Misc(commands.Cog):
 		await info.owner.send(embed=embed)
 		await ctx.send("Bot owner notified!")
 
+	@commands.command(name='tts')
+	async def _tts(self, ctx, *, text=''):
+		"""Send tts message"""
+		if not text:
+			return await ctx.send('Specify message to send')
+		await ctx.send(content=text, tts=True)
+
 	@commands.command(name = 'userinfo', aliases=['user', 'uinfo', 'ui'])
 	async def userinfo(self, ctx, *, name=""):
 		"""Get user info. Ex: ~user @user"""
