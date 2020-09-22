@@ -416,7 +416,7 @@ class Music(commands.Cog):
 		player.volume = vol / 100
 		await ctx.send(f'**`{ctx.author}`**: Set the volume to **{vol}%**')
 
-	@commands.command(name='stop', aliases=['dis', 'disconnect'])
+	@commands.command(name='stop', aliases=['dis', 'disconnect', 'leave'])
 	async def stop_(self, ctx):
 		"""Stop the currently playing song and destroy the player.
 		!Warning!
