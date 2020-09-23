@@ -297,5 +297,16 @@ class Media(commands.Cog):
 
 		await ctx.send(file=discord.File(data, 'filter.png'))
 
+	@commands.command(name='fml')
+	async def fml(self, ctx):
+		"""FML generators"""
+		url = 'https://api.alexflipnote.dev/fml'
+		async with ctx.typing():
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return await ctx.send('Failed to get FML :disappointed_relieved:')
+				data = await r.json()
+		await ctx.send(f"{data['text']} :person_facepalming_tone1:")
+
 def setup(bot):
 	bot.add_cog(Media(bot))
