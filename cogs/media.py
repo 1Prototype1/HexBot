@@ -345,6 +345,17 @@ class Media(commands.Cog):
 
 		await ctx.send(file=discord.File(data, 'bill.png'))
 
+	@commands.command(name='advice')
+	async def advice(self, ctx):
+		"""Random Advice generator"""
+		url = 'https://api.adviceslip.com/advice'
+		async with ctx.typing():
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return ctx.send('Unable to generate bill :disappointed_relieved')
+				data = await r.json(content_type='text/html')
+
+		await ctx.send(data['slip']['advice'])
 
 
 def setup(bot):
