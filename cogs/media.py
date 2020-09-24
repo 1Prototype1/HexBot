@@ -308,5 +308,21 @@ class Media(commands.Cog):
 				data = await r.json()
 		await ctx.send(f"{data['text']} :person_facepalming_tone1:")
 
+	@commands.command(name='insult', aliases=['roast'])
+	async def insult(self, ctx):
+		"""Insult generator"""
+		url = 'https://evilinsult.com/generate_insult.php?lang=en&type=json'
+		try:
+			user = ctx.message.mentions[0]
+		except IndexError:
+			return await ctx.send("Mention the person you want to insult")
+		async with ctx.typing():
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return await ctx.send('Failed to insult :disappointed_relieved:')
+				data = await r.json(content_type='text/html')
+		await ctx.send(f"{user.mention}{data['insult']}")
+
+
 def setup(bot):
 	bot.add_cog(Media(bot))
