@@ -311,7 +311,7 @@ class Media(commands.Cog):
 	@commands.command(name='insult', aliases=['roast'])
 	async def insult(self, ctx):
 		"""Insult generator"""
-		url = 'https://evilinsult.com/generate_insult.php?lang=en&type=json'
+		url = 'https://www.rappad.co/api/battles/random_insult'
 		try:
 			user = ctx.message.mentions[0]
 		except IndexError:
@@ -320,8 +320,10 @@ class Media(commands.Cog):
 			async with self.client.get(url) as r:
 				if r.status != 200:
 					return await ctx.send('Failed to insult :disappointed_relieved:')
-				data = await r.json(content_type='text/html')
-		await ctx.send(f"{user.mention} {data['insult']}")
+				data = await r.json()
+
+		insult_text = '. '.join(map(lambda s: s.strip().capitalize(), data['insult'].split('.')))
+		await ctx.send(f"{user.mention} {insult_text}")
 
 	@commands.command(name='bill')
 	async def _bill(self, ctx, name=''):
