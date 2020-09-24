@@ -41,7 +41,7 @@ pokedex       - Get Pokémon info
 poll          - Create a quick poll
     <question> <choices>
 quiz|trivia   - Start a quiz game
-roast user    - Roasts the mentioned user
+roast @user   - Roasts the mentioned user
 rps           - Play Rock, Paper, Scissors
 tally         - Tally the created poll
 tinder @u1@u2 - Get Tinder image
