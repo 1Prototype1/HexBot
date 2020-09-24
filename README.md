@@ -30,6 +30,7 @@ volume        - Changes the player's volume
 ai            - Start AI chat
 drake <a, b>  - Generate Drake meme
 filter        - Apply filters to image
+fml           - Generate FML
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 hangman       - Play Hangman
@@ -40,6 +41,7 @@ pokedex       - Get Pokémon info
 poll          - Create a quick poll
     <question> <choices>
 quiz|trivia   - Start a quiz game
+roast user    - Roasts the mentioned user
 rps           - Play Rock, Paper, Scissors
 tally         - Tally the created poll
 tinder @u1@u2 - Get Tinder image

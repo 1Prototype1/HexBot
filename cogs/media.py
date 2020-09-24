@@ -321,7 +321,7 @@ class Media(commands.Cog):
 				if r.status != 200:
 					return await ctx.send('Failed to insult :disappointed_relieved:')
 				data = await r.json(content_type='text/html')
-		await ctx.send(f"{user.mention}{data['insult']}")
+		await ctx.send(f"{user.mention} {data['insult']}")
 
 
 def setup(bot):
