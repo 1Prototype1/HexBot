@@ -40,7 +40,7 @@ async def on_message(message):
 async def on_guild_join(guild):
 	for channel in guild.text_channels:
 		if channel.permissions_for(guild.me).send_messages:
-			await channel.send('Hey there! Thank you for adding me\nStart by typing `~help`')
+			await channel.send('Hey there! Thank you for adding me!\nMy prefix is `~`\nStart by typing `~help`')
 			break
 
 @bot.event
