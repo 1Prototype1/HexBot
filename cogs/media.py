@@ -323,6 +323,27 @@ class Media(commands.Cog):
 				data = await r.json(content_type='text/html')
 		await ctx.send(f"{user.mention} {data['insult']}")
 
+	@commands.command(name='bill')
+	async def _bill(self, ctx, name=''):
+		"""Bill meme generator"""
+		url = 'https://belikebill.ga/billgen-API.php'
+		params = {'default': 1}
+		try:
+			name = ctx.message.mentions[0].display_name
+		except IndexError:
+			pass
+		if name:
+			params['name'] = name
+
+		async with ctx.typing():
+			async with self.client.get(url, params=params) as r:
+				if r.status != 200:
+					return ctx.send('Unable to generate bill :disappointed_relieved')
+				data = io.BytesIO(await r.read())
+
+		await ctx.send(file=discord.File(data, 'bill.png'))
+
+
 
 def setup(bot):
 	bot.add_cog(Media(bot))
