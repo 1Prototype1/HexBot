@@ -357,6 +357,27 @@ class Media(commands.Cog):
 
 		await ctx.send(data['slip']['advice'])
 
+	@commands.command(name='bored', aliases=['suggest'])
+	async def advice(self, ctx):
+		"""Random Suggestions"""
+		url = 'https://www.boredapi.com/api/activity'
+		async with ctx.typing():
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return await ctx.send('Unable to get suggestions :disappointed_relieved:')
+				data = await r.json()
+
+		desc = []
+		desc.append(f"**Type:** `{data['type'].title()}`")
+		desc.append(f"**Participants:** `{data['participants']}`")
+		desc.append(f"**Price:** `{data['price']}`")
+		desc.append(f"**Accessibility:** `{data['accessibility']}`")
+		em = discord.Embed(color=discord.Color(0xAAF0D1), description='\n'.join(desc))
+		em.set_author(name=data['activity'], url=data['link'])
+		em.set_footer(text=f"Suggestion for {ctx.message.author.display_name}", icon_url=ctx.message.author.avatar_url)
+
+		await ctx.send(embed=em)
+
 
 def setup(bot):
 	bot.add_cog(Media(bot))
