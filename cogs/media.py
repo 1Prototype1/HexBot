@@ -368,7 +368,7 @@ class Media(commands.Cog):
 		await ctx.send(data['slip']['advice'])
 
 	@commands.command(name='bored', aliases=['suggest'])
-	async def advice(self, ctx):
+	async def suggest(self, ctx):
 		"""Random Suggestions"""
 		url = 'https://www.boredapi.com/api/activity'
 		async with ctx.typing():
