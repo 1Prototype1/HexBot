@@ -388,6 +388,26 @@ class Media(commands.Cog):
 
 		await ctx.send(embed=em)
 
+	@commands.command(name='rhyme')
+	async def rhyme(self, ctx, word=""):
+		if not word:
+			return await ctx.send("Specify a word :thought_balloon:")
+
+		url = 'https://rhymebrain.com/talk'
+		params =	{'function': 'getRhymes',
+					 'word': word.strip()}
+		async with ctx.typing():
+			async with self.client.get(url, params=params) as r:
+				if r.status != 200:
+					return ctx.send('Failed to get rhymes :x:')
+				data = await r.json()
+			result = []
+			for i in data[:30]:
+				result.append(i['word'])
+		await ctx.send(f'Word that rhyme with **{word}**\n' + f"`{', '.join(result)}`")
+
+
+
 
 def setup(bot):
 	bot.add_cog(Media(bot))
