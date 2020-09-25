@@ -406,7 +406,27 @@ class Media(commands.Cog):
 				result.append(i['word'])
 		await ctx.send(f'Word that rhyme with **{word}**\n' + f"`{', '.join(result)}`")
 
+	@commands.command(name='wordinfo', aliases=['pronunciation', 'pron', 'word'])
+	async def wordinfo(self, ctx, word=""):
+		if not word:
+			return await ctx.send("Specify a word :thought_balloon:")
 
+		url = 'https://rhymebrain.com/talk'
+		params =	{'function': 'getWordInfo',
+					 'word': word.strip()}
+		async with ctx.typing():
+			async with self.client.get(url, params=params) as r:
+				if r.status != 200:
+					return ctx.send('Failed to get rhymes :x:')
+				data = await r.json()
+			result = [f"**Word:** {data['word']}"]
+			result.append(f"**Pronunciation:** {data['ipa']}")
+			result.append(f"**Frequency:** {data['freq']}")
+			if 'a' in data['flags']:
+				result.append("**Offensive:** Yes")
+			else:
+				result.append("**Offensive:** No")
+		await ctx.send('\n'.join(result))
 
 
 def setup(bot):
