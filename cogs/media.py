@@ -256,7 +256,7 @@ class Media(commands.Cog):
 			data = io.BytesIO(await r.read())
 		await ctx.send(file=discord.File(data, 'drake.png'))
 
-	@commands.command(name='color', aliases=['palette'])
+	@commands.command(name='palette', aliases=['color', 'colour'])
 	async def palette(self, ctx, hexcode: str=''):
 		"""Get palette from HEX"""
 		if not hexcode:
@@ -264,12 +264,22 @@ class Media(commands.Cog):
 
 		if hexcode.startswith('#'):
 			hexcode = hexcode[1:]
-		url = 'https://api.alexflipnote.dev/color/image/gradient/' + hexcode
-		async with self.client.get(url) as r:
-			if r.status != 200:
-				return await ctx.send('Wrong color hexcode :x:')
-			data = io.BytesIO(await r.read())
-		await ctx.send(file=discord.File(data, 'palette.png'))
+		url = 'https://api.alexflipnote.dev/color/' + hexcode
+		async with ctx.typing():
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return await ctx.send('Invalid hexcode :x:')
+				data = await r.json()
+			em = discord.Embed(color=discord.Color(int(hexcode, 16)))
+			em.set_thumbnail(url=data['image'])
+			em.add_field(name='Name', value=data['name'])
+			em.add_field(name='Brightness', value=data['brightness'])
+			em.add_field(name='B or W', value=data['blackorwhite_text'])
+			em.add_field(name='Hex', value=data['hex'])
+			em.add_field(name='RGB', value=data['rgb'])
+			em.add_field(name='Int', value=data['int'])
+			em.set_image(url=data['image_gradient'])
+		await ctx.send(embed=em)
 
 	@commands.command(name='filter', aliases=['blur', 'invert', 'b&w', 'deepfry', 'sepia', 'pixelate', 'magik', 'jpegify', 'wide', 'snow', 'gay', 'communist'])
 	async def filter(self, ctx, arg='', image_link=''):
