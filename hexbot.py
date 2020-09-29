@@ -10,7 +10,8 @@ from utils import canvas
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
-					case_insensitive=True)
+					case_insensitive=True,
+					intents=discord.Intents.all())
 
 bot.remove_command('help')
 
