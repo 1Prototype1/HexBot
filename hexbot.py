@@ -49,45 +49,27 @@ async def on_guild_join(guild):
 async def on_member_join(member):
 	sys_channel = member.guild.system_channel
 	if sys_channel:
-		url = 'https://some-random-api.ml/welcome/img/4/stars'
-		params = 	{'type': 'join',
-					'username': str(member.name),
-					'discriminator': str(member.discriminator),
-					'guildName': 'HexBot',
-					'memberCount': '16',
-					'avatar': str(member.avatar_url_as(size=512)),
-					'textcolor': 'green'
-					}
-		async with bot.client.get(url, params=params) as r:
-			if r.status != 200:
-				return
-			data = io.BytesIO(await r.read())
-		try:	
-			await sys_channel.send(content=member.mention, file=discord.File(data, 'welcome.png'))
-		except discord.Forbidden:
-			pass
+		data = await canvas.member_banner('Welcome', str(member), str(member.avatar_url_as(format='png', size=256)))
+		with io.BytesIO() as img:
+			data.save(img, 'PNG')
+			img.seek(0)
+			try:
+				await sys_channel.send(content=member.mention, file=discord.File(fp=img, filename='welcome.png'))
+			except discord.Forbidden:
+				pass
 
 @bot.event
 async def on_member_remove(member):
 	sys_channel = member.guild.system_channel
 	if sys_channel:
-		url = 'https://some-random-api.ml/welcome/img/4/stars'
-		params = 	{'type': 'leave',
-					'username': str(member.name),
-					'discriminator': str(member.discriminator),
-					'guildName': 'HexBot',
-					'memberCount': '16',
-					'avatar': str(member.avatar_url_as(size=512)),
-					'textcolor': 'green'
-					}
-		async with bot.client.get(url, params=params) as r:
-			if r.status != 200:
-				return
-			data = io.BytesIO(await r.read())
-		try:	
-			await sys_channel.send(file=discord.File(data, 'leave.png'))
-		except discord.Forbidden:
-			pass
+		data = await canvas.member_banner('Bye Bye', str(member), str(member.avatar_url_as(format='png', size=256)))
+		with io.BytesIO() as img:
+			data.save(img, 'PNG')
+			img.seek(0)
+			try:
+				await sys_channel.send(file=discord.File(fp=img, filename='leave.png'))
+			except discord.Forbidden:
+				pass
 
 @bot.command(name='help', aliases=['h'])
 async def help(ctx):
@@ -107,15 +89,9 @@ async def help(ctx):
 	except Exception:
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
-	data = await canvas.member_banner('Welcome', ctx.author.name, str(ctx.author.avatar_url_as(format='png', size=256)))
-	with io.BytesIO() as img:
-		data.save(img, 'PNG')
-		img.seek(0)
-		await ctx.send(file=discord.File(fp=img, filename='banner.png'))
-
 # Load Modules
-# modules = ['misc', 'games', 'music', 'debug', 'media']
-modules =[]
+modules = ['misc', 'games', 'music', 'debug', 'media']
+
 try:
 	for module in modules:
 		bot.load_extension('cogs.' + module)

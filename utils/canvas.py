@@ -22,7 +22,7 @@ async def member_banner(top='toptxt', bottom='bottomtxt', url='', txtcolor='#00f
 
 	profile = Image.new('RGBA', im.size)
 	profile.paste(im, (0, 0), mask)
-	profile = profile.resize((200,200))
+	profile = profile.resize((150, 150))
 
 	# get base image
 	base = Image.open("utils/hex_banner.png").convert("RGBA")
@@ -42,7 +42,7 @@ async def member_banner(top='toptxt', bottom='bottomtxt', url='', txtcolor='#00f
 	d.text(((600-w_bottom)//2,240), bottom, font=fnt, fill=txtcolor)
 
 	out = Image.alpha_composite(base, txt)
-	out.paste(profile, (200,50), profile)
+	out.paste(profile, (225, 75), profile)
 
 	# out.show()
 	return out
