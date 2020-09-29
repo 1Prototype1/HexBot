@@ -6,6 +6,8 @@ from aiohttp import ClientSession
 import discord
 from discord.ext import commands
 
+from utils import canvas
+
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
 					case_insensitive=True)
@@ -105,8 +107,15 @@ async def help(ctx):
 	except Exception:
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
+	data = await canvas.member_banner('Welcome', ctx.author.name, str(ctx.author.avatar_url_as(format='png', size=256)))
+	with io.BytesIO() as img:
+		data.save(img, 'PNG')
+		img.seek(0)
+		await ctx.send(file=discord.File(fp=img, filename='banner.png'))
+
 # Load Modules
-modules = ['misc', 'games', 'music', 'debug', 'media']
+# modules = ['misc', 'games', 'music', 'debug', 'media']
+modules =[]
 try:
 	for module in modules:
 		bot.load_extension('cogs.' + module)

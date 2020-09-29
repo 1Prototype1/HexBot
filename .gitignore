@@ -6,3 +6,4 @@ __pycache__
 !cogs/*.py
 !hexbot.py
 !games/*.py
+!utils/*.py
