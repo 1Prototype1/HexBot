@@ -4,7 +4,6 @@ git+https://github.com/1Prototype1/Sv443s-JokeAPI-Python-Wrapper.git
 dnspython>=1.16.0
 PyNaCl>=1.4.0
 async-timeout>=3.0.1
-youtube_dl
 fortune
 aiopentdb
 speedtest-cli
@@ -12,3 +11,4 @@ xkcd
 psutil
 googletrans
 Pillow
+lavalink

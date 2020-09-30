@@ -7,8 +7,9 @@ import discord
 from discord.ext import commands
 
 from utils import canvas
+from subprocess import Popen
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("."),
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
 					case_insensitive=True,
 					intents=discord.Intents.all())
@@ -22,7 +23,11 @@ bot.region = 'USA'
 @bot.event
 async def on_ready():
 	bot.client = ClientSession()
-	bot.load_extension('cogs.musica')
+
+	bot.load_extension('cogs.music')
+	process = Popen(['java', '-jar', 'Lavalink.jar']) # Start Lavalink
+	print('Loaded: music')
+
 	print('Logged in as {0} ({0.id})'.format(bot.user))
 	print('Bot.....Activated')
 	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
@@ -92,8 +97,7 @@ async def help(ctx):
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
 # Load Modules
-modules = ['misc', 'games', 'music', 'debug', 'media']
-modules = []
+modules = ['misc', 'games', 'debug', 'media']
 
 try:
 	for module in modules:
