@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from utils import canvas
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("."),
 					description='Relatively simply awesome bot.',
 					case_insensitive=True,
 					intents=discord.Intents.all())
@@ -22,6 +22,7 @@ bot.region = 'USA'
 @bot.event
 async def on_ready():
 	bot.client = ClientSession()
+	bot.load_extension('cogs.musica')
 	print('Logged in as {0} ({0.id})'.format(bot.user))
 	print('Bot.....Activated')
 	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
@@ -92,6 +93,7 @@ async def help(ctx):
 
 # Load Modules
 modules = ['misc', 'games', 'music', 'debug', 'media']
+modules = []
 
 try:
 	for module in modules:
