@@ -160,16 +160,23 @@ class Music(commands.Cog):
 		song = 'Nothing'
 
 		if player.current:
-			pos = lavalink.format_time(player.position)
+			count = player.position
+			pos = lavalink.format_time(count)
 			if player.current.stream:
 				dur = 'LIVE'
+				total = count
 			else:
-				dur = lavalink.format_time(player.current.duration)
+				total = player.current.duration
+				dur = lavalink.format_time(total)
 				if pos == dur:
+					count = 0
 					pos = '00:00:00'
 				dur = dur.lstrip('00:')
 				pos = pos[-len(dur):]
-			song = f'[{player.current.title}]({player.current.uri})\n`{pos}/{dur}`'
+			bar_len = 30 # bar length
+			filled_len = int(bar_len * count // float(total))
+			bar = '═' * filled_len + '◈' + '─' * (bar_len - filled_len)
+			song = f'[{player.current.title}]({player.current.uri})\n`{pos} {bar} {dur}`'
 
 		em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
 		em.set_author(name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
