@@ -105,7 +105,11 @@ class Music(commands.Cog):
 			em.set_thumbnail(url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
 
 			em.add_field(name='Channel', value=track['info']['author'])
-			em.add_field(name='Duration', value=lavalink.format_time(track['info']['length']).lstrip('00:'))
+			if track['info']['isStream']:
+				duration = 'Live'
+			else:
+				duration = lavalink.format_time(track['info']['length']).lstrip('00:')
+			em.add_field(name='Duration', value=duration)
 
 			track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
 			player.add(requester=ctx.author.id, track=track)
@@ -164,11 +168,12 @@ class Music(commands.Cog):
 			pos = lavalink.format_time(count)
 			if player.current.stream:
 				dur = 'LIVE'
+				pos = ''
 				total = count
 			else:
 				total = player.current.duration
 				dur = lavalink.format_time(total)
-				if pos == dur:
+				if pos == dur: # When called immediatly after enqueue
 					count = 0
 					pos = '00:00:00'
 				dur = dur.lstrip('00:')
