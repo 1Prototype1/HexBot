@@ -359,7 +359,7 @@ class Music(commands.Cog):
 			return await ctx.send('Specify `band gain` or `preset` :control_knobs:')
 		# Print final EQ settings
 		eq_frequencies = [f"`{gain}`" for gain in player.equalizer]
-		await ctx.send("Equalizer :control_knobs:\n" + ' '.join(eq_frequencies))
+		await ctx.send(":level_slider: Current Values:\n" + ' '.join(eq_frequencies))
 
 
 def setup(bot):
