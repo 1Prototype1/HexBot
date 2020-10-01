@@ -1,6 +1,7 @@
 import math
 import re
 import lavalink
+import ksoftapi
 import discord
 
 from discord.ext import commands
@@ -33,9 +34,7 @@ class Music(commands.Cog):
 		if isinstance(event, lavalink.events.QueueEndEvent):
 			guild_id = int(event.player.guild_id)
 			await self.connect_to(guild_id, None)
-		elif isinstance(event, lavalink.events.TrackEndEvent):
-			await event.player.ctx.send(event.reason)
-			await self.now(event.player.ctx)
+			await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
 	async def cog_before_invoke(self, ctx):
 		""" Command before-invoke handler. """
@@ -75,7 +74,7 @@ class Music(commands.Cog):
 		ws = self.bot._connection._get_websocket(guild_id)
 		await ws.voice_state(str(guild_id), channel_id)
 
-	@commands.command(aliases=['p'])
+	@commands.command(name='play', aliases=['p', 'sing'])
 	async def play(self, ctx, *, query):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -102,7 +101,6 @@ class Music(commands.Cog):
 			em.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
 		else:
 			track = results['tracks'][0]
-			print(track) # Delete this
 			em.title = 'Track Enqueued'
 			em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
 
@@ -114,9 +112,10 @@ class Music(commands.Cog):
 		if not player.is_playing:
 			await player.play()
 			player.ctx = ctx
+			await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 			await self.now(ctx)
 
-	@commands.command()
+	@commands.command(name='seek')
 	async def seek(self, ctx, time):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -143,7 +142,7 @@ class Music(commands.Cog):
 
 		await ctx.send(f'Moved track to **{lavalink.format_time(track_time)}**')
 
-	@commands.command(aliases=['forceskip', 'fs'])
+	@commands.command(name='skip', aliases=['forceskip', 'fs', 'next'])
 	async def skip(self, ctx):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -152,22 +151,20 @@ class Music(commands.Cog):
 
 		await ctx.send('⏭ | Skipped.')
 		await player.skip()
-		# # Queue not empty
-		# if player.is_playing:
-		# 	await self.now(ctx)
 
-	@commands.command()
-	async def stop(self, ctx):
-		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+	# @commands.command()
+	# async def stop(self, ctx):
+	# 	player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
-		if not player.is_playing:
-			return await ctx.send('Not playing.')
+	# 	if not player.is_playing:
+	# 		return await ctx.send('Not playing.')
 
-		player.queue.clear()
-		await player.stop()
-		await ctx.send('⏹ | Stopped.')
+	# 	player.queue.clear()
+	# 	await player.stop()
+	# 	await ctx.send('⏹ | Stopped.')
+	# 	await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
-	@commands.command(name='now', aliases=['np', 'n'])
+	@commands.command(name='now', aliases=['current', 'currentsong', 'playing', 'np'])
 	async def now(self, ctx):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 		song = 'Nothing'
@@ -187,8 +184,9 @@ class Music(commands.Cog):
 		em.set_footer(text=f"Requested by: {requester}", icon_url=requester.avatar_url)
 
 		await ctx.send(embed=em)
+		await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
-	@commands.command(aliases=['q'])
+	@commands.command(name='queue', aliases=['q', 'playlist'])
 	async def queue(self, ctx, page: int=1):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -225,7 +223,7 @@ class Music(commands.Cog):
 			await player.set_pause(True)
 			await ctx.message.add_reaction('⏸')
 
-	@commands.command(aliases=['vol'])
+	@commands.command(name='volume', aliases=['vol'])
 	async def volume(self, ctx, volume: int=None):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -235,7 +233,7 @@ class Music(commands.Cog):
 		await player.set_volume(volume)
 		await ctx.send(f'🔈 | Set to {player.volume}%')
 
-	@commands.command()
+	@commands.command(name='shuffle')
 	async def shuffle(self, ctx):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -246,7 +244,7 @@ class Music(commands.Cog):
 
 		await ctx.send('🔀 | Shuffle ' + ('enabled' if player.shuffle else 'disabled'))
 
-	@commands.command()
+	@commands.command(name='repeat')
 	async def repeat(self, ctx):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -257,7 +255,7 @@ class Music(commands.Cog):
 
 		await ctx.send('🔁 | Repeat ' + ('enabled' if player.repeat else 'disabled'))
 
-	@commands.command()
+	@commands.command(name='remove', aliases=['dequeue', 'pop'])
 	async def remove(self, ctx, index: int):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -272,7 +270,7 @@ class Music(commands.Cog):
 
 		await ctx.send('Removed **' + removed.title + '** from the queue.')
 
-	@commands.command(aliases=['dc'])
+	@commands.command(name='disconnect', aliases=['dis', 'stop', 'leave'])
 	async def disconnect(self, ctx):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -288,6 +286,7 @@ class Music(commands.Cog):
 		# Disconnect from the voice channel.
 		await self.connect_to(ctx.guild.id, None)
 		await ctx.send('Disconnected :mute:')
+		await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
 
 def setup(bot):
