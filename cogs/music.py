@@ -1,13 +1,9 @@
 import os
-import math
-import re
 import lavalink
 import ksoftapi
 import discord
 
 from discord.ext import commands
-
-time_rx = re.compile('[0-9]+')
 
 class Music(commands.Cog):
 	def __init__(self, bot):
@@ -122,29 +118,19 @@ class Music(commands.Cog):
 			await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
 	@commands.command(name='seek')
-	async def seek(self, ctx, time):
+	async def seek(self, ctx, seconds=None):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.is_playing:
 			return await ctx.send('Not playing.')
 
-		pos = '+'
-		if time.startswith('-'):
-			pos = '-'
-
-		seconds = time_rx.search(time)
-
 		if not seconds:
-			return await ctx.send('You need to specify the amount of seconds to skip :fast_forward:')
-
-		seconds = int(seconds.group()) * 1000
-
-		if pos == '-':
-			seconds = seconds * -1
-
-		track_time = player.position + seconds
-
-		await player.seek(track_time)
+			return await ctx.send('You need to specify the amount of seconds to seek :fast_forward:')
+		try:
+			track_time = player.position + int(seconds) * 1000
+			await player.seek(track_time)
+		except ValueError:
+			return await ctx.send('Specify valid amount of seconds :clock3:')
 
 		await ctx.send(f'Moved track to **{lavalink.format_time(track_time)}**')
 
