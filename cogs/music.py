@@ -1,3 +1,4 @@
+import os
 import math
 import re
 import lavalink
@@ -14,6 +15,7 @@ def mstomin(input):
 class Music(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 
 		if not hasattr(bot, 'lavalink'):
 			bot.lavalink = lavalink.Client(bot.user.id)
@@ -103,6 +105,7 @@ class Music(commands.Cog):
 			track = results['tracks'][0]
 			em.title = 'Track Enqueued'
 			em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
+			em.set_thumbnail(url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
 
 			track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
 			player.add(requester=ctx.author.id, track=track)
@@ -129,7 +132,7 @@ class Music(commands.Cog):
 		seconds = time_rx.search(time)
 
 		if not seconds:
-			return await ctx.send('You need to specify the amount of seconds to skip!')
+			return await ctx.send('You need to specify the amount of seconds to skip :fast_forward:')
 
 		seconds = int(seconds.group()) * 1000
 
@@ -152,18 +155,6 @@ class Music(commands.Cog):
 		await ctx.send('⏭ | Skipped.')
 		await player.skip()
 
-	# @commands.command()
-	# async def stop(self, ctx):
-	# 	player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-	# 	if not player.is_playing:
-	# 		return await ctx.send('Not playing.')
-
-	# 	player.queue.clear()
-	# 	await player.stop()
-	# 	await ctx.send('⏹ | Stopped.')
-	# 	await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
-
 	@commands.command(name='now', aliases=['current', 'currentsong', 'playing', 'np'])
 	async def now(self, ctx):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -175,6 +166,11 @@ class Music(commands.Cog):
 				dur = 'LIVE'
 			else:
 				dur = lavalink.format_time(player.current.duration)
+				if pos == dur:
+					pos = '00:00:00'
+				if dur.startswith('00:'):
+					pos = pos[3:]
+					dur = dur[3:]
 			song = f'[{player.current.title}]({player.current.uri})\n`{pos}/{dur}`'
 
 		em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
@@ -287,6 +283,37 @@ class Music(commands.Cog):
 		await self.connect_to(ctx.guild.id, None)
 		await ctx.send('Disconnected :mute:')
 		await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
+
+	@commands.command(name='lyrics', aliases=['ly'])
+	async def get_lyrics(self, ctx, *, query: str=""):
+		"""Get lyrics of current song"""
+		if not query:
+			player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+			if not player.is_playing:
+				return await ctx.send('I\'m not currently playing anything :warning:')
+			query = player.current.title
+
+		try:
+			async with ctx.typing():
+				results = await self.kclient.music.lyrics(query, limit=1)
+		except ksoftapi.NoResults:
+			await ctx.send(f'No lyrics found for `{query}`')
+		else:
+			lyrics = results[0].lyrics
+			result = results[0]
+			embed = discord.Embed(title=f'{result.name} - {result.artist}', color=discord.Color(0xCCFF00), description=lyrics[:2048])
+			embed.set_thumbnail(url=result.album_art)
+			embed.set_author(name="Lyrics:")
+			lyrics = lyrics[2048:]
+			embeds = [embed] # create embeds' list for long lyrics
+			while len(lyrics) > 0 and len(embeds) < 10: # limiting embeds to 10
+				embed = discord.Embed(color=discord.Color(0xCCFF00), description=lyrics[:2048])
+				lyrics = lyrics[len(embeds)*2048:]
+				embeds.append(embed)
+			embeds[-1].set_footer(text="Source: KSoft.Si") # set footer for last embed
+			for embed in embeds:
+				await ctx.send(embed=embed)
 
 
 def setup(bot):
