@@ -9,7 +9,7 @@ from discord.ext import commands
 from utils import canvas
 from subprocess import Popen, PIPE
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("."),
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
 					case_insensitive=True,
 					intents=discord.Intents.all())
@@ -23,12 +23,12 @@ bot.region = 'USA'
 @bot.event
 async def on_ready():
 	bot.client = ClientSession()
+	print('Logged in as {0} ({0.id})'.format(bot.user))
 
 	bot.load_extension('cogs.music')
 	process = Popen(['java', '-jar', 'Lavalink.jar'], stdout=PIPE, stderr=PIPE) # Start Lavalink
-	print('Loaded: music')
+	print('Music.....Activated')
 
-	print('Logged in as {0} ({0.id})'.format(bot.user))
 	print('Bot.....Activated')
 	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 

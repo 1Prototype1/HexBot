@@ -8,9 +8,6 @@ import discord
 from discord.ext import commands
 
 time_rx = re.compile('[0-9]+')
-def mstomin(input):
-	return f"{((input /1000) / 60):.2f}"
-
 
 class Music(commands.Cog):
 	def __init__(self, bot):
@@ -107,6 +104,9 @@ class Music(commands.Cog):
 			em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
 			em.set_thumbnail(url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
 
+			em.add_field(name='Channel', value=track['info']['author'])
+			em.add_field(name='Duration', value=lavalink.format_time(track['info']['length']).lstrip('00:'))
+
 			track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
 			player.add(requester=ctx.author.id, track=track)
 
@@ -114,9 +114,8 @@ class Music(commands.Cog):
 
 		if not player.is_playing:
 			await player.play()
-			player.ctx = ctx
-			await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 			await self.now(ctx)
+			await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
 	@commands.command(name='seek')
 	async def seek(self, ctx, time):
@@ -168,9 +167,8 @@ class Music(commands.Cog):
 				dur = lavalink.format_time(player.current.duration)
 				if pos == dur:
 					pos = '00:00:00'
-				if dur.startswith('00:'):
-					pos = pos[3:]
-					dur = dur[3:]
+				dur = dur.lstrip('00:')
+				pos = pos[-len(dur):]
 			song = f'[{player.current.title}]({player.current.uri})\n`{pos}/{dur}`'
 
 		em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
@@ -181,6 +179,22 @@ class Music(commands.Cog):
 
 		await ctx.send(embed=em)
 		await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+
+	@commands.command(name='save', aliases=['star'])
+	async def savetodm(self, ctx):
+		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+		song = f'[{player.current.title}]({player.current.uri})'
+
+		em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
+		em.set_author(name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
+		em.set_thumbnail(url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
+		em.add_field(name='Channel', value=player.current.author)
+		em.add_field(name='Duration', value=lavalink.format_time(player.current.duration).lstrip('00:'))
+
+		user = ctx.author
+		await user.send(embed=em)
+		await ctx.send(f"Current song has been sent to you {ctx.author.mention} :floppy_disk:")
+
 
 	@commands.command(name='queue', aliases=['q', 'playlist'])
 	async def queue(self, ctx, page: int=1):
