@@ -55,7 +55,7 @@ class Music(commands.Cog):
 
 		if not player.is_connected:
 			if not should_connect:
-				raise commands.CommandInvokeError('Not connected.')
+				raise commands.CommandInvokeError('Not connected :mute:')
 
 			permissions = ctx.author.voice.channel.permissions_for(ctx.me)
 
@@ -66,7 +66,7 @@ class Music(commands.Cog):
 			await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
 		else:
 			if int(player.channel_id) != ctx.author.voice.channel.id:
-				raise commands.CommandInvokeError('You need to be in my voicechannel.')
+				raise commands.CommandInvokeError('You need to be in my voicechannel :loud_sound:')
 
 	async def connect_to(self, guild_id: int, channel_id: str):
 		""" Connects to the given voicechannel ID. A channel_id of `None` means disconnect. """
@@ -328,6 +328,39 @@ class Music(commands.Cog):
 			embeds[-1].set_footer(text="Source: KSoft.Si") # set footer for last embed
 			for embed in embeds:
 				await ctx.send(embed=embed)
+
+	@commands.command(name='equalizer', aliases=['eq'])
+	async def equalizer(self, ctx, *args):
+		"""Equalizer"""
+		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+		if len(args) == 0:
+			await ctx.send('Specify `band gain` or `preset` to change frequencies :control_knobs:')
+		elif len(args) == 1:
+			presets = ['default', 'bassboost']
+			preset = args[0].lower()
+			if preset in ['reset', 'default']:
+				await player.reset_equalizer()
+			elif preset == 'bassboost':
+				gain_list = [(0, 0.2), (1, 0.2), (2, 0.25)]
+				await player.set_gains(*gain_list)
+			
+			elif preset == '--list':
+				em = discord.Embed(title=':control_knobs: EQ presets:', color=discord.Color(0xFF6EFF), description='\n'.join(presets))
+				return await ctx.send(embed=em)
+			else:
+				return await ctx.send('Invalid preset specified :control_knobs:\nType `~eq --list` for all presets')
+		elif len(args) == 2:
+			try:
+				band = int(args[0])
+				gain = float(args[1])
+				await player.set_gain(band, gain)
+			except ValueError:
+				return await ctx.send('Specify valid `band gain` values :control_knobs:')
+		else:
+			return await ctx.send('Specify `band gain` or `preset` :control_knobs:')
+		# Print final EQ settings
+		await ctx.send(player.equalizer)
 
 
 def setup(bot):
