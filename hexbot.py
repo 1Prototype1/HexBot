@@ -83,8 +83,9 @@ async def help(ctx, arg: str=''):
 	"""Display help"""
 	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0))
 
-	embed.set_thumbnail(url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
-	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
+	avatar_url = str(bot.user.avatar_url)
+	embed.set_thumbnail(url=avatar_url)
+	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344", icon_url=avatar_url)
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
 	if arg.strip().lower() == '-a':
