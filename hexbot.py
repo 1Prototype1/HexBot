@@ -79,18 +79,31 @@ async def on_member_remove(member):
 				pass
 
 @bot.command(name='help', aliases=['h'])
-async def help(ctx):
+async def help(ctx, arg: str=''):
 	"""Display help"""
 	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0))
 
 	embed.set_thumbnail(url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
-	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=24576", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
+	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344", icon_url="https://i.ibb.co/yqgDwNh/hexbot.jpg")
 	embed.set_footer(text="HexBot by [Prototype]#7731✨")
 
-	embed.add_field(name=":musical_note: Music Commands:", value="```join|connect  - Joins a voice channel\nlyrics <song> - Get lyrics of the song\nnp            - Displays now playing song\npause         - Pauses the current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nresume        - Resumes the paused song\nsave|star     - Save song to your DM\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume        - Changes the player's volume```", inline=False)
-	embed.add_field(name=":joystick: Fun Commands:", value="```8ball         - Magic 8Ball!\n\t<question>\nai            - Start AI chat\ndrake <a, b>  - Generate Drake meme\nfilter        - Apply filters to image\nfml           - Generate FML\nfortune|quote - Fortune Cookie!\n\t<category>[factoid|fortune|people]\nhangman       - Play Hangman\njoke          - Get a random joke\n\t\t\t\t[pun|dark|riddle|geek]\nmeme|maymay   - Get MayMays\npokedex       - Get Pokémon info\npoll          - Create a quick poll\n\t<question> <choices>\nquiz|trivia   - Start a quiz game\nroast @user   - Roasts the mentioned user\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\ntinder @u1@u2 - Get Tinder image\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\ntrigger @user - Trigger an user\nttt           - Play Tic-Tac-Toe!\nwumpus        - Play Wumpus game\nxkcd|comic    - Get random xkcd comics```", inline=False)
-	embed.add_field(name=":tools: Misc Commands:", value="```ascii <link>  - Get ascii art of user/img\nconvert       - Currency Converter\n\t<val><from><to>\nclear|cls     - Delete the messages\nencode <txt>  - Encode and style the text\nhelp          - Display this message\nlist          - Displays the list of\n\t\t\t\tvoice connected users\npalette <hex> - Get color palette\nping|latency  - Pong!\nserver <serv> - Get server info\nshorten|url   - Shorten an URL\nsupport       - Contact Bot owner\ntextart       - Generate text art\ntrace <ip>    - Locate IP address\ntranslate     - Translate the text\n\t<id><txt>\nuser @user    - Get user info\nwallpaper     - Get wallpaper\nweather <loc> - Get weather of location```", inline=False)
-
+	if arg.strip().lower() == '-a':
+		# Full version
+		embed.add_field(name=":musical_note: Music Commands:", value="```equalizer     - Use equalizer\nlyrics <song> - Get lyrics of the song\nnow|np        - Displays now playing song\npause|resume  - Pause/Resume current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nremove <idx>  - Remove song from queue\nrepeat        - Enable/Disable repeat\nresume        - Resumes the paused song\nseek          - Seek current track\nsave|star     - Save song to your DM\nshuffle       - Enable/Disable shuffle\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume <val>  - Changes the volume[0-1000]```", inline=False)
+		embed.add_field(name=":stuck_out_tongue_winking_eye: Fun Commands:", value="```ai            - Start AI chat\nadvice        - Get some advice\nascii <link>  - Get ascii art of user/img\nbored|suggest - Suggestion for boredom\nfilter        - Apply filters to image\nfortune|quote - Fortune Cookie!\n    <category>[factoid|fortune|people]\ntextart       - Generate text art\nwallpaper     - Get wallpaper```", inline=False)
+		embed.add_field(name=":tools: Utility Commands:", value="```convert       - Currency Converter\n    <val><from><to>\nencode <txt>  - Encode and style the text\nlist          - Displays the list of\n                voice connected users\npalette <hex> - Get color palette\npokedex       - Get Pokémon info\nrhyme <word>  - Get rhyming words\ntrace <ip>    - Locate IP address\ntranslate     - Translate the text\n    <id><txt>\nserver <serv> - Get server info\nshorten|url   - Shorten an URL\nuser @user    - Get user info\nweather <loc> - Get weather of location\nwordinfo      - Get word info```", inline=False)
+		embed.add_field(name="<:doge:761603676510093312> Meme Commands:", value="```bill          - Generate bill meme\ndrake <a, b>  - Generate Drake meme\nfml           - Generate FML\njoke          - Get a random joke\n                [pun|dark|riddle|geek]\nmeme|maymay   - Get MayMays\nroast @user   - Roasts the mentioned user\ntinder @u1@u2 - Get Tinder image\ntrigger @user - Trigger an user\nxkcd|comic    - Get random xkcd comics```", inline=False)
+		embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n    <question>\nhangman       - Play Hangman\nquiz|trivia   - Start a quiz game\npoll          - Create a quick poll\n    <question> <choices>\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nwumpus        - Play Wumpus game```", inline=False)
+		embed.add_field(name=":gear: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nping|latency  - Pong!\nsupport       - Contact Bot owner```", inline=False)
+	else:
+		# Short version
+		embed.description = 'Type `~help -a` for detailed help.'
+		embed.add_field(name=":musical_note: Music:", value="`equalizer`, `lyrics`, `now`, `pause`, `p`, `play`, `queue`, `remove`, `repeat`, `resume`, `seek`, `save`, `shuffle`, `skip`, `stop`, `volume`")
+		embed.add_field(name=":stuck_out_tongue_winking_eye: Fun:", value="`ai`, `advice`, `ascii`, `bored`, `filter`, `fortune`, `quote`, `textart`, `wallpaper`")
+		embed.add_field(name=":tools: Utility:", value="`convert`, `encode`, `list`, `palette`, `pokedex`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`")
+		embed.add_field(name="<:doge:761603676510093312> Meme:", value="`bill`, `drake`, `fml`, `joke`, `meme`, `roast`, `tinder`, `trigger`, `xkcd`")
+		embed.add_field(name=":joystick: Game:", value="`8ball`, `hangman`, `trivia`, `poll`, `rps`, `tally`, `teams`, `toss`, `ttt`, `wumpus`")
+		embed.add_field(name=":gear: Misc:", value="`clear`, `help`, `ping`, `support`")
 	try:
 		await ctx.send(embed=embed)
 	except Exception:
