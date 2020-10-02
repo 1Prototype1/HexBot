@@ -11,69 +11,87 @@ Features
 ---
 :musical_note: Music Commands:
 ```
-join|connect  - Joins a voice channel
+equalizer     - Use equalizer
 lyrics <song> - Get lyrics of the song
-np            - Displays now playing song
-pause         - Pauses the current song
+now|np        - Displays now playing song
+pause|resume  - Pause/Resume current song
 play|p <song> - Plays specified song
 queue|q       - Displays current queue
+remove <idx>  - Remove song from queue
+repeat        - Enable/Disable repeat
 resume        - Resumes the paused song
+seek          - Seek current track
 save|star     - Save song to your DM
+shuffle       - Enable/Disable shuffle
 skip          - Skips current song
 stop|dis      - Stops and disconnects bot
-volume        - Changes the player's volume
+volume <val>  - Changes the volume[1-1000]
 ```
-:joystick: Fun Commands:
+:stuck_out_tongue_winking_eye: Fun Commands:
 ```
-8ball         - Magic 8Ball!
-    <question>
 ai            - Start AI chat
-drake <a, b>  - Generate Drake meme
+advice        - Get some advice
+ascii <link>  - Get ascii art of user/img
+bored|suggest - Suggestion for boredom
 filter        - Apply filters to image
-fml           - Generate FML
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
-hangman       - Play Hangman
-joke          - Get a random joke
-                [pun|dark|riddle|geek]
-meme|maymay   - Get MayMays
-pokedex       - Get Pokémon info
-poll          - Create a quick poll
-    <question> <choices>
-quiz|trivia   - Start a quiz game
-roast @user   - Roasts the mentioned user
-rps           - Play Rock, Paper, Scissors
-tally         - Tally the created poll
-tinder @u1@u2 - Get Tinder image
-teams         - Makes random teams(def. 2)
-toss|flip     - Flips a Coin
-trigger @user - Trigger an user
-ttt           - Play Tic-Tac-Toe!
-wumpus        - Play Wumpus game
-xkcd|comic    - Get random xkcd comics
+textart       - Generate text art
+wallpaper     - Get wallpaper
 ```
-🛠 Misc Commands:
+:hammer_and_wrench: Utility Commands:
 ```
-ascii <link>  - Get ascii art of user/img
 convert       - Currency Converter
     <val><from><to>
-clear|cls     - Delete the messages
 encode <txt>  - Encode and style the text
-help          - Display this message
 list          - Displays the list of
                 voice connected users
 palette <hex> - Get color palette
-ping|latency  - Pong!
-server <serv> - Get server info
-shorten|url   - Shorten an URL
-support       - Contact Bot owner
-textart       - Generate text art
+pokedex       - Get Pokémon info
+rhyme <word>  - Get rhyming words
 trace <ip>    - Locate IP address
 translate     - Translate the text
     <id><txt>
+server <serv> - Get server info
+shorten|url   - Shorten an URL
 user @user    - Get user info
-wallpaper     - Get wallpaper
 weather <loc> - Get weather of location
+wordinfo      - Get word info
+```
+:trollface: Meme Commands:
+```
+bill          - Generate bill meme
+drake <a, b>  - Generate Drake meme
+fml           - Generate FML
+joke          - Get a random joke
+                [pun|dark|riddle|geek]
+meme|maymay   - Get MayMays
+roast @user   - Roasts the mentioned user
+tinder @u1@u2 - Get Tinder image
+trigger @user - Trigger an user
+xkcd|comic    - Get random xkcd comics
+```
+:joystick: Game Commands:
+```
+8ball         - Magic 8Ball!
+    <question>
+hangman       - Play Hangman
+quiz|trivia   - Start a quiz game
+poll          - Create a quick poll
+    <question> <choices>
+rps           - Play Rock, Paper, Scissors
+tally         - Tally the created poll
+teams         - Makes random teams(def. 2)
+toss|flip     - Flips a Coin
+ttt           - Play Tic-Tac-Toe!
+wumpus        - Play Wumpus game
+```
+:gear: Misc Commands:
+```
+clear|cls     - Delete the messages
+help          - Display this message
+ping|latency  - Pong!
+support       - Contact Bot owner
 ```
 Deploying to Heroku
 ---
