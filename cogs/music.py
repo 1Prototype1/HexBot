@@ -169,29 +169,37 @@ class Music(commands.Cog):
 			bar = '═' * filled_len + '◈' + '─' * (bar_len - filled_len)
 			song = f'[{player.current.title}]({player.current.uri})\n`{pos} {bar} {dur}`'
 
-		em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
-		em.set_author(name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
-		em.set_thumbnail(url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
-		requester = ctx.guild.get_member(player.current.requester)
-		em.set_footer(text=f"Requested by: {requester}", icon_url=requester.avatar_url)
+			em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
+			em.set_author(name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
+			em.set_thumbnail(url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
+			requester = ctx.guild.get_member(player.current.requester)
+			em.set_footer(text=f"Requested by: {requester}", icon_url=requester.avatar_url)
 
-		await ctx.send(embed=em)
-		await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+			await ctx.send(embed=em)
+			await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+		else:
+			await ctx.send('Not playing anything :mute:')
 
 	@commands.command(name='save', aliases=['star'])
 	async def savetodm(self, ctx):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-		song = f'[{player.current.title}]({player.current.uri})'
+		if player.current:
+			if player.current.stream:
+				dur = 'Live'
+			else:
+				dur = lavalink.format_time(player.current.duration).lstrip('00:')
+			song = f'[{player.current.title}]({player.current.uri})'
+			em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
+			em.set_author(name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
+			em.set_thumbnail(url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
+			em.add_field(name='Channel', value=player.current.author)
+			em.add_field(name='Duration', value=dur)
 
-		em = discord.Embed(colour=discord.Colour(0x59FFC8), description=song)
-		em.set_author(name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif")
-		em.set_thumbnail(url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
-		em.add_field(name='Channel', value=player.current.author)
-		em.add_field(name='Duration', value=lavalink.format_time(player.current.duration).lstrip('00:'))
-
-		user = ctx.author
-		await user.send(embed=em)
-		await ctx.send(f"Current song has been sent to you {ctx.author.mention} :floppy_disk:")
+			user = ctx.author
+			await user.send(embed=em)
+			await ctx.send(f"Current song has been sent to you {ctx.author.mention} :floppy_disk:")
+		else:
+			await ctx.send('Not playing anything :mute:')
 
 
 	@commands.command(name='queue', aliases=['q', 'playlist'])
