@@ -1,4 +1,5 @@
 import os
+import math
 import lavalink
 import ksoftapi
 import discord
@@ -343,16 +344,22 @@ class Music(commands.Cog):
 		if len(args) == 0:
 			await ctx.send('Specify `band gain` or `preset` to change frequencies :control_knobs:')
 		elif len(args) == 1:
-			presets = ['default', 'bassboost']
+			presets ={
+						'reset': 'Default',
+						'bassboost': [0.08, 0.12, 0.2, 0.18, 0.15, 0.1, 0.05, 0.0, 0.02, -0.04, -0.06, -0.08, -0.10, -0.12, -0.14], 
+						'pop': [-0.02, -0.01, 0.08, 0.1, 0.15, 0.1, 0.03, -0.02, -0.035, -0.05, -0.05, -0.05, -0.05, -0.05, -0.05], 
+						'treble': [-0.1, -0.12, -0.12, -0.12, -0.08, -0.04, 0.0, 0.3, 0.34, 0.4, 0.35, 0.3, 0.3, 0.3, 0.3]
+					}
+
 			preset = args[0].lower()
 			if preset in ['reset', 'default']:
 				await player.reset_equalizer()
-			elif preset == 'bassboost':
-				gain_list = [(0, 0.2), (1, 0.2), (2, 0.25)]
+			elif preset in presets:
+				gain_list = enumerate(presets[preset])
 				await player.set_gains(*gain_list)
 			
 			elif preset == '--list':
-				em = discord.Embed(title=':control_knobs: EQ presets:', color=discord.Color(0xFF6EFF), description='\n'.join(presets))
+				em = discord.Embed(title=':control_knobs: EQ presets:', color=discord.Color(0xFF6EFF), description='\n'.join(presets.keys()))
 				return await ctx.send(embed=em)
 			else:
 				return await ctx.send('Invalid preset specified :control_knobs:\nType `~eq --list` for all presets')
