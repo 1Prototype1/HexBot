@@ -208,7 +208,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.queue:
-			return await ctx.send('There\'s nothing in the queue! Why not queue something?')
+			return await ctx.send('Queue empty! Why not queue something? :cd:')
 
 		items_per_page = 10
 		pages = math.ceil(len(player.queue) / items_per_page)
