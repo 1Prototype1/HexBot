@@ -48,7 +48,7 @@ class Music(commands.Cog):
 		should_connect = ctx.command.name in ('play',)
 
 		if not ctx.author.voice or not ctx.author.voice.channel:
-			raise commands.CommandInvokeError('Join a voicechannel first :warning:')
+			raise commands.CommandInvokeError('Join a voice channel first :loud_sound:')
 
 		if not player.is_connected:
 			if not should_connect:
@@ -63,7 +63,7 @@ class Music(commands.Cog):
 			await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
 		else:
 			if int(player.channel_id) != ctx.author.voice.channel.id:
-				raise commands.CommandInvokeError('You need to be in my voicechannel :loud_sound:')
+				raise commands.CommandInvokeError('You need to be in my voice channel :loud_sound:')
 
 	async def connect_to(self, guild_id: int, channel_id: str):
 		""" Connects to the given voicechannel ID. A channel_id of `None` means disconnect. """
@@ -292,7 +292,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
-			return await ctx.send('You\'re not in my voicechannel!')
+			return await ctx.send('You\'re not in my voice channel :loud_sound:')
 
 		if not player.is_connected:
 			return await ctx.send('Not connected :mute:')
