@@ -17,7 +17,7 @@ class Games(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
-		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		self.kclient = bot.kclient
 		self.jclient = Jokes()
 
 	@commands.command(name='poll')

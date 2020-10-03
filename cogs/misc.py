@@ -9,7 +9,7 @@ import ksoftapi
 class Misc(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		self.kclient = bot.kclient
 
 	@commands.command(name='list')
 	async def listusers(self, ctx):
