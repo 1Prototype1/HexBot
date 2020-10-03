@@ -25,9 +25,17 @@ async def on_ready():
 	bot.client = ClientSession()
 	print('Logged in as {0} ({0.id})'.format(bot.user))
 
-	bot.load_extension('cogs.music')
-	process = Popen(['java', '-jar', 'Lavalink.jar'], stdout=PIPE, stderr=PIPE) # Start Lavalink
-	print('Music.....Activated')
+	# Start Lavalink
+	process = Popen(['java', '-jar', 'Lavalink.jar'], stdout=PIPE, stderr=PIPE)
+	print('Started Lavalink')
+	# Load Modules
+	modules = ['misc', 'games', 'debug', 'media', 'music']
+	try:
+		for module in modules:
+			bot.load_extension('cogs.' + module)
+			print('Loaded: ' + module)
+	except Exception as e:
+		print(f'Error loading {module}: {e}')
 
 	print('Bot.....Activated')
 	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
@@ -110,16 +118,7 @@ async def help(ctx, arg: str=''):
 	except Exception:
 		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
-# Load Modules
-modules = ['misc', 'games', 'debug', 'media']
 
-try:
-	for module in modules:
-		bot.load_extension('cogs.' + module)
-		print('Loaded: ' + module)
-except Exception as e:
-	print(f'Error loading {module}: {e}')
-else:
 # All good ready to start!
-	print('Starting Bot...')
-	bot.run(os.environ['BOT_Token'])
+print('Starting Bot...')
+bot.run(os.environ['BOT_Token'])
