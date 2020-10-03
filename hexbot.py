@@ -2,6 +2,7 @@ import os
 import io
 import datetime
 from aiohttp import ClientSession
+import ksoftapi
 
 import discord
 from discord.ext import commands
@@ -22,8 +23,9 @@ bot.region = 'USA'
 
 @bot.event
 async def on_ready():
-	bot.client = ClientSession()
 	print('Logged in as {0} ({0.id})'.format(bot.user))
+	bot.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+	bot.client = ClientSession()
 
 	# Start Lavalink
 	process = Popen(['java', '-jar', 'Lavalink.jar'], stdout=PIPE, stderr=PIPE)

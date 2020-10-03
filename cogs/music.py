@@ -9,7 +9,7 @@ from discord.ext import commands
 class Music(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
+		self.kclient = bot.kclient
 
 		if not hasattr(bot, 'lavalink'):
 			bot.lavalink = lavalink.Client(bot.user.id)
