@@ -151,13 +151,13 @@ class Music(commands.Cog):
 		song = 'Nothing'
 
 		if player.current:
-			count = player.position
-			pos = lavalink.format_time(count)
 			if player.current.stream:
 				dur = 'LIVE'
 				pos = ''
-				total = count
+				count = total = 1
 			else:
+				count = player.position
+				pos = lavalink.format_time(count)
 				total = player.current.duration
 				dur = lavalink.format_time(total)
 				if pos == dur: # When called immediatly after enqueue
