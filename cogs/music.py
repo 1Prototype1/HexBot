@@ -123,7 +123,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.is_playing:
-			return await ctx.send('Not playing.')
+			return await ctx.send('Not playing anything :mute:')
 
 		if not seconds:
 			return await ctx.send('You need to specify the amount of seconds to seek :fast_forward:')
@@ -140,7 +140,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.is_playing:
-			return await ctx.send('Not playing.')
+			return await ctx.send('Not playing anything :mute:')
 
 		await ctx.send('⏭ | Skipped.')
 		await player.skip()
@@ -151,13 +151,13 @@ class Music(commands.Cog):
 		song = 'Nothing'
 
 		if player.current:
-			count = player.position
-			pos = lavalink.format_time(count)
 			if player.current.stream:
 				dur = 'LIVE'
 				pos = ''
-				total = count
+				count = total = 1
 			else:
+				count = player.position
+				pos = lavalink.format_time(count)
 				total = player.current.duration
 				dur = lavalink.format_time(total)
 				if pos == dur: # When called immediatly after enqueue
@@ -208,7 +208,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.queue:
-			return await ctx.send('There\'s nothing in the queue! Why not queue something?')
+			return await ctx.send('Queue empty! Why not queue something? :cd:')
 
 		items_per_page = 10
 		pages = math.ceil(len(player.queue) / items_per_page)
@@ -231,7 +231,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.is_playing:
-			return await ctx.send('Not playing.')
+			return await ctx.send('Not playing anything :mute:')
 
 		if player.paused:
 			await player.set_pause(False)
@@ -255,7 +255,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.is_playing:
-			return await ctx.send('Nothing playing.')
+			return await ctx.send('Not playing anything :mute:')
 
 		player.shuffle = not player.shuffle
 
@@ -266,7 +266,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.is_playing:
-			return await ctx.send('Nothing playing.')
+			return await ctx.send('Not playing anything :mute:')
 
 		player.repeat = not player.repeat
 
@@ -277,7 +277,7 @@ class Music(commands.Cog):
 		player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
 		if not player.queue:
-			return await ctx.send('Nothing queued.')
+			return await ctx.send('Nothing queued :cd:')
 
 		if index > len(player.queue) or index < 1:
 			return await ctx.send('Index has to be >=1 and <=queue size')
@@ -295,7 +295,7 @@ class Music(commands.Cog):
 			return await ctx.send('You\'re not in my voicechannel!')
 
 		if not player.is_connected:
-			return await ctx.send('Not connected.')
+			return await ctx.send('Not connected :mute:')
 
 		player.queue.clear()
 		# Stop the current track so Lavalink consumes less resources.
