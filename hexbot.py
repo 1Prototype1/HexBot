@@ -29,6 +29,7 @@ async def on_ready():
 
 	# Start Lavalink
 	process = Popen(['java', '-jar', 'Lavalink.jar'], stdout=PIPE, stderr=PIPE)
+	bot.lavalink_pid = process.pid
 	print('Started Lavalink')
 	# Load Modules
 	modules = ['misc', 'games', 'debug', 'media', 'music']
