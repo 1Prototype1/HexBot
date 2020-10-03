@@ -13,7 +13,7 @@ class Media(commands.Cog):
 		self.bot = bot
 		self.header = {'Authorization': os.environ['Unsplash_Token']}
 		self.trans = Translator()
-		self.client = ClientSession()
+		self.client = bot.client
 
 	@commands.command(name='wallpaper', aliases=['wall'])
 	async def _wallpaper(self, ctx, *query: str):
