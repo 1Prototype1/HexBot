@@ -96,10 +96,9 @@ support       - Contact Bot owner
 Deploying to Heroku
 ---
 - Add the following buidpacks to your app:
+  - heroku/jvm
   - heroku/python
-  - https<span>://</span>github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
-  - https<span>://</span>github.com/xrisk/heroku-opus.git
-- Add your Bot's access token and KSoft.Si's api token in Config vars
+- Add all Tokens in Config vars
 - Push the project files to Heroku
 
 References
