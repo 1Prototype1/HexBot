@@ -50,7 +50,7 @@ class Media(commands.Cog):
 				if r.status != 200:
 					return await ctx.send('Failed to trigger :x:')
 				data = io.BytesIO(await r.read())
-		await ctx.send(file=discord.File(data, 'trigger.gif'))				
+		await ctx.send(file=discord.File(data, 'trigger.gif'))
 
 	@commands.command(name='ascii')
 	async def ascii(self, ctx, image_link: str=""):
@@ -427,6 +427,18 @@ class Media(commands.Cog):
 			else:
 				result.append("**Offensive:** No")
 		await ctx.send('\n'.join(result))
+
+	@commands.command(name='uselessweb', aliases=['website'])
+	async def uselessweb(self, ctx):
+		"""Get a random website"""
+		url = "https://useless-api--vierofernando.repl.co/uselesssites"
+		async with ctx.typing():
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return await ctx.send('Failed to trigger :x:')
+				else:
+					data = await r.json()
+		await ctx.send(data['url'])
 
 
 def setup(bot):

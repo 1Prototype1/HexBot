@@ -37,6 +37,7 @@ filter        - Apply filters to image
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
 textart       - Generate text art
+uselessweb    - Get an useless website
 wallpaper     - Get wallpaper
 ```
 :hammer_and_wrench: Utility Commands:
