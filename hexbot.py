@@ -18,7 +18,7 @@ bot.remove_command('help')
 
 bot.uptime = datetime.datetime.now()
 bot.messages_in = bot.messages_out = 0
-bot.region = 'USA'
+bot.region = 'Mumbai, IN'
 
 @bot.event
 async def on_ready():
