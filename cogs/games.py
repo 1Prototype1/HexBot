@@ -1,7 +1,7 @@
 import os
 import random
 import asyncio
-from games import tictactoe, wumpus, hangman
+from games import tictactoe, wumpus, hangman, minesweeper
 import fortune
 import aiopentdb
 import xkcd
@@ -243,6 +243,12 @@ class Games(commands.Cog):
 		except Exception as e:
 			await ctx.send("Could not get joke for you :disappointed_relieved:")
 			print(e)
+
+	@commands.command(name='minesweeper', aliases=['ms'])
+	async def minesweeper(self, ctx, columns = None, rows = None, bombs = None):
+		"""Play Minesweeper"""
+		await minesweeper.play(ctx, columns, rows, bombs)
+
 
 def setup(bot):
 	bot.add_cog(Games(bot))
