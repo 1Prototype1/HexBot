@@ -8,7 +8,6 @@ import discord
 from discord.ext import commands
 
 from utils import canvas
-from subprocess import Popen, PIPE
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
 					description='Relatively simply awesome bot.',
@@ -27,10 +26,6 @@ async def on_ready():
 	bot.kclient = ksoftapi.Client(os.environ['KSoft_Token'])
 	bot.client = ClientSession()
 
-	# Start Lavalink
-	process = Popen(['java', '-jar', 'Lavalink.jar'], stdout=PIPE, stderr=PIPE)
-	bot.lavalink_pid = process.pid
-	print('Started Lavalink')
 	# Load Modules
 	modules = ['misc', 'games', 'debug', 'media', 'music']
 	try:
