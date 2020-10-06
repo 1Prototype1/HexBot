@@ -5,7 +5,7 @@ import traceback
 from contextlib import redirect_stdout
 import datetime
 from speedtest import Speedtest
-from psutil import Process, cpu_percent, cpu_freq
+from psutil import virtual_memory, cpu_percent, cpu_freq
 
 import aiohttp
 import discord
@@ -52,15 +52,11 @@ class Debug(commands.Cog):
 		em.add_field(name=':crossed_swords: Servers', value=f'`{len(self.bot.guilds)}`')
 		em.add_field(name=':satellite_orbital: Server Region', value=f'`{self.bot.region}`')
 
-		pcs = Process() # Python Process
-		pcs1 = Process(self.bot.lavalink_pid) # Java process
-		try:
-			mem_usage = '{:.2f}+{:.2f} MiB'.format(pcs.memory_full_info().uss / 1024 ** 2, pcs1.memory_full_info().uss / 1024 ** 2)
-		except AttributeError:
-			# OS doesn't support retrieval of USS (probably BSD or Solaris)
-			mem_usage = '{:.2f} MiB'.format(pcs.memory_full_info().rss / 1024 ** 2)
+		mem = virtual_memory()
+		mem_usage = f"{mem.percent} % {mem.used / 1024 ** 2:.2f} MiB"
 		em.add_field(name=u':floppy_disk: Memory usage', value=f'`{mem_usage}`')
-		em.add_field(name=':desktop: CPU usage', value=f'`{cpu_percent(1)} % {cpu_freq().current / 1000:.2f} Ghz`')
+		cpu_usage = f"{cpu_percent(1)} % {cpu_freq().current / 1000:.2f} Ghz"
+		em.add_field(name=':desktop: CPU usage', value=f'`{cpu_usage}`')
 		
 		try:
 			await ctx.send(embed=em)
