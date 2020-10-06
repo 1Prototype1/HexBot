@@ -76,9 +76,10 @@ xkcd|comic    - Get random xkcd comics
 8ball         - Magic 8Ball!
     <question>
 hangman       - Play Hangman
-quiz|trivia   - Start a quiz game
+minesweeper   - Play Minesweeper
 poll          - Create a quick poll
     <question> <choices>
+quiz|trivia   - Start a quiz game
 rps           - Play Rock, Paper, Scissors
 tally         - Tally the created poll
 teams         - Makes random teams(def. 2)
