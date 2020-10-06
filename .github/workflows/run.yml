@@ -28,5 +28,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with PyLint
       run: |
-        pylint -E --score=no hexbot.py
-        pylint -E --score=no cogs/
+        pylint -E hexbot.py
+        pylint -E cogs/
+        pylint -E games/
+        pylint -E utils/
