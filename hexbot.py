@@ -1,6 +1,7 @@
 import os
 import io
 import datetime
+import json
 from aiohttp import ClientSession
 import ksoftapi
 
@@ -97,21 +98,20 @@ async def help(ctx, arg: str=''):
 	if arg.strip().lower() == '-a':
 		# Full version
 		embed.description = 'My prefix is `~`'
-		embed.add_field(name=":musical_note: Music Commands:", value="```equalizer     - Use equalizer\nlyrics <song> - Get lyrics of the song\nnow|np        - Displays now playing song\npause|resume  - Pause/Resume current song\nplay|p <song> - Plays specified song\nqueue|q       - Displays current queue\nremove <idx>  - Remove song from queue\nrepeat        - Enable/Disable repeat\nresume        - Resumes the paused song\nseek          - Seek current track\nsave|star     - Save song to your DM\nshuffle       - Enable/Disable shuffle\nskip          - Skips current song\nstop|dis      - Stops and disconnects bot\nvolume <val>  - Changes the volume[1-1000]```", inline=False)
-		embed.add_field(name=":stuck_out_tongue_winking_eye: Fun Commands:", value="```ai            - Start AI chat\nadvice        - Get some advice\nascii <link>  - Get ascii art of user/img\nbored|suggest - Suggestion for boredom\nfilter        - Apply filters to image\nfortune|quote - Fortune Cookie!\n    <category>[factoid|fortune|people]\ntextart       - Generate text art\nuselessweb    - Get an useless website\nwallpaper     - Get wallpaper```", inline=False)
-		embed.add_field(name=":tools: Utility Commands:", value="```convert       - Currency Converter\n    <val><from><to>\nencode <txt>  - Encode and style the text\nlist          - Displays the list of\n                voice connected users\npalette <hex> - Get color palette\npokedex       - Get Pokémon info\nrhyme <word>  - Get rhyming words\ntrace <ip>    - Locate IP address\ntranslate     - Translate the text\n    <id><txt>\nserver <serv> - Get server info\nshorten|url   - Shorten an URL\nuser @user    - Get user info\nweather <loc> - Get weather of location\nwordinfo      - Get word info```", inline=False)
-		embed.add_field(name="<:doge:761603676510093312> Meme Commands:", value="```bill          - Generate bill meme\ndrake <a, b>  - Generate Drake meme\nfml           - Generate FML\njoke          - Get a random joke\n                [pun|dark|riddle|geek]\nmeme|maymay   - Get MayMays\nroast @user   - Roasts the mentioned user\ntinder @u1@u2 - Get Tinder image\ntrigger @user - Trigger an user\nxkcd|comic    - Get random xkcd comics```", inline=False)
-		embed.add_field(name=":joystick: Game Commands:", value="```8ball         - Magic 8Ball!\n    <question>\nhangman       - Play Hangman\nminesweeper   - Play Minesweeper\npoll          - Create a quick poll\n    <question> <choices>\nquiz|trivia   - Start a quiz game\nrps           - Play Rock, Paper, Scissors\ntally         - Tally the created poll\nteams         - Makes random teams(def. 2)\ntoss|flip     - Flips a Coin\nttt           - Play Tic-Tac-Toe!\nwumpus        - Play Wumpus game\n```", inline=False)
-		embed.add_field(name=":gear: Misc Commands:", value="```clear|cls     - Delete the messages\nhelp          - Display this message\nping|latency  - Pong!\nsupport       - Contact Bot owner```", inline=False)
+		with open('help.json', 'r') as help_file:
+			data = json.load(help_file)
+		data = data['full']
+		for key in data:
+			value = '\n'.join(x for x in data[key])
+			embed.add_field(name=key, value=f"```{value}```", inline=False)
 	else:
 		# Short version
 		embed.description = 'My prefix is `~`\nType `~help -a` for detailed help.'
-		embed.add_field(name=":musical_note: Music:", value="`equalizer`, `lyrics`, `now`, `pause`, `p`, `play`, `queue`, `remove`, `repeat`, `resume`, `seek`, `save`, `shuffle`, `skip`, `stop`, `volume`")
-		embed.add_field(name=":stuck_out_tongue_winking_eye: Fun:", value="`ai`, `advice`, `ascii`, `bored`, `filter`, `fortune`, `quote`, `textart`, `uselessweb`, `wallpaper`")
-		embed.add_field(name=":tools: Utility:", value="`convert`, `encode`, `list`, `palette`, `pokedex`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`")
-		embed.add_field(name="<:doge:761603676510093312> Meme:", value="`bill`, `drake`, `fml`, `joke`, `meme`, `roast`, `tinder`, `trigger`, `xkcd`")
-		embed.add_field(name=":joystick: Game:", value="`8ball`, `hangman`, `minesweeper`, `poll`, `rps`, `tally`, `teams`, `toss`, `trivia`, `ttt`, `wumpus`")
-		embed.add_field(name=":gear: Misc:", value="`clear`, `help`, `ping`, `support`")
+		with open('help.json', 'r') as help_file:
+			data = json.load(help_file)
+		data = data['short']
+		for key in data:
+			embed.add_field(name=key, value=data[key])
 	try:
 		await ctx.send(embed=embed)
 	except Exception:
