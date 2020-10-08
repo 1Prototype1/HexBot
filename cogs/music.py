@@ -115,6 +115,7 @@ class Music(commands.Cog):
 
 		if not player.is_playing:
 			await player.play()
+			await player.reset_equalizer()
 			await self.now(ctx)
 			await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
