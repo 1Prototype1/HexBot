@@ -1,7 +1,7 @@
 import os
 import random
 import asyncio
-from games import tictactoe, wumpus, hangman, minesweeper
+from games import tictactoe, wumpus, hangman, minesweeper, twenty
 import fortune
 import aiopentdb
 import xkcd
@@ -249,6 +249,10 @@ class Games(commands.Cog):
 		"""Play Minesweeper"""
 		await minesweeper.play(ctx, columns, rows, bombs)
 
+	@commands.command(name='2048')
+	async def twenty(self, ctx):
+		"""Play 2048 game"""
+		await twenty.play(ctx, self.bot)
 
 def setup(bot):
 	bot.add_cog(Games(bot))
