@@ -10,6 +10,7 @@ class Misc(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.kclient = bot.kclient
+		self.client = bot.client
 
 	@commands.command(name='list')
 	async def listusers(self, ctx):
@@ -242,6 +243,43 @@ class Misc(commands.Cog):
 		except Exception:
 			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
+	@commands.command(name='analyze')
+	async def predictg(self, ctx, *, text=None):
+		"""Analyze message for inappropriate content"""
+		if not text:
+			return await ctx.send('Please specify the message to analyze :pager:')
+		
+		url = os.environ['Predict_API']
+		text = text.strip('|')
+		payload = {
+			'comment': {'text': text},
+			'languages': ['en'],
+			'requestedAttributes': {'TOXICITY': {}, 'IDENTITY_ATTACK': {}, 'INSULT': {}, 'PROFANITY': {}, 'THREAT': {}, 
+								'SEXUALLY_EXPLICIT': {}, 'FLIRTATION': {}, 'SPAM': {}, 'OBSCENE': {}, 'INCOHERENT': {}, 'INFLAMMATORY': {}}
+			}
+		async with self.client.post(url, json=payload) as r:
+			if r.status != 200:
+				print(r)
+				return print('Error')
+			data = await r.json()
+		data = data['attributeScores']
+		result = []
+		for i in data:
+			result.append([i, data[i]['summaryScore']['value']])
+		result.sort(key=lambda x: x[1], reverse=True)
+		data = []
+		for i in result:
+			if i[1] > 0.5:
+				data.append(f"+ {i[0].title()} {' '*(20-len(i[0]))}{i[1]:.2%}")
+			else:
+				data.append(f"- {i[0].title()} {' '*(20-len(i[0]))}{i[1]:.2%}")
+		data = '\n'.join(data)
+		
+		em = discord.Embed(color=discord.Color(0xCCFF00), description=f"||{text}||")
+		em.set_author(name=ctx.author.name, icon_url=str(ctx.author.avatar_url_as(size=64)))
+		em.add_field(name="Prediction:", value=f"```diff\n{data}\n```")
+
+		await ctx.send(embed=em)
 
 	@listusers.before_invoke
 	@teams.before_invoke
