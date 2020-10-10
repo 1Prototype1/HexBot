@@ -7,7 +7,7 @@
 			"`ai`, `advice`, `ascii`, `bored`, `filter`, `fortune`, `quote`, `textart`, `uselessweb`, `wallpaper`"
 		, 
 		":tools: Utility:": 
-			"`convert`, `encode`, `list`, `palette`, `pokedex`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`"
+			"`convert`, `encode`, `list`, `palette`, `pokedex`, `predict`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`"
 		, 
 		"<:doge:761603676510093312> Meme:": 
 			"`bill`, `dark`, `drake`, `fml`, `geek`, `joke`, `meme`, `pun`, `riddle`, `roast`, `tinder`, `trigger`, `xkcd`"
@@ -56,6 +56,7 @@
 				"                voice connected users", 
 				"palette <hex> - Get color palette", 
 				"pokedex       - Get Pokémon info", 
+				"predict <msg> - Analyze message", 
 				"rhyme <word>  - Get rhyming words", 
 				"trace <ip>    - Locate IP address", 
 				"translate     - Translate the text", 
@@ -102,4 +103,3 @@
 		]
    }
 }
-
