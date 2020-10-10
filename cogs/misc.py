@@ -243,8 +243,8 @@ class Misc(commands.Cog):
 		except Exception:
 			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
-	@commands.command(name='analyze')
-	async def predictg(self, ctx, *, text=None):
+	@commands.command(name='analyze', aliases=['predict'])
+	async def predict(self, ctx, *, text=None):
 		"""Analyze message for inappropriate content"""
 		if not text:
 			return await ctx.send('Please specify the message to analyze :pager:')
