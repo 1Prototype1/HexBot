@@ -48,6 +48,7 @@ list          - Displays the list of
                 voice connected users
 palette <hex> - Get color palette
 pokedex       - Get Pokémon info
+predict <msg> - Analyze message
 rhyme <word>  - Get rhyming words
 trace <ip>    - Locate IP address
 translate     - Translate the text
