@@ -1,7 +1,6 @@
 import os
 import asyncio
 import io
-from aiohttp import ClientSession
 from textwrap import TextWrapper
 from googletrans import Translator, LANGUAGES
 
