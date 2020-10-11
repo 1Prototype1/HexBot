@@ -439,6 +439,20 @@ class Media(commands.Cog):
 					data = await r.json()
 		await ctx.send(data['url'])
 
+	@commands.command(name='qr')
+	async def qrcode(self, ctx, *, data=None):
+		"""Generate QR code"""
+		if not data:
+			return await ctx.send('Please specify data :link:')
+
+		url = 'http://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + data
+		async with self.client.get(url) as r:
+			if r.status != 200:
+				return await ctx.send('Failed to generate QR code :x:')
+			data = io.BytesIO(await r.read())
+
+		await ctx.send(file=discord.File(data, 'qr.png'))
+
 
 def setup(bot):
 	bot.add_cog(Media(bot))
