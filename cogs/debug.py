@@ -162,9 +162,15 @@ class Debug(commands.Cog):
 			return await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
 		
 		modules = ['misc', 'games', 'debug', 'media', 'music']
-		if (not arg) or (arg.lower() not in modules) or (arg.lower()=='--list'):
+		if not arg:
 			return await ctx.send(embed=discord.Embed(title='Modules', description='\n'.join(modules)))
-		if arg.lower() in modules:
+		if arg.lower() == 'all':
+			for module in modules:
+				msg = await ctx.send(f":arrows_counterclockwise: Reloading `{module}`...")
+				self.bot.unload_extension('cogs.' + module)
+				self.bot.load_extension('cogs.' + module)
+				await msg.edit(content=f":white_check_mark: Reloaded `{module}`")
+		elif arg.lower() in modules:
 			msg = await ctx.send(f":arrows_counterclockwise: Reloading `{arg.lower()}`...")
 			self.bot.unload_extension('cogs.' + arg.lower())
 			self.bot.load_extension('cogs.' + arg.lower())
