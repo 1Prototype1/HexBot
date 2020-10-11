@@ -155,5 +155,21 @@ class Debug(commands.Cog):
 		else:
 			await ctx.message.add_reaction('✅')
 
+	@commands.command(name='reload')
+	async def reload_module(self, ctx, arg=None):
+		"""Reload module"""
+		if not await self.bot.is_owner(ctx.author):
+			return await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
+		
+		modules = ['misc', 'games', 'debug', 'media', 'music']
+		if (not arg) or (arg.lower() not in modules) or (arg.lower()=='--list'):
+			return await ctx.send(embed=discord.Embed(title='Modules', description='\n'.join(modules)))
+		if arg.lower() in modules:
+			msg = await ctx.send(f":arrows_counterclockwise: Reloading `{arg.lower()}`...")
+			self.bot.unload_extension('cogs.' + arg.lower())
+			self.bot.load_extension('cogs.' + arg.lower())
+			await msg.edit(content=f":white_check_mark: Reloaded `{arg.lower()}`")
+
+
 def setup(bot):
 	bot.add_cog(Debug(bot))
