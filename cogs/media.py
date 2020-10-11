@@ -361,7 +361,7 @@ class Media(commands.Cog):
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
-					return ctx.send('Unable to generate bill :disappointed_relieved')
+					return ctx.send('Unable to generate advice :disappointed_relieved')
 				data = await r.json(content_type='text/html')
 
 		await ctx.send(data['slip']['advice'])
@@ -416,7 +416,7 @@ class Media(commands.Cog):
 		async with ctx.typing():
 			async with self.client.get(url, params=params) as r:
 				if r.status != 200:
-					return ctx.send('Failed to get rhymes :x:')
+					return ctx.send('Failed to get info :x:')
 				data = await r.json()
 			result = [f"**Word:** {data['word']}"]
 			result.append(f"**Pronunciation:** {data['ipa']}")
@@ -434,7 +434,7 @@ class Media(commands.Cog):
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
-					return await ctx.send('Failed to trigger :x:')
+					return await ctx.send('Failed to get website :x:')
 				else:
 					data = await r.json()
 		await ctx.send(data['url'])
