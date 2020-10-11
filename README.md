@@ -49,6 +49,7 @@ list          - Displays the list of
 palette <hex> - Get color palette
 pokedex       - Get Pokémon info
 predict <msg> - Analyze message
+qr <data>     - Generate QR code
 rhyme <word>  - Get rhyming words
 trace <ip>    - Locate IP address
 translate     - Translate the text
