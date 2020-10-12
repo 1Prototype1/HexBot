@@ -93,6 +93,7 @@ wumpus        - Play Wumpus game
 ```
 clear|cls     - Delete the messages
 help          - Display this message
+invite        - Invite me to your server
 ping|latency  - Pong!
 support       - Contact Bot owner
 ```
