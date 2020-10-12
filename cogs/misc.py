@@ -243,6 +243,11 @@ class Misc(commands.Cog):
 		except Exception:
 			await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
+	@commands.command(name='invite')
+	async def invite(self, ctx):
+		"""My invite link"""
+		await ctx.send("To invite **Hexbot** to your server, visit: **_http://hexcode.ml_**")
+
 	@commands.command(name='analyze', aliases=['predict'])
 	async def predict(self, ctx, *, text=None):
 		"""Analyze message for inappropriate content"""

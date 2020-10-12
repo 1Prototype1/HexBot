@@ -16,7 +16,7 @@
 			"`2048`, `8ball`, `hangman`, `minesweeper`, `poll`, `rps`, `tally`, `teams`, `toss`, `trivia`, `ttt`, `wumpus`"
 		, 
 		":gear: Misc:": 
-			"`clear`, `help`, `ping`, `support`"
+			"`clear`, `help`, `invite`, `ping`, `support`"
    },
    "full":{
    		":musical_note: Music Commands:": [
@@ -99,6 +99,7 @@
 		":gear: Misc Commands:": [
 				"clear|cls     - Delete the messages", 
 				"help          - Display this message", 
+				"invite        - Invite me to your server", 
 				"ping|latency  - Pong!", 
 				"support       - Contact Bot owner"
 		]
