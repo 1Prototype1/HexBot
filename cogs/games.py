@@ -109,18 +109,18 @@ class Games(commands.Cog):
 				for reaction in reactions:
 					await quiz_message.add_reaction(reaction)
 
-				def check(reaction, user):
-					return user != self.bot.user and user == ctx.author and (str(reaction.emoji) == '1️⃣' or '2️⃣' or '3️⃣' or '4️⃣' or '✅' or '❌')
+			def check(reaction, user):
+				return user != self.bot.user and user == ctx.author and (str(reaction.emoji) == '1️⃣' or '2️⃣' or '3️⃣' or '4️⃣' or '✅' or '❌')
 
-				try:
-					reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
-				except asyncio.TimeoutError:
-					await ctx.send(f"Time's Up! :stopwatch:\nAnswer is **{options[answer]}**")
+			try:
+				reaction, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+			except asyncio.TimeoutError:
+				await ctx.send(f"Time's Up! :stopwatch:\nAnswer is **{options[answer]}**")
+			else:
+				if str(reaction.emoji) == reactions[answer]:
+					await ctx.send("Correct answer:sparkles:")
 				else:
-					if str(reaction.emoji) == reactions[answer]:
-						await ctx.send("Correct answer:sparkles:")
-					else:
-						await ctx.send(f"Wrong Answer :no_entry_sign:\nAnswer is **{options[answer]}**")
+					await ctx.send(f"Wrong Answer :no_entry_sign:\nAnswer is **{options[answer]}**")
 		finally:
 			await client.close()
 
