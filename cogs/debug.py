@@ -6,6 +6,7 @@ from contextlib import redirect_stdout
 import datetime
 from speedtest import Speedtest
 from psutil import virtual_memory, cpu_percent, cpu_freq
+from subprocess import run, DEVNULL
 
 import aiohttp
 import discord
@@ -165,6 +166,7 @@ class Debug(commands.Cog):
 		if not arg:
 			return await ctx.send(embed=discord.Embed(title='Modules', description='\n'.join(modules)))
 		if arg.lower() == 'all':
+			run(['git', 'pull', '--no-rebase'], stdout=DEVNULL)
 			for module in modules:
 				msg = await ctx.send(f":arrows_counterclockwise: Reloading `{module}`...")
 				self.bot.unload_extension('cogs.' + module)
