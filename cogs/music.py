@@ -111,11 +111,12 @@ class Music(commands.Cog):
 			track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
 			player.add(requester=ctx.author.id, track=track)
 
-		await ctx.send(embed=em)
+		msg = await ctx.send(embed=em)
 
 		if not player.is_playing:
 			await player.play()
 			await player.reset_equalizer()
+			await msg.delete(delay=1)
 			await self.now(ctx)
 			await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
