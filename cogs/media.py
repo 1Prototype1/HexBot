@@ -452,6 +452,33 @@ class Media(commands.Cog):
 
 		await ctx.send(file=discord.File(data, 'qr.png'))
 
+	@commands.command(name='comic', aliases=['comics', 'comicstrip'])
+	async def comic(self, ctx, cid=None):
+		"""Get comic strip"""
+		if not cid:
+			return await ctx.send('Please specify comic id\nType `~comic --list` for list.')
+		url = os.environ['HexApi'] + 'comic'
+		if cid.lower()=='--list':
+			params = {'list': 1}
+			async with ctx.typing():
+				async with self.client.get(url, params=params) as r:
+					if r.status != 200:
+						return await ctx.send('Failed to get comic list :x:')
+					result = await r.json()
+			result = result['comics']
+			data = [f"**{i}** {comic_name}" for i, comic_name in enumerate(result, 1)]
+			em = discord.Embed(color=discord.Color(0xFF5470), title="Comic list:", description='\n'.join(data))
+			await ctx.send(embed=em)
+		else:
+			params = {'id': cid}
+			async with ctx.typing():
+				async with self.client.get(url, params=params) as r:
+					if r.status != 200:
+						return await ctx.send('Failed to get comic :x:\nMaybe id is invalid\nType `~comic --list` for list.')
+					data = io.BytesIO(await r.read())
+
+			await ctx.send(file=discord.File(data, 'comic.png'))
+
 
 def setup(bot):
 	bot.add_cog(Media(bot))
