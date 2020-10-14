@@ -466,7 +466,7 @@ class Media(commands.Cog):
 						return await ctx.send('Failed to get comic list :x:')
 					result = await r.json()
 			result = result['comics']
-			data = [f"**{i}** {comic_name}" for i, comic_name in enumerate(result, 1)]
+			data = [f"**{i}** {comic_name.title()}" for i, comic_name in enumerate(result, 1)]
 			em = discord.Embed(color=discord.Color(0xFF5470), title="Comic list:", description='\n'.join(data))
 			await ctx.send(embed=em)
 		else:
