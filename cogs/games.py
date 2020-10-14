@@ -139,7 +139,7 @@ class Games(commands.Cog):
 		else:
 			await ctx.send(f"```fix\n{fortune.get_random_fortune(f'fortunes/{random.choice(categories)}')}\n```")
 	
-	@commands.command(name='xkcd', aliases=['comic', 'comics'])
+	@commands.command(name='xkcd')
 	async def comic(self, ctx):
 		"""xkcd Comics"""
 		async with ctx.typing():
