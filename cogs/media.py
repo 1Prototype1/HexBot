@@ -43,7 +43,7 @@ class Media(commands.Cog):
 		except IndexError:
 			return await ctx.send("Mention the person you want to trigger")
 
-		url = f"https://useless-api--vierofernando.repl.co/triggered?image={user.avatar_url_as(size=1024)}"
+		url = os.environ['HexApi'] + f"trigger?image={user.avatar_url_as(size=1024)}"
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
@@ -63,13 +63,12 @@ class Media(commands.Cog):
 		except IndexError:
 			pass
 
-		url = 'https://useless-api--vierofernando.repl.co/imagetoascii'
+		url = os.environ['HexApi'] + 'imagetoascii'
 		async with self.client.get(url, params={'image': str(image_link)}) as r:
 			if r.status != 200:
 				return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
-			else:
-				result = await r.text()
-				ascii_file = io.StringIO(result.replace('<br>', '\n'))
+			result = await r.text()
+			ascii_file = io.StringIO(result.replace('<br>', '\n'))
 
 		em = discord.Embed(color=discord.Color(0xFFFF66))
 		em.set_thumbnail(url=image_link)
@@ -83,7 +82,7 @@ class Media(commands.Cog):
 
 		async with ctx.typing():
 			try:
-				url = 'https://useless-api--vierofernando.repl.co/encode'
+				url = os.environ['HexApi'] + 'encode'
 				async with self.client.get(url, params={'text': text}) as r:
 					result = await r.json()
 			except:
@@ -121,7 +120,7 @@ class Media(commands.Cog):
 		"""Get pokemon """
 		if not name:
 			return await ctx.send(f'Please specify pokemon name <:pokeball:754218915613376542>')
-		url = 'https://some-random-api.ml/pokedex'
+		url = os.environ['HexApi'] + 'pokedex'
 		try:
 			params = {'id': int(name)}
 		except ValueError:
@@ -177,7 +176,7 @@ class Media(commands.Cog):
 			return m.author == ctx.author and not m.content.startswith('~')
 
 		await ctx.send("Let's chat")
-		url = 'https://some-random-api.ml/chatbot'
+		url = os.environ['HexApi'] + 'chatbot'
 		while True:
 			try:
 				params = {'message': 'message'}
@@ -320,7 +319,7 @@ class Media(commands.Cog):
 	@commands.command(name='insult', aliases=['roast'])
 	async def insult(self, ctx):
 		"""Insult generator"""
-		url = 'https://www.rappad.co/api/battles/random_insult'
+		url = os.environ['HexApi'] + 'insult'
 		try:
 			user = ctx.message.mentions[0]
 		except IndexError:
@@ -337,7 +336,7 @@ class Media(commands.Cog):
 	@commands.command(name='bill')
 	async def _bill(self, ctx, name=''):
 		"""Bill meme generator"""
-		url = 'https://belikebill.ga/billgen-API.php'
+		url = os.environ['HexApi'] + 'bill'
 		params = {'default': 1}
 		try:
 			name = ctx.message.mentions[0].display_name
@@ -430,7 +429,7 @@ class Media(commands.Cog):
 	@commands.command(name='uselessweb', aliases=['website'])
 	async def uselessweb(self, ctx):
 		"""Get a random website"""
-		url = "https://useless-api--vierofernando.repl.co/uselesssites"
+		url = os.environ['HexApi'] + "uselesssites"
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
