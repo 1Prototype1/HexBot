@@ -469,9 +469,54 @@ class Media(commands.Cog):
 						return await ctx.send('Failed to get comic list :x:')
 					result = await r.json()
 			result = result['comics']
+
 			data = [f"**{i}** {comic_name.title()}" for i, comic_name in enumerate(result, 1)]
-			em = discord.Embed(color=discord.Color(0xFF5470), title="Comic list:", description='\n'.join(data))
-			await ctx.send(embed=em)
+			em = discord.Embed(color=discord.Color(0xFF5470), title="Comic list:")
+			em.description= '\n'.join(data[:15])
+			# Page 1
+			page = 0
+			em.set_footer(text=f"Page no.: {page+1}")
+			cmsg = await ctx.send(embed=em)
+			await cmsg.add_reaction('⬅')
+			await cmsg.add_reaction('❌')
+			await cmsg.add_reaction('➡')
+			def check(reaction, user):
+				return (
+					(user != self.bot.user) 
+					and (str(reaction.emoji) in ['⬅', '➡', '❌']) 
+					and (reaction.message.id == cmsg.id)
+					)
+			while True:
+				try:
+					reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+				except asyncio.TimeoutError:
+					await cmsg.clear_reactions()
+					return
+				else:
+					if str(reaction.emoji) == '➡':
+						await cmsg.remove_reaction(reaction, user)
+						page += 1
+						page_data = data[page*15:page*15+15]
+						if len(page_data)>0:
+							em.description = '\n'.join(page_data)
+							em.set_footer(text=f"Page no.: {page+1}")
+							await cmsg.edit(embed=em)
+						else:
+							page -= 1
+					elif str(reaction.emoji) == '⬅':
+						await cmsg.remove_reaction(reaction, user)
+						page -= 1
+						page_data = data[page*15:page*15+15]
+						if len(page_data)>0 and page >= 0:
+							em.description = '\n'.join(page_data)
+							em.set_footer(text=f"Page no.: {page+1}")
+							await cmsg.edit(embed=em)
+						else:
+							page += 1
+					else:
+						await cmsg.delete(delay=0.0)
+						return
+
 		else:
 			params = {'id': cid}
 			async with ctx.typing():
