@@ -32,6 +32,7 @@ ai            - Start AI chat
 advice        - Get some advice
 ascii <link>  - Get ascii art of user/img
 bored|suggest - Suggestion for boredom
+comic <id>    - Get comic strip
 filter        - Apply filters to image
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]

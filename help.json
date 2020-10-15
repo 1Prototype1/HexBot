@@ -4,7 +4,7 @@
 			"`equalizer`, `lyrics`, `now`, `pause`, `p`, `play`, `queue`, `remove`, `repeat`, `resume`, `seek`, `save`, `shuffle`, `skip`, `stop`, `volume`"
    		, 
 		":stuck_out_tongue_winking_eye: Fun:": 
-			"`ai`, `advice`, `ascii`, `bored`, `filter`, `fortune`, `quote`, `textart`, `uselessweb`, `wallpaper`"
+			"`ai`, `advice`, `ascii`, `bored`, `comic`, `filter`, `fortune`, `quote`, `textart`, `uselessweb`, `wallpaper`"
 		, 
 		":tools: Utility:": 
 			"`convert`, `encode`, `list`, `palette`, `pokedex`, `predict`, `qr`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`"
@@ -41,6 +41,7 @@
 				"advice        - Get some advice", 
 				"ascii <link>  - Get ascii art of user/img", 
 				"bored|suggest - Suggestion for boredom", 
+				"comic <id>    - Get comic strip", 
 				"filter        - Apply filters to image", 
 				"fortune|quote - Fortune Cookie!", 
 				"    <category>[factoid|fortune|people]", 
