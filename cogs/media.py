@@ -111,9 +111,13 @@ class Media(commands.Cog):
 		except IndexError:
 			return await ctx.send('Mention two users to match :heart:')
 
-		em = discord.Embed(color=discord.Color(0xFF355E))
-		em.set_image(url=f'https://useless-api--vierofernando.repl.co/tinder?image1={user1}&image2={user2}')
-		await ctx.send(embed=em)
+		url = os.environ['HexApi'] + f"tinder?image1={user1}&image2={user2}"
+		async with ctx.typing():
+			async with self.client.get(url) as r:
+				if r.status != 200:
+					return await ctx.send('Failed to match :broken_heart:')
+				data = io.BytesIO(await r.read())
+		await ctx.send(file=discord.File(data, 'tinder.png'))
 
 	@commands.command(name='pokemon', aliases=['pokedex'])
 	async def _pokemon(self, ctx, *, name=''):
@@ -246,12 +250,13 @@ class Media(commands.Cog):
 		text = text.split(',')
 		if len(text) != 2:
 			return await ctx.send('Please specify `,` separated two sentences :page_facing_up:')
-		url = 'https://api.alexflipnote.dev/drake'
+		url = os.environ['HexApi'] + 'drake'
 		params = {'top': text[0], 'bottom': text[1]}
-		async with self.client.get(url, params=params) as r:
-			if r.status != 200:
-				return await ctx.send('Failed to generate meme :disappointed_relieved:')
-			data = io.BytesIO(await r.read())
+		async with ctx.typing():
+			async with self.client.get(url, params=params) as r:
+				if r.status != 200:
+					return await ctx.send('Failed to generate meme :disappointed_relieved:')
+				data = io.BytesIO(await r.read())
 		await ctx.send(file=discord.File(data, 'drake.png'))
 
 	@commands.command(name='palette', aliases=['color', 'colour'])
@@ -262,7 +267,7 @@ class Media(commands.Cog):
 
 		if hexcode.startswith('#'):
 			hexcode = hexcode[1:]
-		url = 'https://api.alexflipnote.dev/color/' + hexcode
+		url = os.environ['HexApi'] + 'color?hexcode=' + hexcode
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
@@ -297,18 +302,20 @@ class Media(commands.Cog):
 		except IndexError:
 			pass
 
-		url = f'https://api.alexflipnote.dev/filter/{arg}'
-		async with self.client.get(url, params={'image': str(image_link)}) as r:
-			if r.status != 200:
-				return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
-			data = io.BytesIO(await r.read())
+		url = os.environ['HexApi'] + 'filter'
+		params = {'name': arg, 'image': str(image_link)}
+		async with ctx.typing():
+			async with self.client.get(url, params=params) as r:
+				if r.status != 200:
+					return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
+				data = io.BytesIO(await r.read())
 
 		await ctx.send(file=discord.File(data, 'filter.png'))
 
 	@commands.command(name='fml')
 	async def fml(self, ctx):
 		"""FML generators"""
-		url = 'https://api.alexflipnote.dev/fml'
+		url = os.environ['HexApi'] + 'fml'
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
@@ -356,19 +363,19 @@ class Media(commands.Cog):
 	@commands.command(name='advice')
 	async def advice(self, ctx):
 		"""Random Advice generator"""
-		url = 'https://api.adviceslip.com/advice'
+		url = os.environ['HexApi'] + 'advice'
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
 					return ctx.send('Unable to generate advice :disappointed_relieved')
-				data = await r.json(content_type='text/html')
+				data = await r.json()
 
 		await ctx.send(data['slip']['advice'])
 
 	@commands.command(name='bored', aliases=['suggest'])
 	async def suggest(self, ctx):
 		"""Random Suggestions"""
-		url = 'https://www.boredapi.com/api/activity'
+		url = os.environ['HexApi'] + 'activity'
 		async with ctx.typing():
 			async with self.client.get(url) as r:
 				if r.status != 200:
@@ -391,11 +398,9 @@ class Media(commands.Cog):
 		if not word:
 			return await ctx.send("Specify a word :thought_balloon:")
 
-		url = 'https://rhymebrain.com/talk'
-		params =	{'function': 'getRhymes',
-					 'word': word.strip()}
+		url = os.environ['HexApi'] + 'rhyme?word=' + word.strip()
 		async with ctx.typing():
-			async with self.client.get(url, params=params) as r:
+			async with self.client.get(url) as r:
 				if r.status != 200:
 					return ctx.send('Failed to get rhymes :x:')
 				data = await r.json()
@@ -409,11 +414,9 @@ class Media(commands.Cog):
 		if not word:
 			return await ctx.send("Specify a word :thought_balloon:")
 
-		url = 'https://rhymebrain.com/talk'
-		params =	{'function': 'getWordInfo',
-					 'word': word.strip()}
+		url = os.environ['HexApi'] + 'wordinfo?word=' + word.strip()
 		async with ctx.typing():
-			async with self.client.get(url, params=params) as r:
+			async with self.client.get(url) as r:
 				if r.status != 200:
 					return ctx.send('Failed to get info :x:')
 				data = await r.json()
@@ -444,7 +447,7 @@ class Media(commands.Cog):
 		if not data:
 			return await ctx.send('Please specify data :link:')
 
-		url = 'http://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + data
+		url = os.environ['HexApi'] + 'qrcode?data=' + data
 		async with self.client.get(url) as r:
 			if r.status != 200:
 				return await ctx.send('Failed to generate QR code :x:')
