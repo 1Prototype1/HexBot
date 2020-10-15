@@ -72,7 +72,7 @@ meme|maymay   - Get MayMays
 roast @user   - Roasts the mentioned user
 tinder @u1@u2 - Get Tinder image
 trigger @user - Trigger an user
-xkcd|comic    - Get random xkcd comics
+xkcd          - Get random xkcd comics
 ```
 :joystick: Game Commands:
 ```
