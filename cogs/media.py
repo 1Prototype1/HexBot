@@ -468,18 +468,18 @@ class Media(commands.Cog):
 					if r.status != 200:
 						return await ctx.send('Failed to get comic list :x:')
 					result = await r.json()
-			result = result['comics']
 
-			data = [f"**{i}** {comic_name.title()}" for i, comic_name in enumerate(result, 1)]
+			data = [f"**{i}** {comic_name.title()}" for i, comic_name in enumerate(result['comics'], 1) if comic_name in result['featured']]
 			em = discord.Embed(color=discord.Color(0xFF5470), title="Comic list:")
-			em.description= '\n'.join(data[:15])
-			# Page 1
-			page = 0
-			em.set_footer(text=f"Page no.: {page+1}")
+			em.description= '**Popular:**\n' + '\n'.join(data)
+			em.set_footer(text="Click next for complete list")
 			cmsg = await ctx.send(embed=em)
-			await cmsg.add_reaction('⬅')
-			await cmsg.add_reaction('❌')
-			await cmsg.add_reaction('➡')
+
+			result = result['comics']
+			data = [f"**{i}** {comic_name.title()}" for i, comic_name in enumerate(result, 1)]
+			page = 0
+			for i in ['⬅', '❌', '➡']:
+				await cmsg.add_reaction(i)
 			def check(reaction, user):
 				return (
 					(user != self.bot.user) 
@@ -495,27 +495,24 @@ class Media(commands.Cog):
 				else:
 					if str(reaction.emoji) == '➡':
 						await cmsg.remove_reaction(reaction, user)
-						page += 1
-						page_data = data[page*15:page*15+15]
-						if len(page_data)>0:
-							em.description = '\n'.join(page_data)
-							em.set_footer(text=f"Page no.: {page+1}")
-							await cmsg.edit(embed=em)
-						else:
-							page -= 1
+						if page < len(result)//15:
+							page += 1
 					elif str(reaction.emoji) == '⬅':
 						await cmsg.remove_reaction(reaction, user)
-						page -= 1
-						page_data = data[page*15:page*15+15]
-						if len(page_data)>0 and page >= 0:
-							em.description = '\n'.join(page_data)
-							em.set_footer(text=f"Page no.: {page+1}")
-							await cmsg.edit(embed=em)
-						else:
-							page += 1
+						if page > 1:
+							page -= 1
 					else:
 						await cmsg.delete(delay=0.0)
 						return
+
+					if page < 1:
+						page = 1
+					start = (page-1) * 15
+					end = start + 15
+					page_data = data[start:end]
+					em.description = '\n'.join(page_data)
+					em.set_footer(text=f"Page {page}/{len(result)//15}")
+					await cmsg.edit(embed=em)
 
 		else:
 			params = {'id': cid}
