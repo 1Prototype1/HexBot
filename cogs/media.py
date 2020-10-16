@@ -495,7 +495,7 @@ class Media(commands.Cog):
 				else:
 					if str(reaction.emoji) == '➡':
 						await cmsg.remove_reaction(reaction, user)
-						if page < len(result)//15:
+						if page < 0--len(result)//15:
 							page += 1
 					elif str(reaction.emoji) == '⬅':
 						await cmsg.remove_reaction(reaction, user)
@@ -511,7 +511,7 @@ class Media(commands.Cog):
 					end = start + 15
 					page_data = data[start:end]
 					em.description = '\n'.join(page_data)
-					em.set_footer(text=f"Page {page}/{len(result)//15}")
+					em.set_footer(text=f"Page {page}/{0--len(result)//15}")
 					await cmsg.edit(embed=em)
 
 		else:
