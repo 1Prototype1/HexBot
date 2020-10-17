@@ -76,6 +76,7 @@ xkcd          - Get random xkcd comics
 ```
 :joystick: Game Commands:
 ```
+2048          - Play 2048 puzzle
 8ball         - Magic 8Ball!
     <question>
 hangman       - Play Hangman
