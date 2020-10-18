@@ -82,7 +82,7 @@ class Music(commands.Cog):
 		results = await player.node.get_tracks(query)
 
 		if not results or not results['tracks']:
-			return await ctx.send('Song not found :mag_right:')
+			return await ctx.send('Song not found :x: Please try again :mag_right:')
 
 		em = discord.Embed(colour=discord.Colour(0x59FFC8))        
 
