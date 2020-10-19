@@ -222,7 +222,7 @@ class Games(commands.Cog):
 	@commands.command(name='joke', aliases=['pun', 'riddle', 'dark', 'geek'])
 	async def _joke(self, ctx):
 		"""Tell a joke"""
-		jclient = Joke()
+		jclient = Jokes()
 		blacklist = ['nsfw', 'religious', 'political', 'racist'] # Use if needed
 		try:
 			if ctx.message.content.strip()[1:5] in ['pun', 'dark', 'geek']:
