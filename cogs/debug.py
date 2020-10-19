@@ -176,7 +176,8 @@ class Debug(commands.Cog):
 					self.bot.load_extension('cogs.' + module)
 				except:
 					await msg.edit(content=f":x: Reloading `{module}` Failed!")
-				await msg.edit(content=f":white_check_mark: Reloaded `{module}`")
+				else:
+					await msg.edit(content=f":white_check_mark: Reloaded `{module}`")
 		elif arg.lower() in modules:
 			msg = await ctx.send(f":arrows_counterclockwise: Reloading `{arg.lower()}`...")
 			try:
@@ -184,7 +185,8 @@ class Debug(commands.Cog):
 				self.bot.load_extension('cogs.' + arg.lower())
 			except:
 				await msg.edit(content=f":x: Reloading `{arg.lower()}` Failed!")
-			await msg.edit(content=f":white_check_mark: Reloaded `{arg.lower()}`")
+			else:
+				await msg.edit(content=f":white_check_mark: Reloaded `{arg.lower()}`")
 
 
 def setup(bot):
