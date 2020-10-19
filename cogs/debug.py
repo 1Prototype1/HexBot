@@ -171,13 +171,19 @@ class Debug(commands.Cog):
 			await msg.edit(content='<:octocat:766423121946345512> Code Updated')
 			for module in modules:
 				msg = await ctx.send(f":arrows_counterclockwise: Reloading `{module}`...")
-				self.bot.unload_extension('cogs.' + module)
-				self.bot.load_extension('cogs.' + module)
+				try:
+					self.bot.unload_extension('cogs.' + module)
+					self.bot.load_extension('cogs.' + module)
+				except:
+					await msg.edit(content=f":x: Reloading `{module}` Failed!")
 				await msg.edit(content=f":white_check_mark: Reloaded `{module}`")
 		elif arg.lower() in modules:
 			msg = await ctx.send(f":arrows_counterclockwise: Reloading `{arg.lower()}`...")
-			self.bot.unload_extension('cogs.' + arg.lower())
-			self.bot.load_extension('cogs.' + arg.lower())
+			try:
+				self.bot.unload_extension('cogs.' + arg.lower())
+				self.bot.load_extension('cogs.' + arg.lower())
+			except:
+				await msg.edit(content=f":x: Reloading `{arg.lower()}` Failed!")
 			await msg.edit(content=f":white_check_mark: Reloaded `{arg.lower()}`")
 
 
