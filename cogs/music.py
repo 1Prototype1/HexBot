@@ -30,7 +30,7 @@ class Music(commands.Cog):
 		if isinstance(event, lavalink.events.QueueEndEvent):
 			guild_id = int(event.player.guild_id)
 			await self.connect_to(guild_id, None)
-			await self.bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Nothing"))
+			await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
 	async def cog_before_invoke(self, ctx):
 		""" Command before-invoke handler. """
@@ -305,7 +305,7 @@ class Music(commands.Cog):
 		# Disconnect from the voice channel.
 		await self.connect_to(ctx.guild.id, None)
 		await ctx.send('Disconnected :mute:')
-		await self.bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Nothing"))
+		await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
 	@commands.command(name='lyrics', aliases=['ly'])
 	async def get_lyrics(self, ctx, *, query: str=""):

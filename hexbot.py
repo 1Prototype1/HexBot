@@ -37,7 +37,7 @@ async def on_ready():
 		print(f'Error loading {module}: {e}')
 
 	print('Bot.....Activated')
-	await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Nothing"))
+	await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
 
 @bot.event
 async def on_message(message):
