@@ -147,7 +147,7 @@ class Meme(commands.Cog):
         await ctx.send(file=discord.File(data, 'trigger.gif'))
 
     @commands.command(name='xkcd')
-    async def comic(self, ctx):
+    async def _xkcd(self, ctx):
         """xkcd Comics"""
         async with ctx.typing():
             c = xkcd.getRandomComic()
