@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from games import tictactoe, wumpus, hangman, minesweeper, twenty
 
-class Games(commands.Cog):
+class Game(commands.Cog):
     """Play various Games"""
 
     def __init__(self, bot):
@@ -213,4 +213,4 @@ class Games(commands.Cog):
         await wumpus.play(self.bot, ctx)
 
 def setup(bot):
-    bot.add_cog(Games(bot))
+    bot.add_cog(Game(bot))
