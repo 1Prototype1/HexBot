@@ -10,7 +10,7 @@ from discord.ext import commands
 
 from utils import canvas
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("."),
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("~"),
                     description='Relatively simply awesome bot.',
                     case_insensitive=True,
                     intents=discord.Intents.all())
