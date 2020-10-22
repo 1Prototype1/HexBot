@@ -1,6 +1,5 @@
 import os
 import io
-from jokeapi import Jokes
 import xkcd
 import ksoftapi
 
@@ -36,26 +35,26 @@ class Meme(commands.Cog):
     @commands.command(name='joke', aliases=['pun', 'riddle', 'dark', 'geek'])
     async def _joke(self, ctx):
         """Tell a joke"""
-        jclient = Jokes()
-        blacklist = ['nsfw', 'religious', 'political', 'racist'] # Use if needed
-        try:
-            if ctx.message.content.strip()[1:5] in ['pun', 'dark', 'geek']:
-                if ctx.message.content.strip()[1:5].lower() == 'geek':
-                    joke = jclient.get_joke(category=['programming'], blacklist=blacklist)
-                else:
-                    joke = jclient.get_joke(category=[f'{ctx.message.content.strip()[1:5]}'], blacklist=blacklist)
-            elif 'riddle' in ctx.message.content:
-                joke = jclient.get_joke(type='twopart', blacklist=blacklist)
-                return await ctx.send(f"Q: {joke['setup']}\nA: {joke['delivery']}")
+        url = os.environ['HexApi'] + 'joke'
+        params = {'category': 'Any'}
+        if ctx.message.content.strip()[1:5] in ['pun', 'dark', 'geek']:
+            if ctx.message.content.strip()[1:5].lower() == 'geek':
+                params['category'] = 'Programming'
             else:
-                joke = jclient.get_joke(blacklist=blacklist)
+                params['category'] = ctx.message.content.strip()[1:5]
+        elif 'riddle' in ctx.message.content:
+            params['type'] = 'twopart'
 
-            if joke["type"] == "single":
-                await ctx.send(joke['joke'])
-            else:
-                await ctx.send(f"{joke['setup']}\n{joke['delivery']}")
-        except:
-            await ctx.send("Could not get joke for you :disappointed_relieved:")
+        async with ctx.typing():
+            async with self.client.get(url, params=params) as r:
+                if r.status != 200:
+                    return await ctx.send("Could not get joke for you :disappointed_relieved:")
+                joke = await r.json()
+
+        if joke["type"] == "single":
+            await ctx.send(joke['joke'])
+        else:
+            await ctx.send(f"{joke['setup']}\n{joke['delivery']}")
 
     @commands.command(name='drake')
     async def drake(self, ctx, *, text: str=''):
@@ -94,7 +93,7 @@ class Meme(commands.Cog):
         else:
             embed = discord.Embed(title=maymay.title)
             embed.set_image(url=maymay.image_url)
-            await ctx.send(embed=embed) 
+            await ctx.send(embed=embed)
 
     @commands.command(name='insult', aliases=['roast'])
     async def insult(self, ctx):
