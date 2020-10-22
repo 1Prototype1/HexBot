@@ -135,7 +135,7 @@ class Game(commands.Cog):
     async def teams(self, ctx, num=2):
         """Makes random teams with specified number(def. 2)"""
         if not ctx.author.voice:
-            await ctx.send("You are not connected to a voice channel :mute:")
+            return await ctx.send("You are not connected to a voice channel :mute:")
         members = ctx.author.voice.channel.members
         memnames = []
         for member in members:
