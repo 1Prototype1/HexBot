@@ -1,4 +1,4 @@
-![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=python) ![Python](https://img.shields.io/badge/python-v3.8.2-blue?logo=python&logoColor=ffe873) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) [![Servers](https://img.shields.io/badge/servers-22-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344)
+![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=python) ![Python](https://img.shields.io/badge/python-v3.8.2-blue?logo=python&logoColor=ffe873) ![License](https://img.shields.io/github/license/1Prototype1/HexBot) [![Servers](https://img.shields.io/badge/servers-33-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344)
 # HexBot
 A Relatively Simply Awesome Discord bot with Music, Games, Comics, Memes and other cool features. <br>
 This bot is made in Python 3.8 using [discord.py](https://github.com/Rapptz/discord.py)
