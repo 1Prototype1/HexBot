@@ -28,7 +28,7 @@ async def on_ready():
 	bot.client = ClientSession()
 
 	# Load Modules
-	modules = ['misc', 'games', 'debug', 'media', 'music']
+	modules = ['music', 'fun', 'utility', 'meme', 'game', 'misc']
 	try:
 		for module in modules:
 			bot.load_extension('cogs.' + module)
@@ -84,39 +84,6 @@ async def on_member_remove(member):
 				await sys_channel.send(file=discord.File(fp=img, filename='leave.png'))
 			except discord.Forbidden:
 				pass
-
-@bot.command(name='help', aliases=['h'])
-async def help(ctx, arg: str=''):
-	"""Display help"""
-	embed = discord.Embed(title="Relatively simply awesome bot.", colour=discord.Colour(0x7f20a0))
-
-	avatar_url = str(bot.user.avatar_url)
-	embed.set_thumbnail(url=avatar_url)
-	embed.set_author(name="HexBot Help", url="https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344", icon_url=avatar_url)
-	embed.set_footer(text="HexBot by [Prototype]#7731✨")
-
-	if arg.strip().lower() == '-a':
-		# Full version
-		embed.description = 'My prefix is `~`'
-		with open('help.json', 'r') as help_file:
-			data = json.load(help_file)
-		data = data['full']
-		for key in data:
-			value = '\n'.join(x for x in data[key])
-			embed.add_field(name=key, value=f"```{value}```", inline=False)
-	else:
-		# Short version
-		embed.description = 'My prefix is `~`\nType `~help -a` for detailed help.'
-		with open('help.json', 'r') as help_file:
-			data = json.load(help_file)
-		data = data['short']
-		for key in data:
-			embed.add_field(name=key, value=data[key])
-	try:
-		await ctx.send(embed=embed)
-	except Exception:
-		await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
-
 
 # All good ready to start!
 print('Starting Bot...')
