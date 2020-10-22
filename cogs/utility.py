@@ -243,7 +243,7 @@ class Utility(commands.Cog):
                     embed = discord.Embed(description=translation.text, color=discord.Color(0x5DADEC))
                     embed.set_footer(text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')
                     await ctx.send(embed=embed)
-                except Exception as e:
+                except:
                     return await ctx.send('Unable to translate :x:\nMaybe language id was wrong')
             else:
                 await ctx.send(content='Please add a language id\nType `~translate --list` for the list')
