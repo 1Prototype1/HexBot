@@ -59,6 +59,8 @@ class Utility(commands.Cog):
     @commands.command(name='list')
     async def listusers(self, ctx):
         """Displays the list of connected users"""
+        if not ctx.author.voice:
+            return await ctx.send("You are not connected to a voice channel :mute:")
         members = ctx.author.voice.channel.members
         memnames = []
         for member in members:
