@@ -9,8 +9,10 @@ async def member_banner(top='toptxt', bottom='bottomtxt', url='', txtcolor='#00f
 	async with aiohttp.ClientSession() as session:
 		async with session.get(url) as resp:
 			im = Image.open(io.BytesIO(await resp.read()))
+	# resize to 256 if not
+	im.resize((256, 256))
 
-	# create heagon mask
+	# create hexagon mask
 	mask = Image.new('RGBA', im.size)
 	d = ImageDraw.Draw(mask)
 	xy = [ 
