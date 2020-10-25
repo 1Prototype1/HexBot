@@ -370,11 +370,10 @@ class Utility(commands.Cog):
             await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
 
     @commands.command(name='weather')
-    async def weather(self, ctx, *, location: str = ""):
+    async def weather(self, ctx, *, location=None):
         """Get weather"""
-        if location == "":
+        if not location:
             return await ctx.send('Please provide location :map:')
-
         try:
             async with ctx.typing():
                 w = await self.kclient.kumo.basic_weather(location, icon_pack='color')
