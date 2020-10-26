@@ -374,24 +374,14 @@ class Utility(commands.Cog):
         """Get weather"""
         if not location:
             return await ctx.send('Please provide location :map:')
-        try:
-            async with ctx.typing():
-                w = await self.kclient.kumo.basic_weather(location, icon_pack='color')
-        except ksoftapi.NoResults:
-            await ctx.send('Unable to locate :mag_right:')
-        else:
-            infos = [['Apparent Temperature', 'apparent_temperature', 1, ' °C'], ['Precipitation Intensity', 'precip_intensity', 1, ' mm/h'], ['Precipitation Probability', 'precip_probability', 100, ' %'], ['Dew Point', 'dew_point', 1, ' °C'], ['Humidity', 'humidity', 100, ' %'], ['Pressure', 'pressure', 1, ' mbar'], ['Wind Speed', 'wind_speed', 1, ' km/h'], ['Cloud Cover', 'cloud_cover', 100, ' %'], ['Visibility', 'visibility', 1, ' km'], ['UV Index', 'uv_index', 1, ''], ['Ozone', 'ozone', 1, '']]
-            gmap = f"[🗺](https://www.google.com/maps/search/?api=1&query='{w.location.address}')"
-            gmap = gmap.replace("'", "%22");gmap = gmap.replace(" ", "%20")
+        url = os.environ['HexApi'] + f'weatherimg?location={location}'
+        async with ctx.typing():
+            async with self.client.get(url) as r:
+                if r.status != 200:
+                    return await ctx.send('Failed to get weather :x:')
+                data = io.BytesIO(await r.read())
 
-            info = [f'{gmap} **{w.location.address}**\n']
-            for i in infos:
-                info.append(f'{i[0]}: `{getattr(w, i[1])*i[2]}{i[3]}`')
-
-            embed = discord.Embed(title=f"{w.summary} {w.temperature}°C", colour=discord.Colour(0xffff66), description='\n'.join(info))
-            embed.set_thumbnail(url=w.icon_url)
-            embed.set_author(name='Weather:', icon_url=w.icon_url)
-            await ctx.send(embed=embed)
+        await ctx.send(file=discord.File(data, 'weather.png'))
 
     @commands.command(name='wordinfo', aliases=['pronunciation', 'pron', 'word'])
     async def wordinfo(self, ctx, word=""):
