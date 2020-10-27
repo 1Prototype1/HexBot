@@ -177,6 +177,10 @@ class Debug(commands.Cog):
                     await msg.edit(content=f":x: Reloading `{module}` Failed!")
                 else:
                     await msg.edit(content=f":white_check_mark: Reloaded `{module}`")
+        elif arg.lower() == 'code':
+            msg = await ctx.send('<:octocat:766423121946345512> Code Updating...')
+            run(['git', 'pull', '--no-rebase'], stdout=DEVNULL)
+            await msg.edit(content='<:octocat:766423121946345512> Code Updated')
         elif arg.lower() in modules:
             msg = await ctx.send(f":arrows_counterclockwise: Reloading `{arg.lower()}`...")
             try:
