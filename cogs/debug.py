@@ -165,9 +165,6 @@ class Debug(commands.Cog):
         if not arg:
             return await ctx.send(embed=discord.Embed(title='Modules', description='\n'.join(modules)))
         if arg.lower() == 'all':
-            msg = await ctx.send('<:octocat:766423121946345512> Code Updating...')
-            run(['git', 'pull', '--no-rebase'], stdout=DEVNULL)
-            await msg.edit(content='<:octocat:766423121946345512> Code Updated')
             for module in modules:
                 msg = await ctx.send(f":arrows_counterclockwise: Reloading `{module}`...")
                 try:
