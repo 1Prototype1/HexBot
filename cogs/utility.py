@@ -37,7 +37,7 @@ class Utility(commands.Cog):
         async with ctx.typing():
             async with self.client.get(url) as r:
                 if r.status != 200:
-                    return await ctx.send('Error getting definition :disappointed_relieved:')
+                    return await ctx.send('Definition not found :bookmark_tabs:')
                 results = await r.json()
             description = []
             for r in results:
