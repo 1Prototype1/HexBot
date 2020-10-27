@@ -40,17 +40,29 @@ class Utility(commands.Cog):
                     return await ctx.send('Definition not found :bookmark_tabs:')
                 results = await r.json()
             description = []
+            emoji = ''
             for r in results:
                 res = []
                 if r['type']:
                     res.append(f"`{r['type']}`")
                 res.append(f"{r['definition']}")
                 if r['example']:
-                    res.append(f"\n\t\t*{r['example'].replace('<b>', '**').replace('</b>', '**')}*")
+                    res.append(f"\n*{r['example'].replace('<b>', '**').replace('</b>', '**')}*")
+                if r['image_url']:
+                    async with self.client.get(r['image_url']) as r1:
+                        if r1.status == 200:
+                            image = io.BytesIO(await r1.read())
+                            image = discord.File(image, 'image.png')
+                if r['emoji']:
+                    emoji = r['emoji'] + ' '
 
                 description.append(' '.join(res))
-            em = discord.Embed(title=word, description='\n'.join(description), color=discord.Color(0xFF9933))
-        await ctx.send(embed=em)
+            em = discord.Embed(title=f"{emoji}{word}", description='\n'.join(description), color=discord.Color(0xFF9933))
+        try:
+            em.set_thumbnail(url='attachment://image.png')
+            await ctx.send(embed=em, file=image)
+        except:
+            await ctx.send(embed=em)
 
     @commands.command(name='encode', aliases=['encrypt', 'style'])
     async def _encode(self, ctx, *, text: str=""):
