@@ -49,6 +49,7 @@ wallpaper     - Get wallpaper
 ```
 convert       - Currency Converter
     <val><from><to>
+define <word> - Get definition of a word
 encode <txt>  - Encode and style the text
 list          - Displays the list of
                 voice connected users

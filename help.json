@@ -7,7 +7,7 @@
 			"`ai`, `advice`, `ascii`, `bored`, `comic`, `filter`, `fortune`, `quote`, `textart`, `uselessweb`, `wallpaper`"
 		, 
 		":tools: Utility:": 
-			"`convert`, `encode`, `list`, `palette`, `pokedex`, `predict`, `qr`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`"
+			"`convert`, `define`, `encode`, `list`, `palette`, `pokedex`, `predict`, `qr`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`"
 		, 
 		"<:doge:761603676510093312> Meme:": 
 			"`bill`, `dark`, `drake`, `fml`, `geek`, `joke`, `meme`, `pun`, `riddle`, `roast`, `tinder`, `trigger`, `xkcd`"
@@ -52,6 +52,7 @@
 		":tools: Utility Commands:": [
 				"convert       - Currency Converter", 
 				"    <val><from><to>", 
+				"define <word> - Get definition of a word", 
 				"encode <txt>  - Encode and style the text", 
 				"list          - Displays the list of", 
 				"                voice connected users", 
