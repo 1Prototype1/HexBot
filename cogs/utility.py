@@ -28,6 +28,30 @@ class Utility(commands.Cog):
         else:
             await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
 
+    @commands.command(name='define')
+    async def _define(self, ctx, word=None):
+        """Word Dictionary"""
+        if not word:
+            return await ctx.send('Please specify word :pager:')
+        url = os.environ['HexApi'] + 'dictionary?word=' + word
+        async with ctx.typing():
+            async with self.client.get(url) as r:
+                if r.status != 200:
+                    return await ctx.send('Error getting definition :disappointed_relieved:')
+                results = await r.json()
+            description = []
+            for r in results:
+                res = []
+                if r['type']:
+                    res.append(f"`{r['type']}`")
+                res.append(f"{r['definition']}")
+                if r['example']:
+                    res.append(f"\n\t\t*{r['example'].replace('<b>', '**').replace('</b>', '**')}*")
+
+                description.append(' '.join(res))
+            em = discord.Embed(title=word, description='\n'.join(description), color=discord.Color(0xFF9933))
+        await ctx.send(embed=em)
+
     @commands.command(name='encode', aliases=['encrypt', 'style'])
     async def _encode(self, ctx, *, text: str=""):
         """Encode given text"""
