@@ -170,18 +170,19 @@ class Fun(commands.Cog):
     @commands.command(name='filter', aliases=['blur', 'invert', 'b&w', 'deepfry', 'sepia', 'pixelate', 'magik', 'jpegify', 'wide', 'snow', 'gay', 'communist'])
     async def filter(self, ctx, arg='', image_link=''):
         """Deepfry avatar"""
-        filters = ['blur', 'invert', 'b&w', 'deepfry', 'sepia', 'pixelate', 'magik', 'jpegify', 'wide', 'snow', 'gay', 'communist']
+        filters = ['b&w', 'blur', 'charcoal', 'communist', 'deepfry', 'edge', 'emboss', 'gay', 'glitch', 'implode', 'invert', 
+                   'jpegify', 'magik', 'pixelate', 'primitive', 'sepia', 'sketch', 'snow', 'spread', 'swirl', 'wave', 'wide']
         if arg == '--list':
             return await ctx.send(embed=discord.Embed(title='Filters', description='\n'.join(filters)))
         if arg not in filters:
-            return await ctx.send("Invalid filter name\nUse --list for all options")
+            return await ctx.send("Invalid filter name\nUse `~filter --list` for all options")
         
         if not image_link:
             user = ctx.message.author
-            image_link = user.avatar_url_as(format='png', size=1024)
+            image_link = user.avatar_url_as(format='png', size=512)
         try:
             user = ctx.message.mentions[0]
-            image_link = user.avatar_url_as(format='png', size=1024)
+            image_link = user.avatar_url_as(format='png', size=512)
         except IndexError:
             pass
 
@@ -245,8 +246,9 @@ class Fun(commands.Cog):
             results = await r.json()
         for r in results:
             em = discord.Embed(color=discord.Color(0xFF355E))
+            em.set_author(name=r['user']['name'], url=f"{r['user']['links']['html']}?utm_source=HexBot&utm_medium=Discord", icon_url=r['user']['profile_image']['small'])
             em.set_image(url=r['urls']['raw'])
-            em.set_footer(text=f"{r['user']['name']} on Unsplash", icon_url='https://i.ibb.co/f4Xbgkv/lens.png')
+            em.set_footer(text='Source: Unsplash')
             await ctx.send(embed=em)
 
 
