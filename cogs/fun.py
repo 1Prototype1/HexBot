@@ -58,13 +58,11 @@ class Fun(commands.Cog):
     async def ascii(self, ctx, image_link: str=""):
         """Ascii art of avatar"""
         if not image_link:
-            user = ctx.message.author
+            try:
+                user = ctx.message.mentions[0]
+            except IndexError:
+                user = ctx.message.author
             image_link = user.avatar_url_as(size=1024)
-        try:
-            user = ctx.message.mentions[0]
-            image_link = user.avatar_url_as(size=1024)
-        except IndexError:
-            pass
 
         url = os.environ['HexApi'] + 'imagetoascii'
         async with self.client.get(url, params={'image': str(image_link)}) as r:
