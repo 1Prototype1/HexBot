@@ -1,7 +1,6 @@
 import os
 import io
 import datetime
-import json
 from aiohttp import ClientSession
 import ksoftapi
 
