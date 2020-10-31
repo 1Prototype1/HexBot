@@ -15,20 +15,28 @@ class Debug(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send(error.original)
+
+    async def cog_before_invoke(self, ctx):
+        """ Check for bot owner """
+        isOwner = await self.bot.is_owner(ctx.author)
+        if not isOwner:
+            raise commands.CommandInvokeError('Only bot owner is permitted to use this command :man_technologist_tone1:')
+        return isOwner
+
     @commands.command(name='speedtest')
     async def speed_test(self, ctx):        
         """Speedtest"""
         async with ctx.typing():
-            if await self.bot.is_owner(ctx.author):
-                s = Speedtest()
-                s.get_best_server()
-                s.download()
-                s.upload()
-                s = s.results.dict()
-                
-                await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)} Mbits/s`\nUpload: `{round(s['upload']/10**6, 3)} Mbits/s`\nServer: `{s['server']['sponsor']}, {s['server']['name']}, {s['server']['country']}`\nBot: `{s['client']['isp']}({s['client']['ip']}) {s['client']['country']} {s['client']['isprating']}`")
-            else:
-                await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
+            s = Speedtest()
+            s.get_best_server()
+            s.download()
+            s.upload()
+            s = s.results.dict()
+            
+            await ctx.send(f"Ping: `{s['ping']}ms`\nDownload: `{round(s['download']/10**6, 3)} Mbits/s`\nUpload: `{round(s['upload']/10**6, 3)} Mbits/s`\nServer: `{s['server']['sponsor']}, {s['server']['name']}, {s['server']['country']}`\nBot: `{s['client']['isp']}({s['client']['ip']}) {s['client']['country']} {s['client']['isprating']}`")
 
     @commands.command(name='botinfo' , aliases=['botstats', 'status'])
     async def stats(self, ctx):
@@ -66,10 +74,6 @@ class Debug(commands.Cog):
     @commands.command(name='eval', aliases=['py'])
     async def _eval(self, ctx, *, body):
         """Evaluates python code"""
-        # Allow only the bot owner
-        if not await self.bot.is_owner(ctx.author):
-            return await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
-
         env = {
             'ctx': ctx,
             'bot': self.bot,
@@ -158,9 +162,6 @@ class Debug(commands.Cog):
     @commands.command(name='reload')
     async def reload_module(self, ctx, arg=None):
         """Reload module"""
-        if not await self.bot.is_owner(ctx.author):
-            return await ctx.send("Only bot owner is permitted to use this command :man_technologist_tone1:")
-        
         modules = ['music', 'fun', 'utility', 'meme', 'game', 'misc', 'debug']
         if not arg:
             return await ctx.send(embed=discord.Embed(title='Modules', description='\n'.join(modules)))
