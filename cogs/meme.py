@@ -34,7 +34,7 @@ class Meme(commands.Cog):
 
     @commands.command(name='compliment')
     async def compliment(self, ctx):
-        """Insult generator"""
+        """Compliment generator"""
         url = os.environ['HexApi'] + 'compliment'
         try:
             user = ctx.message.mentions[0]
@@ -124,9 +124,8 @@ class Meme(commands.Cog):
                 if r.status != 200:
                     return await ctx.send('Failed to insult :disappointed_relieved:')
                 data = await r.json()
-
-        insult_text = '. '.join(map(lambda s: s.strip().capitalize(), data['insult'].split('.')))
-        await ctx.send(f"{user.mention} {insult_text}")
+            result = data['insult']
+        await ctx.send(f"{user.mention} {result}")
 
     @commands.command(name='tinder', aliases=['match'])
     async def tinder(self, ctx):
