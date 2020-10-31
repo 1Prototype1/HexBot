@@ -70,6 +70,7 @@ wordinfo      - Get word info
 :trollface: Meme Commands:
 ```
 bill          - Generate bill meme
+compliment    - Compliment mentioned user
 drake <a, b>  - Generate Drake meme
 fml           - Generate FML
 joke          - Get a random joke

@@ -10,7 +10,7 @@
 			"`convert`, `define`, `encode`, `list`, `palette`, `pokedex`, `predict`, `qr`, `rhyme`, `trace`, `translate`, `server`, `shorten`, `user`, `weather`, `wordinfo`"
 		, 
 		"<:doge:761603676510093312> Meme:": 
-			"`bill`, `dark`, `drake`, `fml`, `geek`, `joke`, `meme`, `pun`, `riddle`, `roast`, `tinder`, `trigger`, `xkcd`"
+			"`bill`, `compliment`, `dark`, `drake`, `fml`, `geek`, `joke`, `meme`, `pun`, `riddle`, `roast`, `tinder`, `trigger`, `xkcd`"
 		, 
 		":joystick: Game:": 
 			"`2048`, `8ball`, `hangman`, `minesweeper`, `poll`, `rps`, `tally`, `teams`, `toss`, `trivia`, `ttt`, `wumpus`"
@@ -72,6 +72,7 @@
 		], 
 		"<:doge:761603676510093312> Meme Commands:": [
 				"bill          - Generate bill meme", 
+				"compliment    - Compliment mentioned user", 
 				"drake <a, b>  - Generate Drake meme", 
 				"fml           - Generate FML", 
 				"joke          - Get a random joke", 

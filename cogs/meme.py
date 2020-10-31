@@ -32,6 +32,22 @@ class Meme(commands.Cog):
 
         await ctx.send(file=discord.File(data, 'bill.png'))
 
+    @commands.command(name='compliment')
+    async def compliment(self, ctx):
+        """Insult generator"""
+        url = os.environ['HexApi'] + 'compliment'
+        try:
+            user = ctx.message.mentions[0]
+        except IndexError:
+            return await ctx.send("Mention the person you want to compliment")
+        async with ctx.typing():
+            async with self.client.get(url) as r:
+                if r.status != 200:
+                    return await ctx.send('Failed to compliment :disappointed_relieved:')
+                data = await r.json()
+            result = data['compliment']
+        await ctx.send(f"{user.mention} {result}")
+
     @commands.command(name='joke', aliases=['pun', 'riddle', 'dark', 'geek'])
     async def _joke(self, ctx):
         """Tell a joke"""
