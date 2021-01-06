@@ -1,14 +1,14 @@
 ![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=python)
-![Python](https://img.shields.io/badge/python-v3.8.2-blue?logo=python&logoColor=ffe873)
+![Python](https://img.shields.io/badge/python-v3.8.5-blue?logo=python&logoColor=ffe873)
 ![License](https://img.shields.io/github/license/1Prototype1/HexBot) 
-[![Servers](https://img.shields.io/badge/servers-36-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344)
+[![Servers](https://img.shields.io/badge/servers-64-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=268492800)
 [![Upvotes](https://top.gg/api/widget/upvotes/747461870629290035.svg?rightcolor=0ff&righttextcolor=000)](https://top.gg/bot/747461870629290035)
 
 # HexBot
 A Relatively Simply Awesome Discord bot with Music, Games, Comics, Memes and other cool features. <br>
 This bot is made in Python 3.8 using [discord.py](https://github.com/Rapptz/discord.py)
 
-[![Add HexBot](https://img.shields.io/badge/-Add%20Bot-141B2E?style=for-the-badge&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=57344) <br>
+[![Add HexBot](https://img.shields.io/badge/-Add%20Bot-141B2E?style=for-the-badge&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=268492800) <br>
 **Add the bot to your Discord server and use these awesome features! :sparkles:**
 
 Features
@@ -41,6 +41,8 @@ comic <id>    - Get comic strip
 filter        - Apply filters to image
 fortune|quote - Fortune Cookie!
     <category>[factoid|fortune|people]
+react <emoji> - React using custom emoji
+supreme <txt> - Generate Supreme textart
 textart       - Generate text art
 uselessweb    - Get an useless website
 wallpaper     - Get wallpaper
@@ -50,6 +52,7 @@ wallpaper     - Get wallpaper
 convert       - Currency Converter
     <val><from><to>
 define <word> - Get definition of a word
+element <id>  - Get chemistry element info
 encode <txt>  - Encode and style the text
 list          - Displays the list of
                 voice connected users
@@ -86,12 +89,14 @@ xkcd          - Get random xkcd comics
 2048          - Play 2048 puzzle
 8ball         - Magic 8Ball!
     <question>
+connect4 @usr - Play Connect 4 with @usr
 hangman       - Play Hangman
 minesweeper   - Play Minesweeper
 poll          - Create a quick poll
     <question> <choices>
 quiz|trivia   - Start a quiz game
 rps           - Play Rock, Paper, Scissors
+sokoban       - Play Crate-pushing game
 tally         - Tally the created poll
 teams         - Makes random teams(def. 2)
 toss|flip     - Flips a Coin
@@ -104,6 +109,7 @@ clear|cls     - Delete the messages
 help          - Display this message
 invite        - Invite me to your server
 ping|latency  - Pong!
+rr|reactrole  - Reaction roles
 support       - Contact Bot owner
 ```
 
