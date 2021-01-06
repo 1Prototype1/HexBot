@@ -1,7 +1,10 @@
+## Note: This repo is no longer maintained and is moved to a Private repo inorder to avoid self-hosting of HexBot. 
+#### This means that the current code of HexBot is no longer open-sourced. If you need any help feel free to contact me.
+
 ![Run Status](https://img.shields.io/github/workflow/status/1Prototype1/HexBot/Run?label=Run&logo=python)
 ![Python](https://img.shields.io/badge/python-v3.8.5-blue?logo=python&logoColor=ffe873)
 ![License](https://img.shields.io/github/license/1Prototype1/HexBot) 
-[![Servers](https://img.shields.io/badge/servers-64-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=268492800)
+[![Servers](https://img.shields.io/badge/servers-76-FF355E?style=social&logo=discord)](https://discord.com/oauth2/authorize?client_id=747461870629290035&scope=bot&permissions=268492800)
 [![Upvotes](https://top.gg/api/widget/upvotes/747461870629290035.svg?rightcolor=0ff&righttextcolor=000)](https://top.gg/bot/747461870629290035)
 
 # HexBot
