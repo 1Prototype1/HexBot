@@ -304,53 +304,52 @@ class Utility(commands.Cog):
                     return await ctx.send("Server not found :satellite_orbital: or maybe I'm not in it")
         else:
             server = ctx.guild
-        # Count online members
-        online = 0
-        for i in server.members:
-            if str(i.status) == 'online' or str(i.status) == 'idle' or str(i.status) == 'dnd':
-                online += 1
+
         # Count channels
         tchannel_count = len([x for x in server.channels if type(x) == discord.channel.TextChannel])
         vchannel_count = len([x for x in server.channels if type(x) == discord.channel.VoiceChannel])
         # Count roles
         role_count = len(server.roles)
+        # Count emojis
+        emojis = len(server.emojis)
+        # Count bots
+        bot_count = len([x for x in server.members if x.bot])
 
         # Create embed
         em = discord.Embed(color=0x00CC99)
         em.set_author(name='Server Info:', icon_url=server.owner.avatar_url)
         em.add_field(name='Name', value=f'`{server.name}`')
         em.add_field(name='Owner', value=f'`{server.owner}`', inline=False)
-        em.add_field(name='Members', value=f'`{server.member_count}`')
-        em.add_field(name='Online', value=f'`{online}`')
-        em.add_field(name='Region', value=f'`{str(server.region).title()}`')
+        em.add_field(name='Members', value=f'`{server.member_count - bot_count}`')
+        em.add_field(name='Bots', value=f'`{bot_count}`')
+        em.add_field(name='Emojis', value=f'`{emojis}`')
         em.add_field(name='Text Channels', value=f'`{tchannel_count}`')
         em.add_field(name='Voice Channels', value=f'`{vchannel_count}`')
         em.add_field(name='Verification Level', value=f'`{str(server.verification_level).title()}`')
         em.add_field(name='Number of roles', value=f'`{role_count}`')
         em.add_field(name='Highest role', value=f'`{server.roles[-1]}`')
+        em.add_field(name='Region', value=f'`{str(server.region).title()}`')
         em.add_field(name='Created At', value=f"`{server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S')}`", inline=False)
         em.set_thumbnail(url=server.icon_url)
         em.set_footer(text='Server ID: %s' % server.id)
 
-        try:
-            await ctx.send(embed=em)
-        except Exception:
-            await ctx.send("I don't have permission to send embeds here :disappointed_relieved:")
+        await ctx.send(embed=em)
 
     @commands.command(name='url', aliases=['shorten'])
-    async def url_shorten(self, ctx, *, url):
+    async def url_shorten(self, ctx, url=None):
         if not url:
             return await ctx.send('Please specify the url :link:')
         if not url.startswith('http'):
             url = 'http://' + url
-        try:
-            async with ctx.typing():
-                async with self.client.post('https://rel.ink/api/links/', data={'url': url}) as r:
-                    data = await r.json()
-            if data.get('hashid'):
-                return await ctx.send(f"Url: `{data['url']}`\nShort: https://rel.ink/{data['hashid']}")
-        except:
-            await ctx.send('Failed to shorten url :x:')
+        url = os.environ["ShortenAPI"] + url
+
+        async with ctx.typing():
+            async with self.client.get(url) as r:
+                data = await r.json()
+                data = data["url"]
+        if data["status"] == 7:
+            return await ctx.send(f"Url: `{data['fullLink']}`\nShort: {data['shortLink']}")
+        await ctx.send('Failed to shorten url :x:')
 
     @commands.command(name = 'userinfo', aliases=['user', 'uinfo', 'ui'])
     async def userinfo(self, ctx, *, name=""):
