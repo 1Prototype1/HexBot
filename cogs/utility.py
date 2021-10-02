@@ -336,19 +336,20 @@ class Utility(commands.Cog):
         await ctx.send(embed=em)
 
     @commands.command(name='url', aliases=['shorten'])
-    async def url_shorten(self, ctx, *, url):
+    async def url_shorten(self, ctx, url=None):
         if not url:
             return await ctx.send('Please specify the url :link:')
         if not url.startswith('http'):
             url = 'http://' + url
-        try:
-            async with ctx.typing():
-                async with self.client.post('https://rel.ink/api/links/', data={'url': url}) as r:
-                    data = await r.json()
-            if data.get('hashid'):
-                return await ctx.send(f"Url: `{data['url']}`\nShort: https://rel.ink/{data['hashid']}")
-        except:
-            await ctx.send('Failed to shorten url :x:')
+        url = os.environ["ShortenAPI"] + url
+
+        async with ctx.typing():
+            async with self.client.get(url) as r:
+                data = await r.json()
+                data = data["url"]
+        if data["status"] == 7:
+            return await ctx.send(f"Url: `{data['fullLink']}`\nShort: {data['shortLink']}")
+        await ctx.send('Failed to shorten url :x:')
 
     @commands.command(name = 'userinfo', aliases=['user', 'uinfo', 'ui'])
     async def userinfo(self, ctx, *, name=""):
