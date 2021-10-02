@@ -409,14 +409,30 @@ class Utility(commands.Cog):
         """Get weather"""
         if not location:
             return await ctx.send('Please provide location :map:')
-        url = os.environ['HexApi'] + f'weatherimg?location={location}'
-        async with ctx.typing():
-            async with self.client.get(url) as r:
-                if r.status != 200:
-                    return await ctx.send('Failed to get weather :x:')
-                data = io.BytesIO(await r.read())
+        url = os.environ['HexApi'] + f'weather?location={location}'
+        await ctx.trigger_typing()
+        async with self.client.get(url) as r:
+            if r.status != 200:
+                return await ctx.send('Failed to get weather :x:')
+            data = await r.json()
 
-        await ctx.send(file=discord.File(data, 'weather.png'))
+        em = discord.Embed(title="Weather", color=discord.Color.random())
+        icon = "https://" + data["current"]["condition"]["icon"][2:]
+        em.set_thumbnail(url=icon)
+
+        location = ', '.join([data["location"][i] for i in ["name", "region", "country"]])
+        gmap = f"[🗺](https://www.google.com/maps/search/?api=1&query='{location}')"
+        gmap = gmap.replace("'", "%22");gmap = gmap.replace(" ", "%20")
+        infos = [["temp_c", "Temperature", "°C"], ["feelslike_c", "Feels like", "°C"], ["humidity", "Humidity", "%"],
+                ["pressure_mb", "Pressure", "mbar"], ["cloud", "Cloud", "%"], ["precip_mm", "Precipitation", "mm"], ["uv", "UV", ""]]
+        info = [f'{gmap} **{location}**\n']
+
+        for i in infos:
+            info.append(f"{i[1]}: `{data['current'][i[0]]} {i[2]}`")
+        info.append(f"Wind: `{data['current']['wind_kph']}({data['current']['wind_dir']}) Km/h`")
+        em.description = '\n'.join(info)
+
+        await ctx.send(embed=em)
 
     @commands.command(name='wordinfo', aliases=['pronunciation', 'pron', 'word'])
     async def wordinfo(self, ctx, word=""):
