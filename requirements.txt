@@ -1,10 +1,10 @@
 git+https://github.com/Rapptz/discord.py
 git+https://github.com/1Prototype1/ksoftapi.py.git
+git+https://github.com/1Prototype1/aiopentdb.git
 dnspython>=1.16.0
 PyNaCl>=1.4.0
 async-timeout>=3.0.1
 fortune
-aiopentdb
 speedtest-cli
 xkcd
 psutil
