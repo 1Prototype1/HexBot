@@ -1,6 +1,5 @@
 import os
 import io
-import ksoftapi
 from googletrans import Translator, LANGUAGES
 from textwrap import TextWrapper
 
@@ -11,7 +10,6 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.client = bot.client
-        self.kclient = bot.kclient
         self.trans = Translator()
 
     @commands.command(name='convert', aliases=['currency'])
@@ -20,13 +18,14 @@ class Utility(commands.Cog):
         if value=="" or _from=="" or to=="":
             return await ctx.send("Please enter values in proper format\n`~convert [value] [from] [to]`\neg: `~convert 16 usd inr`")
 
-        try:
-            async with ctx.typing():
-                c = await self.kclient.kumo.currency_conversion(_from, to, value)
-        except (ksoftapi.NoResults, ksoftapi.errors.APIError):
-            await ctx.send('Conversion Failed :x:')
-        else:
-            await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
+        params = {'amount': value, 'from': _from, 'to': to}
+        url = os.environ['HexApi'] + 'convert'
+        async with self.client.get(url, params=params) as r:
+            if r.status != 200:
+                return await ctx.send('Conversion Failed :x:')
+            data = await r.json()
+        value = round(float(data['value']), 2)
+        await ctx.send(f":currency_exchange: Conversion:\n`{data['amount']} {data['from']}` = `{value} {data['to']}`")
 
     @commands.command(name='define')
     async def _define(self, ctx, word=None):
