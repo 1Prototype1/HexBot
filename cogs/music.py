@@ -1,6 +1,5 @@
 import math
 import lavalink
-import ksoftapi
 import discord
 
 from discord.ext import commands
@@ -8,7 +7,6 @@ from discord.ext import commands
 class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.kclient = bot.kclient
 
         if not hasattr(bot, 'lavalink'):
             bot.lavalink = lavalink.Client(bot.user.id)
@@ -305,37 +303,6 @@ class Music(commands.Cog):
         await self.connect_to(ctx.guild.id, None)
         await ctx.send('Disconnected :mute:')
         await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
-
-    @commands.command(name='lyrics', aliases=['ly'])
-    async def get_lyrics(self, ctx, *, query: str=""):
-        """Get lyrics of current song"""
-        if not query:
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-            if not player.is_playing:
-                return await ctx.send('I\'m not currently playing anything :warning:')
-            query = player.current.title
-
-        try:
-            async with ctx.typing():
-                results = await self.kclient.music.lyrics(query, limit=1)
-        except ksoftapi.NoResults:
-            await ctx.send(f'No lyrics found for `{query}`')
-        else:
-            lyrics = results[0].lyrics
-            result = results[0]
-            embed = discord.Embed(title=f'{result.name} - {result.artist}', color=discord.Color(0xCCFF00), description=lyrics[:2048])
-            embed.set_thumbnail(url=result.album_art)
-            embed.set_author(name="Lyrics:")
-            lyrics = lyrics[2048:]
-            embeds = [embed] # create embeds' list for long lyrics
-            while len(lyrics) > 0 and len(embeds) < 10: # limiting embeds to 10
-                embed = discord.Embed(color=discord.Color(0xCCFF00), description=lyrics[:2048])
-                lyrics = lyrics[len(embeds)*2048:]
-                embeds.append(embed)
-            embeds[-1].set_footer(text="Source: KSoft.Si") # set footer for last embed
-            for embed in embeds:
-                await ctx.send(embed=embed)
 
     @commands.command(name='equalizer', aliases=['eq'])
     async def equalizer(self, ctx, *args):

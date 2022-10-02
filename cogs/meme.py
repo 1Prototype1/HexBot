@@ -1,7 +1,6 @@
 import os
 import io
 import xkcd
-import ksoftapi
 
 import discord
 from discord.ext import commands
@@ -10,7 +9,6 @@ class Meme(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.client = bot.client
-        self.kclient = bot.kclient
 
     @commands.command(name='bill')
     async def _bill(self, ctx, name=''):
@@ -100,16 +98,18 @@ class Meme(commands.Cog):
 
     @commands.command(name='meme', aliases=['maymay'])
     async def meme(self, ctx):
-        """Get MayMay"""
-        try:
-            async with ctx.typing():
-                maymay = await self.kclient.images.random_meme()
-        except ksoftapi.NoResults:
-            await ctx.send('Error getting maymay :cry:')
-        else:
-            embed = discord.Embed(title=maymay.title)
-            embed.set_image(url=maymay.image_url)
-            await ctx.send(embed=embed)
+        """Get a random MayMay"""
+        url = os.environ['HexApi'] + 'meme'
+        async with self.client.get(url) as r:
+            if r.status != 200:
+                return await ctx.send('Error getting maymay :cry:')
+            data = await r.json()
+        embed = discord.Embed(title=data['title'], url=f"https://reddit.com{data['permalink']}",
+                              color=discord.Colour.random())
+        embed.set_image(url=data['url'])
+        embed.set_footer(
+            text=f"👍🏻{data['ups']}  💬{data['num_comments']}  🧑🏻{data['author']}")
+        await ctx.send(embed=embed)
 
     @commands.command(name='insult', aliases=['roast'])
     async def insult(self, ctx):
