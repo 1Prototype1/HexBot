@@ -1,3 +1,4 @@
+import os
 import math
 import lavalink
 import discord
@@ -303,6 +304,29 @@ class Music(commands.Cog):
         await self.connect_to(ctx.guild.id, None)
         await ctx.send('Disconnected :mute:')
         await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="Nothing"))
+
+    @commands.command(name='lyrics', aliases=['ly'])
+    async def get_lyrics(self, ctx, query: str):
+        """Get lyrics of a song"""
+        url = os.environ['HexApi'] + 'lyrics?q=' + query
+        msg = await ctx.send("Searching for lyrics :mag_right:")
+        async with self.bot.client.get(url, timeout=10) as r:
+            if r.status != 200:
+                return await msg.edit(content='No lyrics found :x:')
+            data = await r.json()
+
+        lyrics = data.get('lyrics')
+        embed = discord.Embed(title=f"{data['title']} - {data['artist']}",
+                              color=discord.Color(0xCCFF00), description=lyrics[:2048])
+        embed.set_author(name="Lyrics:")
+        lyrics = lyrics[2048:]
+        embeds = [embed]  # create embeds' list for long lyrics
+        while len(lyrics) > 0 and len(embeds) < 10:  # limiting embeds to 10
+            embed = discord.Embed(color=discord.Color(
+                0xCCFF00), description=lyrics[:2048])
+            lyrics = lyrics[len(embeds)*2048:]
+            embeds.append(embed)
+        return await msg.edit(content=None, embeds=embeds)
 
     @commands.command(name='equalizer', aliases=['eq'])
     async def equalizer(self, ctx, *args):
