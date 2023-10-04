@@ -64,16 +64,20 @@ class Misc(commands.Cog):
     @commands.command(name='owner', aliases=['support', 'contact'])
     async def support(self, ctx, *, msg: str = ""):
         """Contact bot owner"""
-        if msg == "":
-            return await ctx.send("Please enter a message to send towards Bot Owner", delete_after=5.0)
+        if not msg:
+            return await ctx.send("Join support server at _https://hexbot.ml/support_ for quick and easy support.")
 
         embed = discord.Embed(colour=discord.Colour(0x5dadec), description=msg)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        embed.set_footer(text=f"{ctx.guild} : {ctx.guild.id}", icon_url=ctx.guild.icon_url)
+        if ctx.guild.icon:
+            embed.set_footer(
+                text=f"{ctx.guild} : {ctx.guild.id}", icon_url=ctx.guild.icon.url)
+        else:
+            embed.set_footer(text=f"{ctx.guild} : {ctx.guild.id}")
 
         info = await self.bot.application_info()
         await info.owner.send(embed=embed)
-        await ctx.send("Bot owner notified!")
+        await ctx.send("Bot owner notified!\nYou can also join support server at _https://hexbot.ml/support_ for quick and easy support.")
 
     @commands.command(name='tts')
     async def _tts(self, ctx, *, text=''):
